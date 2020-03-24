@@ -17,7 +17,11 @@
   </div>
 
   <!-- todos: add tabs for menus? -->
-  <app-menu-food-card></app-menu-food-card>
+  <div class="menu-container">
+    <div class="menu" *ngFor="let product of products">
+      <app-menu-food-card [foodName]="product.name"></app-menu-food-card>
+    </div>
+  </div>
 </div>
 
 <app-footer></app-footer>

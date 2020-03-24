@@ -1,3 +1,4 @@
+import { Product } from './../models/product';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
@@ -6,10 +7,16 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./restaurant.component.css']
 })
 export class RestaurantComponent implements OnInit {
+  products: Product[];
 
   constructor() { }
 
   ngOnInit() {
+    // test data
+    this.products = [
+      { id: 1, name: 'Chicken chop' },
+      { id: 2, name: 'Spaggheti' }
+    ];
   }
 
 }
