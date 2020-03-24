@@ -10,6 +10,7 @@ import { FooterComponent } from './footer/footer.component';
 import { RestaurantsComponent } from './restaurants/restaurants.component';
 import { RestaurantComponent } from './restaurant/restaurant.component';
 import { RestaurantCardComponent } from './shared/restaurant-card.component';
+import { MenuFoodCardComponent } from './shared/menu-food-card.component';
 
 
 @NgModule({
@@ -20,7 +21,8 @@ import { RestaurantCardComponent } from './shared/restaurant-card.component';
     FooterComponent,
     RestaurantsComponent,
     RestaurantComponent,
-    RestaurantCardComponent
+    RestaurantCardComponent,
+    MenuFoodCardComponent
   ],
   imports: [
     BrowserModule,
