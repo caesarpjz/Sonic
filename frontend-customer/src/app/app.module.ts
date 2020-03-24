@@ -11,6 +11,7 @@ import { RestaurantsComponent } from './restaurants/restaurants.component';
 import { RestaurantComponent } from './restaurant/restaurant.component';
 import { RestaurantCardComponent } from './shared/restaurant-card.component';
 import { MenuFoodCardComponent } from './shared/menu-food-card.component';
+import { CartComponent } from './cart/cart.component';
 
 
 @NgModule({
@@ -22,7 +23,8 @@ import { MenuFoodCardComponent } from './shared/menu-food-card.component';
     RestaurantsComponent,
     RestaurantComponent,
     RestaurantCardComponent,
-    MenuFoodCardComponent
+    MenuFoodCardComponent,
+    CartComponent
   ],
   imports: [
     BrowserModule,
