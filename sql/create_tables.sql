@@ -1,11 +1,18 @@
 -- CREATE DATABASE Sonic;
 
+create type rights as ENUM('FDS_Managers', 'Restaurant_Staff', 'Customers', 'Riders');
+create type statuses as ENUM('ORDERED', 'ORDER ACCEPTED', 'DELIVERED');
+create type methods as ENUM('CASH', 'CREDIT CARD');
+
 CREATE TABLE Users (
     id integer,
     username varchar(50) NOT NULL,
     password varchar(50) NOT NULL,
+    name varchar(50) NOT NULL,
     created_at timestamp NOT NULL,
-    PRIMARY KEY (id)
+    access_right rights NOT NULL,
+    PRIMARY KEY (id),
+    unique (username)
 );
 
 CREATE TABLE Restaurant_Categories (
@@ -62,6 +69,8 @@ CREATE TABLE Deliveries (
 
 CREATE TABLE Restaurants (
     rest_id integer,
+    name varchar(50) NOT NULL,
+    info text NOT NULL,
     min_spending integer default 0,
     category varchar(50),
     PRIMARY KEY (rest_id),
@@ -133,7 +142,8 @@ CREATE TABLE Orders (
     did integer NOT NULL,
     cid integer NOT NULL,
     cost float NOT NULL,
-    status varchar(50) NOT NULL,
+    status statuses NOT NULL,
+    payment_method methods NOT NULL,
     location varchar(100) NOT NULL,
     PRIMARY KEY (oid),
     FOREIGN KEY (cid) REFERENCES Customers (cid),
