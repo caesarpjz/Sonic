@@ -19,7 +19,7 @@
   <!-- todos: add tabs for menus? -->
   <div class="menu-container">
     <div class="menu" *ngFor="let product of products">
-      <app-menu-food-card [foodName]="product.name"></app-menu-food-card>
+      <app-menu-food-card [foodName]="product.name" [food]="product" [addToCart]="addToCart"></app-menu-food-card>
     </div>
   </div>
 </div>
