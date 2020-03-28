@@ -10,6 +10,8 @@ import { CartService } from './../services/cart.service';
 export class CartComponent implements OnInit {
   cartItems: any;
   subtotal: number;
+  deliveryFee: number = 5;
+  total: 0;
 
   constructor(
     private cartService: CartService
