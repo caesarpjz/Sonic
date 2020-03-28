@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
 import * as _ from 'lodash';
+import { Subject } from 'rxjs/Subject';
 
 @Injectable()
 export class CartService {
+  cartChanged = new Subject<any>();
 
   constructor() { }
 
@@ -32,8 +34,14 @@ export class CartService {
     }
   }
 
-  removeFromCart() {
+  removeFromCart(item) {
+    console.log(item);
+    let cart = this.retrieveCart();
+    const index = this.indexOf(item, cart);
 
+    cart.splice(index, 1);
+    localStorage.setItem('cart', JSON.stringify(cart));
+    this.cartChanged.next(cart);
   }
 
   retrieveCart() {
@@ -46,6 +54,7 @@ export class CartService {
    * @param item
    */
   addQuantity(item) {
+    console.log(item);
     let cart = this.retrieveCart();
     const index = this.indexOf(item, cart);
 
@@ -53,10 +62,21 @@ export class CartService {
     console.log('cart', cart);
 
     localStorage.setItem('cart', JSON.stringify(cart));
+    this.cartChanged.next(cart);
   }
 
-  decreaseQuantity() {
+  decreaseQuantity(item) {
+    // if item quantity becomes 0, we remove item from cart
+    let cart = this.retrieveCart();
+    const index = this.indexOf(item, cart);
 
+    if (cart[index].quantity === 1) {
+      this.removeFromCart(item);
+    } else {
+      cart[index].quantity--;
+      localStorage.setItem('cart', JSON.stringify(cart));
+      this.cartChanged.next(cart);
+    }
   }
 
 /**

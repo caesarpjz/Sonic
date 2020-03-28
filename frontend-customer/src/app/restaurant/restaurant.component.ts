@@ -20,8 +20,8 @@ export class RestaurantComponent implements OnInit {
   ngOnInit() {
     // test data
     this.products = [
-      { id: 1, name: 'Chicken chop', menuCategory: 'Mains', quantity: 0 },
-      { id: 2, name: 'Spaggheti', menuCategory: 'Mains', quantity: 0 }
+      { id: 1, name: 'Chicken chop', menu: 'Mains', quantity: 0, price: 6 },
+      { id: 2, name: 'Spaggheti', menu: 'Mains', quantity: 0, price: 10 }
     ];
   }
 

@@ -5,8 +5,12 @@
     <h1>Cart</h1>
   </div>
 
-  <!-- todos: add tabs for menus? -->
-  <app-menu-food-card></app-menu-food-card>
+  <div *ngFor="let item of cartItems">
+    <app-cart-item [item]=item
+      [increaseQuantity]=increaseQuantity
+      [decreaseQuantity]=decreaseQuantity
+      [remove]=remove></app-cart-item>
+  </div>
 </div>
 
 <app-footer></app-footer>

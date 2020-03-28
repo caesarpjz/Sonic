@@ -12,6 +12,7 @@ import { RestaurantComponent } from './restaurant/restaurant.component';
 import { RestaurantCardComponent } from './shared/restaurant-card.component';
 import { MenuFoodCardComponent } from './shared/menu-food-card.component';
 import { CartComponent } from './cart/cart.component';
+import { CartItemComponent } from './shared/cart-item.component';
 
 
 @NgModule({
@@ -24,7 +25,8 @@ import { CartComponent } from './cart/cart.component';
     RestaurantComponent,
     RestaurantCardComponent,
     MenuFoodCardComponent,
-    CartComponent
+    CartComponent,
+    CartItemComponent
   ],
   imports: [
     BrowserModule,

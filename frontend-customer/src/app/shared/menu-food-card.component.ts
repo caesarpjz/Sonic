@@ -17,9 +17,4 @@ export class MenuFoodCardComponent implements OnInit {
 
   ngOnInit() {
   }
-
-  addItemToCart(food) {
-    console.log(this);
-    // this.addToCart(food);
-  }
 }
