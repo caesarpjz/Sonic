@@ -9,6 +9,7 @@ import { CartService } from './../services/cart.service';
 })
 export class CartComponent implements OnInit {
   cartItems: any;
+  subtotal: number;
 
   constructor(
     private cartService: CartService
@@ -18,6 +19,7 @@ export class CartComponent implements OnInit {
 
   ngOnInit() {
     this.cartItems = this.cartService.retrieveCart();
+    this.subtotal = this.cartService.calculateSubtotal();
     this.cartService.cartChanged.subscribe(cart => {
       this.cartItems = cart;
     });
@@ -25,14 +27,19 @@ export class CartComponent implements OnInit {
 
   increaseQuantity = (item) => {
     this.cartService.addQuantity(item);
+    this.subtotal = this.cartService.calculateSubtotal();
   }
 
   decreaseQuantity = (item) => {
     this.cartService.decreaseQuantity(item);
+    this.subtotal = this.cartService.calculateSubtotal();
   }
 
   remove = (item) => {
     this.cartService.removeFromCart(item);
+    this.subtotal = this.cartService.calculateSubtotal();
   }
+
+
 
 }
