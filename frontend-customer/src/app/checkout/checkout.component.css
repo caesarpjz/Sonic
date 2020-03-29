@@ -1,0 +1,12 @@
+.cart__container {
+  display: flex;
+  display: row;
+}
+
+.cart__items {
+  flex: 2;
+}
+
+.cart__checkout {
+  flex: 1;
+}
