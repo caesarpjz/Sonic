@@ -1,3 +1,5 @@
+import { SignupComponent } from './signup/signup.component';
+import { LoginComponent } from './login/login.component';
 import { CartComponent } from './cart/cart.component';
 import { RestaurantComponent } from './restaurant/restaurant.component';
 import { RestaurantsComponent } from './restaurants/restaurants.component';
@@ -11,7 +13,9 @@ const routes: Routes = [
   { path: '', component: HomeComponent, pathMatch: 'full' },
   { path: 'restaurants', component: RestaurantsComponent },
   { path: 'restaurants/restaurant', component: RestaurantComponent },
-  { path: 'cart', component: CartComponent }
+  { path: 'cart', component: CartComponent },
+  { path: 'login', component: LoginComponent },
+  { path: 'signup', component: SignupComponent }
 ];
 
 @NgModule({
