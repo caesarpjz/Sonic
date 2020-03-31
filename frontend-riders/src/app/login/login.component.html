@@ -1,3 +1,26 @@
-<p>
-  login works!
-</p>
+<app-app-header></app-app-header>
+
+<div class="container mt-5 mb-5 pt-5 justify-content-center w-50">
+  <form class="form-signin" [formGroup]="loginForm" (ngSubmit)="login()">
+    <img class="mb-4" src="/docs/4.4/assets/brand/bootstrap-solid.svg" alt="" width="72" height="72">
+    <h1 class="h3 mb-3 font-weight-normal text-center">Please login</h1>
+
+    <div class="form-group">
+      <label for="email text-left">Email address</label>
+      <input type="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter email"
+        formControlName="email">
+    </div>
+
+    <div class="form-group">
+      <label for="password text-left">Password</label>
+      <input type="password" class="form-control" id="password" placeholder="Password" formControlName="password">
+    </div>
+
+    <div class="text-center justify-content-center">
+      <button class="mt-3 btn btn-lg btn-primary" type="submit" [disabled]=loginForm.invalid>Login</button>
+      <p class="card-text"><small class="text-muted">Or sign up</small></p>
+    </div>
+  </form>
+</div>
+
+<app-app-footer></app-app-footer>
