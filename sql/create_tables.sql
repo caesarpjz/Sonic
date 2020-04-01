@@ -5,7 +5,7 @@ create type statuses as ENUM('ORDERED', 'ORDER ACCEPTED', 'DELIVERED');
 create type methods as ENUM('CASH', 'CREDIT CARD');
 
 CREATE TABLE Users (
-    id integer,
+    id SERIAL,
     username varchar(50) NOT NULL,
     password varchar(50) NOT NULL,
     name varchar(50) NOT NULL,
@@ -21,14 +21,14 @@ CREATE TABLE Restaurant_Categories (
 );
 
 CREATE TABLE FDS_Managers (
-    mid integer,
-    id integer NOT NULL,
+    mid SERIAL,
+    id SERIAL NOT NULL,
     PRIMARY KEY (mid),
     FOREIGN KEY (id) REFERENCES Users (id)
 );
 
 CREATE TABLE Promotions (
-    pid integer,
+    pid SERIAL,
     start_datetime timestamp NOT NULL,
     end_datetime timestamp NOT NULL,
     discount_description varchar(50) NOT NULL,
@@ -36,8 +36,8 @@ CREATE TABLE Promotions (
 );
 
 CREATE TABLE Customers (
-    cid integer,
-    id integer NOT NULL,
+    cid SERIAL,
+    id SERIAL NOT NULL,
     cc_name varchar(50) NOT NULL,
     cc_expiry varchar(50) NOT NULL,
     cc_num varchar(50) NOT NULL,
@@ -47,16 +47,16 @@ CREATE TABLE Customers (
 );
 
 CREATE TABLE Riders (
-    rid integer,
-    id integer NOT NULL,
+    rid SERIAL,
+    id SERIAL NOT NULL,
     is_full_time boolean NOT NULL,
     PRIMARY KEY (rid),
     FOREIGN KEY (id) REFERENCES Users (id)
 );
 
 CREATE TABLE Deliveries (
-    did integer,
-    rid integer,
+    did SERIAL,
+    rid SERIAL,
     fee float NOT NULL,
     time_order_placed timestamp,
     time_arrive_at_rest timestamp,
@@ -68,7 +68,7 @@ CREATE TABLE Deliveries (
 );
 
 CREATE TABLE Restaurants (
-    rest_id integer,
+    rest_id SERIAL,
     name varchar(50) NOT NULL,
     info text NOT NULL,
     min_spending integer default 0,
@@ -78,59 +78,59 @@ CREATE TABLE Restaurants (
 );
 
 CREATE TABLE Menus (
-    menu_id integer,
-    rest_id integer,
+    menu_id SERIAL,
+    rest_id SERIAL,
     PRIMARY KEY (menu_id),
     FOREIGN KEY (rest_id) REFERENCES Restaurants (rest_id)
 );
 
 CREATE TABLE Restaurant_Staff (
-    rsid integer,
-    rest_id integer,
-    id integer NOT NULL,
+    rsid SERIAL,
+    rest_id SERIAL,
+    id SERIAL NOT NULL,
     PRIMARY KEY (rsid),
     FOREIGN KEY (rest_id) REFERENCES Restaurants (rest_id),
     FOREIGN KEY (id) REFERENCES Users (id)
 );
 
 CREATE TABLE Food_Items (
-    fid integer,
+    fid SERIAL,
     quantity integer NOT NULL,
     daily_limit integer NOT NULL,
     name varchar(50) NOT NULL,
     price float NOT NULL,
-    menu_id integer NOT NULL,
+    menu_id SERIAL NOT NULL,
     availability boolean NOT NULL,
     PRIMARY KEY (fid),
     FOREIGN KEY (menu_id) REFERENCES Menus (menu_id)
 );
 
 CREATE TABLE Reports (
-    mid integer,
+    mid SERIAL,
     report_text text,
     date date,
     FOREIGN KEY (mid) REFERENCES FDS_Managers (mid)
 );
 
 CREATE TABLE Managers_Has_Promotions (
-    mid integer NOT NULL,
-    pid integer NOT NULL,
+    mid SERIAL NOT NULL,
+    pid SERIAL NOT NULL,
     PRIMARY KEY (mid, pid),
     FOREIGN KEY (mid) REFERENCES FDS_Managers (mid),
     FOREIGN KEY (pid) REFERENCES Promotions (pid)
 );
 
 CREATE TABLE Restaurants_Has_Promotions (
-    rest_id integer NOT NULL,
-    pid integer NOT NULL,
+    rest_id SERIAL NOT NULL,
+    pid SERIAL NOT NULL,
     PRIMARY KEY (rest_id, pid),
     FOREIGN KEY (rest_id) REFERENCES Restaurants (rest_id),
     FOREIGN KEY (pid) REFERENCES Promotions (pid)
 );
 
 CREATE TABLE Reviews (
-    cid integer,
-    fid integer,
+    cid SERIAL,
+    fid SERIAL,
     review_desc text NOT NULL,
     PRIMARY KEY (cid, fid),
     FOREIGN KEY (cid) REFERENCES Customers (cid),
@@ -138,9 +138,9 @@ CREATE TABLE Reviews (
 );
 
 CREATE TABLE Orders (
-    oid integer,
-    did integer NOT NULL,
-    cid integer NOT NULL,
+    oid SERIAL,
+    did SERIAL NOT NULL,
+    cid SERIAL NOT NULL,
     cost float NOT NULL,
     status statuses NOT NULL,
     payment_method methods NOT NULL,
@@ -151,8 +151,8 @@ CREATE TABLE Orders (
 );
 
 CREATE TABLE Order_Contains_Food (
-    oid integer NOT NULL,
-    fid integer NOT NULL,
+    oid SERIAL NOT NULL,
+    fid SERIAL NOT NULL,
     quantity integer NOT NULL,
     PRIMARY KEY (oid, fid),
     FOREIGN KEY (oid) REFERENCES Orders (oid),
@@ -160,8 +160,8 @@ CREATE TABLE Order_Contains_Food (
 );
 
 CREATE TABLE Customer_Rates_Delivery (
-    cid integer NOT NULL,
-    did integer NOT NULL,
+    cid SERIAL NOT NULL,
+    did SERIAL NOT NULL,
     rating integer NOT NULL,
     PRIMARY KEY (cid, did),
     FOREIGN KEY (cid) REFERENCES Customers (cid),
@@ -169,8 +169,8 @@ CREATE TABLE Customer_Rates_Delivery (
 );
 
 CREATE TABLE Shifts (
-    shift_id integer,
-    rid integer,
+    shift_id SERIAL,
+    rid SERIAL,
     start_time timestamp NOT NULL,
     end_time timestamp NOT NULL,
     PRIMARY KEY (shift_id),
