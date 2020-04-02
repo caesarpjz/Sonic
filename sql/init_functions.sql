@@ -2,7 +2,7 @@ CREATE OR REPLACE FUNCTION getRestaurants()
 RETURNS TABLE(name VARCHAR, info text, category VARCHAR) AS $$
     SELECT name, info, category
     FROM Restaurants
-    ORDER BY name ASc;
+    ORDER BY name asc;
 $$ LANGUAGE SQL;
 
 CREATE OR REPLACE FUNCTION getMenus(VARCHAR) 
@@ -76,3 +76,16 @@ begin
     VALUES (DEFAULT, userId, is_full_time);
 end
 $$ LANGUAGE PLPGSQL;
+
+CREATE OR REPLACE FUNCTION authUser(username VARCHAR, password VARCHAR)
+RETURNS BOOLEAN as $$
+    SELECT CASE
+        WHEN EXISTS(
+            SELECT * FROM Users
+            where username = $1
+            and password = $2
+        ) THEN TRUE
+        ELSE FALSE
+    END
+$$ LANGUAGE SQL;
+
