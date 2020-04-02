@@ -1,3 +1,3 @@
-INSERT INTO Restaurant_Categories
+INSERT INTO restaurant_categories
 values 
-('Western'), ('Fast Food'), ('Chinese'), ('Thai'), ('Italian'), ('Indian');
+('Western'), ('Thai'), ('Italian'), ('Indian');
