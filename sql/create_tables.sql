@@ -176,3 +176,9 @@ CREATE TABLE Shifts (
     PRIMARY KEY (shift_id),
     FOREIGN KEY (rid) REFERENCES Riders (rid)
 );
+
+
+
+-- Dummy values
+
+INSERT INTO Restaurant_Categories values ('Western');
