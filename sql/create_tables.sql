@@ -49,7 +49,7 @@ CREATE TABLE Customers (
 CREATE TABLE Riders (
     rid SERIAL,
     id SERIAL NOT NULL,
-    is_full_time boolean NOT NULL,
+    is_full_time BOOLEAN NOT NULL,
     PRIMARY KEY (rid),
     FOREIGN KEY (id) REFERENCES Users (id)
 );
@@ -101,7 +101,7 @@ CREATE TABLE Food_Items (
     name VARCHAR(50) NOT NULL,
     price FLOAT NOT NULL,
     menu_id SERIAL NOT NULL,
-    availability boolean NOT NULL,
+    availability BOOLEAN NOT NULL,
     PRIMARY KEY (fid),
     FOREIGN KEY (menu_id) REFERENCES Menus (menu_id)
 );
