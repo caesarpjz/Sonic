@@ -1,5 +1,4 @@
 
-\i 'testset/users.sql'
 \i 'testset/restaurant_categories.sql'
 \i 'testset/fds_managers.sql'
 \i 'testset/promotions.sql'

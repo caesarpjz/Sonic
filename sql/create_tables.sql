@@ -1,6 +1,6 @@
 -- CREATE DATABASE Sonic;
 
-create type RIGHTS as ENUM('FDS_Managers', 'Restaurant_Staff', 'Customers', 'Riders');
+create type RIGHTS as ENUM('FDS_Manager', 'Restaurant_Staff', 'Customer', 'Rider');
 create type STATUSES as ENUM('ORDERED', 'ORDER ACCEPTED', 'DELIVERED');
 create type METHODS as ENUM('CASH', 'CREDIT CARD');
 
@@ -38,10 +38,10 @@ CREATE TABLE Promotions (
 CREATE TABLE Customers (
     cid SERIAL,
     id SERIAL NOT NULL,
-    cc_name VARCHAR(50) NOT NULL,
-    cc_expiry VARCHAR(50) NOT NULL,
-    cc_num VARCHAR(50) NOT NULL,
-    points INTEGER NOT NULL,
+    cc_name VARCHAR(50),
+    cc_expiry VARCHAR(50),
+    cc_num VARCHAR(50),
+    points INTEGER NOT NULL DEFAULT 0,
     PRIMARY KEY (cid),
     FOREIGN KEY (id) REFERENCES Users (id)
 );
