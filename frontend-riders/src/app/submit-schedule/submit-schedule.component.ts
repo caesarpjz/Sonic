@@ -14,7 +14,6 @@ interface City {
 })
 export class SubmitScheduleComponent implements OnInit {
   availableDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-  // availableHours = ['', '10am', '11am', '12pm', '1pm', '2pm', '3pm', '4pm', '5pm', '6pm', '7pm', '8pm', '9pm', '10pm']
 
   availableHours = [
     { label: 'Select', value: null },
@@ -41,26 +40,7 @@ export class SubmitScheduleComponent implements OnInit {
   items: FormArray;
   times: FormArray;
 
-  parsedAvailableHours: any;
-
-  cities1: SelectItem[];
-
-  cities2: City[];
-
-  selectedCity1: City;
-
-  selectedCity2: City;
-
   constructor(private formBuilder: FormBuilder) {
-    //SelectItem API with label-value pairs
-    this.cities1 = [
-      { label: 'Select City', value: null },
-      { label: 'New York', value: { id: 1, name: 'New York', code: 'NY' } },
-      { label: 'Rome', value: { id: 2, name: 'Rome', code: 'RM' } },
-      { label: 'London', value: { id: 3, name: 'London', code: 'LDN' } },
-      { label: 'Istanbul', value: { id: 4, name: 'Istanbul', code: 'IST' } },
-      { label: 'Paris', value: { id: 5, name: 'Paris', code: 'PRS' } }
-    ];
   }
 
   ngOnInit() {
@@ -113,6 +93,5 @@ export class SubmitScheduleComponent implements OnInit {
   }
 
   submit() {
-    console.log(this.selectedCity1);
   }
 }
