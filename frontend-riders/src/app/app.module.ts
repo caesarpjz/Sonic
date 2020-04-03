@@ -1,7 +1,10 @@
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing/app-routing.module';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { DropdownModule } from 'primeng/dropdown';
 
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
@@ -27,7 +30,11 @@ import { SubmitScheduleComponent } from './submit-schedule/submit-schedule.compo
   imports: [
     BrowserModule,
     AppRoutingModule,
-    ReactiveFormsModule
+    FormsModule,
+    ReactiveFormsModule,
+    DropdownModule,
+    BrowserAnimationsModule,
+    CommonModule
   ],
   providers: [],
   bootstrap: [AppComponent]
