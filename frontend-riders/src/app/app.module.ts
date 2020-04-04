@@ -5,6 +5,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { DropdownModule } from 'primeng/dropdown';
+import { CheckboxModule } from 'primeng/checkbox';
 
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
@@ -34,7 +35,8 @@ import { SubmitScheduleComponent } from './submit-schedule/submit-schedule.compo
     ReactiveFormsModule,
     DropdownModule,
     BrowserAnimationsModule,
-    CommonModule
+    CommonModule,
+    CheckboxModule
   ],
   providers: [],
   bootstrap: [AppComponent]
