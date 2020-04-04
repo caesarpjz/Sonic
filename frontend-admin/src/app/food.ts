@@ -1,0 +1,16 @@
+export class Food {
+
+    foodId: number;
+    name: string;
+    category: string;
+    price: number;
+    dailyLimit: number;
+
+    constructor(foodId?:number, name?:string, category?:string, price?:number, dailyLimit?:number) {
+        this.foodId = foodId;
+        this.name = name;
+        this.category = category;
+        this.price = price;
+        this.dailyLimit = dailyLimit;
+    }
+}

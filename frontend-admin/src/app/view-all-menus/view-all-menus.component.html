@@ -1,0 +1,30 @@
+<app-header></app-header>
+
+<p-table [value]="menus">
+	<ng-template pTemplate="caption">
+		Menu
+	</ng-template>
+	<ng-template pTemplate="header">
+		<tr>
+			<th>Menu ID</th>
+			<th>Name</th>
+			<th>Category</th>
+			<th>Price</th>
+			<th>Daily Limit</th>
+		</tr>
+	</ng-template>
+	<ng-template pTemplate="body" let-food>
+		<tr>
+			<td>{{food.foodId}}</td>
+			<td>{{food.name}}</td>
+			<td>{{food.category}}</td>
+			<td>{{food.price}}</td>
+			<td>{{food.dailyLimit}}</td>
+			<td>
+				<p-button label="Update" (onClick)="showDialog1(food)"></p-button>
+				&nbsp;
+				<p-button label="Delete" (onClick)="deleteFood(food)"></p-button>
+			</td>
+		</tr>
+	</ng-template>
+</p-table>
