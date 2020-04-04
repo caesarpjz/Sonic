@@ -1,0 +1,45 @@
+<app-header></app-header>
+
+<div class="container mt-5 mb-5 pt-5">
+  <div class="container text-center">
+    <h1>Cart</h1>
+  </div>
+
+  <div class="cart__container">
+    <div class="cart__items">
+      <div *ngFor="let item of cartItems">
+        <app-cart-item [item]=item [increaseQuantity]=increaseQuantity [decreaseQuantity]=decreaseQuantity
+          [remove]=remove>
+        </app-cart-item>
+      </div>
+    </div>
+
+    <div class="cart__checkout container">
+      <p>
+        <b>Order summary</b>
+      </p>
+
+      <p>
+        Subtotal: ${{subtotal}}
+        <span></span>
+      </p>
+
+      <p>
+        Delivery fees: ${{deliveryFee}}
+      </p>
+
+      <p>
+        Total: ${{subtotal + deliveryFee}}
+      </p>
+
+      <div class="row justify-content-center">
+        <button class="btn btn-lg btn-primary" [routerLink]="['/checkout']">
+          Checkout
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<app-footer></app-footer>
