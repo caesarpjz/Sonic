@@ -30,8 +30,8 @@ CREATE TABLE FDS_Managers (
 
 CREATE TABLE Promotions (
     pid SERIAL,
-    start_DATETIME TIMESTAMP NOT NULL,
-    end_DATETIME TIMESTAMP NOT NULL,
+    start_time TIMESTAMP NOT NULL,
+    end_time TIMESTAMP NOT NULL,
     discount_description VARCHAR(50) NOT NULL,
     PRIMARY KEY (pid)
 );
@@ -61,8 +61,8 @@ CREATE TABLE Deliveries (
     rid INTEGER,
     fee FLOAT NOT NULL,
     time_order_placed TIMESTAMP,
+    time_depart_for_rest TIMESTAMP,
     time_arrive_at_rest TIMESTAMP,
-    time_depart_to_rest TIMESTAMP,
     time_depart_from_rest TIMESTAMP,
     time_order_delivered TIMESTAMP,
     PRIMARY KEY (did),

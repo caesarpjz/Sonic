@@ -33,7 +33,7 @@ begin
 end
 $$ LANGUAGE PLPGSQL;
 
-CREATE OR REPLACE FUNCTION addRider(username VARCHAR, password VARCHAR, name VARCHAR, is_full_time BOOLEAN)
+CREATE OR REPLACE FUNCTION addRider(username VARCHAR, password VARCHAR, name VARCHAR, is_full_time BOOLEAN, status RIDER_STATUSES DEFAULT 'NOT WORKING')
 RETURNS void AS $$
 declare 
     userId integer;
@@ -41,7 +41,7 @@ begin
     select addUser(username, password, name, 'Rider') into userId;
 
     INSERT INTO Riders
-    VALUES (DEFAULT, userId, is_full_time, 'NOT WORKING');
+    VALUES (DEFAULT, userId, is_full_time, status);
 end
 $$ LANGUAGE PLPGSQL;
 
@@ -150,7 +150,7 @@ $$ LANGUAGE PLPGSQL;
 CREATE OR REPLACE FUNCTION addDelivery(fee FLOAT)
 RETURNS INTEGER AS $$
     INSERT INTO Deliveries
-    VALUES (DEFAULT, NULL, fee)
+    VALUES (DEFAULT, NULL, fee, NOW())
     RETURNING did;
 $$ LANGUAGE SQL;
 
@@ -197,14 +197,21 @@ $$ LANGUAGE SQL;
 ------ RIDER FUNCTIONS ------
 -----------------------------
 
-CREATE OR REPLACE FUNCTION getOrder(rid INTEGER)
+CREATE OR REPLACE FUNCTION getDeliveringOrder(rid INTEGER)
 RETURNS TABLE(oid INTEGER, did INTEGER, payment_method METHODS, location VARCHAR, food_name VARCHAR, quantity INTEGER) AS $$
     SELECT O.oid, D.did, O.payment_method, O.location, FI.name, OCF.quantity
-    FROM Orders O NATURAL JOIN Deliveries D 
+    FROM Orders O NATURAL JOIN Deliveries D
     NATURAL JOIN Order_Contains_Food OCF
     JOIN Food_Items FI ON OCF.fid = FI.fid
     WHERE D.rid = $1
     AND status <> 'DELIVERED';
+$$ LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION getOrders(rid INTEGER)
+RETURNS setof record AS $$
+    SELECT did, fee
+    FROM Deliveries
+    WHERE rid = $1;
 $$ LANGUAGE SQL;
 
 CREATE OR REPLACE FUNCTION allocateRider(rid INTEGER, did INTEGER)
@@ -212,4 +219,61 @@ RETURNS void AS $$
     UPDATE Deliveries
     SET rid = $1
     WHERE did = $2;
+
+    UPDATE RIDERS
+    SET status = 'DELIVERING'
+    WHERE rid = $1;
+$$ LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION getAvailableRiders() 
+RETURNS TABLE(rid INTEGER) AS $$
+    SELECT rid
+    FROM Riders
+    WHERE status = 'AVAILABLE';
+$$ LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION timestamp_departForRest(did INTEGER)
+RETURNS void AS $$
+    UPDATE Deliveries
+    SET time_depart_for_rest = NOW()
+    WHERE did = $1;
+$$ LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION timestamp_arriveAtRest(did INTEGER)
+RETURNS void AS $$
+    UPDATE Deliveries
+    SET time_arrive_at_rest = NOW()
+    WHERE did = $1;
+$$ LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION timestamp_departFromRest(did INTEGER)
+RETURNS void AS $$
+    UPDATE Deliveries
+    SET time_depart_from_rest = NOW()
+    WHERE did = $1;
+$$ LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION timestamp_orderDelivered(did INTEGER)
+RETURNS void AS $$
+declare 
+    rider_id INTEGER;
+begin
+    UPDATE Deliveries
+    SET time_order_delivered = NOW()
+    WHERE Deliveries.did = $1
+    RETURNING rid into rider_id;
+
+    UPDATE Riders
+    SET status = 'AVAILABLE'
+    WHERE rid = rider_id;
+end
+$$ LANGUAGE PLPGSQL;
+
+CREATE OR REPLACE FUNCTION getRatings(rid INTEGER)
+RETURNS TABLE(did INTEGER, rating INTEGER) AS $$
+    SELECT D.did, CRD.rating
+    FROM Customer_Rates_Delivery CRD NATURAL JOIN Deliveries D
+    NATURAL JOIN Riders R
+    WHERE R.rid = $1
+    ORDER BY time_order_delivered desc;
 $$ LANGUAGE SQL;
