@@ -15,6 +15,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { AppHeaderComponent } from './shared/app-header/app-header.component';
 import { AppFooterComponent } from './shared/app-footer.component';
 import { SubmitScheduleComponent } from './submit-schedule/submit-schedule.component';
+import { SubmitScheduleMonthlyComponent } from './submit-schedule-monthly/submit-schedule-monthly.component';
 
 
 @NgModule({
@@ -26,7 +27,8 @@ import { SubmitScheduleComponent } from './submit-schedule/submit-schedule.compo
     DashboardComponent,
     AppHeaderComponent,
     AppFooterComponent,
-    SubmitScheduleComponent
+    SubmitScheduleComponent,
+    SubmitScheduleMonthlyComponent
   ],
   imports: [
     BrowserModule,

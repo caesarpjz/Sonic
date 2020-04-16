@@ -1,11 +1,6 @@
 import { FormGroup, FormBuilder, FormArray, AbstractControl } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
 
-interface City {
-  name: string;
-  code: string;
-}
-
 @Component({
   selector: 'app-submit-schedule',
   templateUrl: './submit-schedule.component.html',
@@ -110,7 +105,7 @@ export class SubmitScheduleComponent implements OnInit {
     console.log(start, end);
 
     // each interval must not be more than 4 hours
-    let validDuration =  Math.abs(end - start) <= 4 ? true : false;
+    let validDuration = Math.abs(end - start) <= 4 ? true : false;
 
     return start !== null && end !== null && start < end && validDuration
       ? null
@@ -118,7 +113,7 @@ export class SubmitScheduleComponent implements OnInit {
   }
 
   // for primeng button
-  handleChange(value, event) {
+  handleChange(value) {
     const isValueSelected = this.selectedDays.includes(value);
     const index = this.scheduleForm.controls.items.value.findIndex(val => val.day == value);
 
@@ -134,9 +129,16 @@ export class SubmitScheduleComponent implements OnInit {
     // need to check for total hours in WWS
 
     this.scheduleForm.value.items.forEach(item => {
-      console.log(item);
+
+      // do not count items with the same startTime and endTime
+      let times = new Map();
+
       for (var i = 0; i < item.times.length; i++) {
-        totalHours += item.times[i].endTime - item.times[i].startTime;
+        if (times.get(item.times[i].startTime) == null) {
+          times.set(item.times[i].startTime, item.times[i].startTime);
+          totalHours += item.times[i].endTime - item.times[i].startTime;
+          console.log('totalHours', totalHours);
+        }
 
         // depends on length of item.times,
         // if len == 1, then is valid

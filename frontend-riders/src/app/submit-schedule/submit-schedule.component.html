@@ -2,67 +2,59 @@
 
 <div class="container mt-5 mb-5 pt-5 justify-content-center w-50">
 
-<p>Weekly work schedule from xx to xx</p>
+  <h1>Weekly work schedule from xx to xx</h1>
 
-<!-- if have time will refactor this-->
-<!-- only let them create a new schedule on sunday -->
+  <!-- if have time will refactor this-->
+  <!-- only let them create a new schedule on sunday -->
 
-<p-checkbox name="groupname" (onChange)="handleChange('monday', $e)" label="Monday" value="monday" [(ngModel)]="selectedDays"></p-checkbox>
+  <p-checkbox name="groupname" (onChange)="handleChange('monday')" label="Monday" value="monday" [(ngModel)]="selectedDays"></p-checkbox>
 
-<p-checkbox name="groupname" label="Tuesday" (onChange)="handleChange('tuesday', $e)" value="tuesday"
-  [(ngModel)]="selectedDays"></p-checkbox>
+  <p-checkbox name="groupname" label="Tuesday" (onChange)="handleChange('tuesday')" value="tuesday"
+    [(ngModel)]="selectedDays"></p-checkbox>
 
-<p-checkbox name="groupname" (onChange)="handleChange('wednesday', $e)" label="Wednesday" value="wednesday"
-  [(ngModel)]="selectedDays"></p-checkbox>
+  <p-checkbox name="groupname" (onChange)="handleChange('wednesday')" label="Wednesday" value="wednesday"
+    [(ngModel)]="selectedDays"></p-checkbox>
 
-<p-checkbox name="groupname" (onChange)="handleChange('thursday', $e)" label="Thursday" value="thursday"
-  [(ngModel)]="selectedDays"></p-checkbox>
+  <p-checkbox name="groupname" (onChange)="handleChange('thursday')" label="Thursday" value="thursday"
+    [(ngModel)]="selectedDays"></p-checkbox>
 
-<p-checkbox name="groupname" (onChange)="handleChange('friday', $e)" label="Friday" value="friday"
-  [(ngModel)]="selectedDays"></p-checkbox>
+  <p-checkbox name="groupname" (onChange)="handleChange('friday')" label="Friday" value="friday"
+    [(ngModel)]="selectedDays"></p-checkbox>
 
-<p-checkbox name="groupname" (onChange)="handleChange('saturday', $e)" label="Saturday" value="saturday"
-  [(ngModel)]="selectedDays"></p-checkbox>
+  <p-checkbox name="groupname" (onChange)="handleChange('saturday')" label="Saturday" value="saturday"
+    [(ngModel)]="selectedDays"></p-checkbox>
 
-<p-checkbox name="groupname" (onChange)="handleChange('sunday', $e)" label="Sunday" value="sunday"
-  [(ngModel)]="selectedDays"></p-checkbox>
+  <p-checkbox name="groupname" (onChange)="handleChange('sunday')" label="Sunday" value="sunday"
+    [(ngModel)]="selectedDays"></p-checkbox>
 
-<!-- Chosen name: {{ scheduleForm.controls.items.controls[0].controls.day.value }} -->
-<form [formGroup]="scheduleForm" (ngSubmit)="submit()">
-<form formArrayName="items" *ngFor="let item of scheduleData.controls; let i = index;">
+  <form [formGroup]="scheduleForm" (ngSubmit)="submit()">
+    <form formArrayName="items" *ngFor="let item of scheduleData.controls; let i = index;">
+      <h5>{{item.controls.day.value | titlecase }}</h5>
 
-<p>{{item.controls.day.value}}</p>
+      <form [formGroup]=item>
+        <form formArrayName="times" *ngFor="let time of timeData(i).controls; let j = index;">
+          <div [formGroupName]="j">
+            <p-dropdown [options]="availableHours" formControlName="startTime"></p-dropdown>
 
-<form [formGroup]=item>
- <form formArrayName="times" *ngFor="let time of timeData(i).controls; let j = index;">
+            <p-dropdown [options]="availableHours" formControlName="endTime"></p-dropdown>
 
-<div [formGroupName]="j">
-   <p-dropdown [options]="availableHours"
-      formControlName="startTime"></p-dropdown>
+          <button (click)="addTimeslot(i)">Add time</button>
+          </div>
+        </form>
+      </form>
+    </form>
 
-   <p-dropdown [options]="availableHours" formControlName="endTime">
-   </p-dropdown>
-
-    <button (click)="addTimeslot(i)">Add time</button>
+    <div class="text-center justify-content-center">
+      <button class="mt-3 mb-3 btn btn-lg btn-primary" type="submit">Submit</button>
     </div>
-   </form>
-</form>
-</form>
 
-<div class="text-center justify-content-center">
-  <button class="mt-3 btn btn-lg btn-primary" type="submit">Submit</button>
-</div>
-
-{{scheduleForm.status}}
-<!-- list errors here -->
-<span *ngIf="scheduleForm.status == 'INVALID'">error</span>
-
-<p *ngIf="intervalError">Intervals between time slots must be at least one hour</p>
-<p *ngIf="totalHourError">Total hours for schedule must be at least 10 and at most 48 hours</p>
-</form>
-
-
-
+    <div class="alert alert-danger" *ngIf="intervalError">
+      Intervals between time slots must be at least one hour
+    </div>
+    <div class="alert alert-danger" *ngIf="totalHourError">
+      Total hours for schedule must be at least 10 and at most 48 hours
+    </div>
+  </form>
 </div>
 
 <app-app-footer></app-app-footer>

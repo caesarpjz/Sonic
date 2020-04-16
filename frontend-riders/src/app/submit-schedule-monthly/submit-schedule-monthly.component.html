@@ -1,0 +1,36 @@
+<app-app-header></app-app-header>
+
+<div class="container mt-5 mb-5 pt-5 justify-content-center w-50">
+  <h1>Submit monthly schedule</h1>
+
+  <label>Days</label>
+  <br>
+  <p-dropdown [options]="workDayOptions" [(ngModel)]="workDaysChosen" (onChange)="changeScheduleDays()"
+    placeholder="Select days"></p-dropdown>
+
+  <hr>
+
+  <form [formGroup]="scheduleForm" (ngSubmit)="submit()">
+    <div formArrayName="items" *ngFor="let item of scheduleData.controls; let i = index;">
+      <div [formGroupName]="i">
+
+        <h5>{{item.get('day').value | titlecase}}</h5>
+
+        <p-dropdown [options]="shiftOptions" formControlName="shift"
+          placeholder="Select shifts"></p-dropdown>
+
+        <div *ngIf="shiftTimeInfo[item.get('shift').value]">
+          Selected shift:
+            <p *ngFor="let shift of shiftTimeInfo[item.get('shift').value]">
+              {{shift.startTime}}00 to
+              {{shift.endTime}}00
+            </p>
+        </div>
+      </div>
+    </div>
+
+    <button class="mt-3 btn btn-lg btn-primary" type="submit" [disabled]=scheduleForm.invalid>Submit</button>
+  </form>
+</div>
+
+<app-app-footer></app-app-footer>
