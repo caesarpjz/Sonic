@@ -41,6 +41,51 @@ app
   .route('/users')
   .get(read);
 
+// Users
+
+
+// Customers
+
+  // Create Account
+  app
+    .route('/customers/signup/:name')
+
+  // Order Food
+  app
+    .route('/customers')
+    .post((req, res) => {
+      res.send(201, req.body)
+    });
+
+  // 
+  
+
+// Riders
+
+
+// FDS Managers
+
+
+// Restaurant Staffs
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // Start server
 app.listen(process.env.PORT || 3002, () => {
   console.log(`Server listening`)
