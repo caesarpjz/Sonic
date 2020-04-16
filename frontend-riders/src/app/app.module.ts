@@ -6,6 +6,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { DropdownModule } from 'primeng/dropdown';
 import { CheckboxModule } from 'primeng/checkbox';
+import { FullCalendarModule } from 'primeng/fullcalendar';
 
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
@@ -16,6 +17,7 @@ import { AppHeaderComponent } from './shared/app-header/app-header.component';
 import { AppFooterComponent } from './shared/app-footer.component';
 import { SubmitScheduleComponent } from './submit-schedule/submit-schedule.component';
 import { SubmitScheduleMonthlyComponent } from './submit-schedule-monthly/submit-schedule-monthly.component';
+import { ViewScheduleComponent } from './view-schedule/view-schedule.component';
 
 
 @NgModule({
@@ -28,7 +30,8 @@ import { SubmitScheduleMonthlyComponent } from './submit-schedule-monthly/submit
     AppHeaderComponent,
     AppFooterComponent,
     SubmitScheduleComponent,
-    SubmitScheduleMonthlyComponent
+    SubmitScheduleMonthlyComponent,
+    ViewScheduleComponent
   ],
   imports: [
     BrowserModule,
@@ -38,7 +41,8 @@ import { SubmitScheduleMonthlyComponent } from './submit-schedule-monthly/submit
     DropdownModule,
     BrowserAnimationsModule,
     CommonModule,
-    CheckboxModule
+    CheckboxModule,
+    FullCalendarModule
   ],
   providers: [],
   bootstrap: [AppComponent]
