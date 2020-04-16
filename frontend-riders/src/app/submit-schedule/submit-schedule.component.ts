@@ -1,4 +1,4 @@
-import { FormGroup, FormBuilder, FormArray, AbstractControl } from '@angular/forms';
+import { FormGroup, FormBuilder, FormArray, AbstractControl, ValidatorFn, ValidationErrors } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
@@ -98,7 +98,7 @@ export class SubmitScheduleComponent implements OnInit {
     this.times.push(this.createTimes());
   }
 
-  validateEndTime(AC: AbstractControl)  {
+  validateEndTime: ValidatorFn = (AC: AbstractControl): ValidationErrors | null => {
     console.log(AC);
     const start = AC.get('startTime').value;
     const end = AC.get('endTime').value;
@@ -109,7 +109,7 @@ export class SubmitScheduleComponent implements OnInit {
 
     return start !== null && end !== null && start < end && validDuration
       ? null
-      : { range: true };
+      : { rangeError: true };
   }
 
   // for primeng button

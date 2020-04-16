@@ -38,7 +38,13 @@
 
             <p-dropdown [options]="availableHours" formControlName="endTime"></p-dropdown>
 
-          <button (click)="addTimeslot(i)">Add time</button>
+            <div *ngIf="timeData(i).controls[j].errors && timeData(i).controls[j].touched">
+              <div class="alert alert-danger" *ngIf="timeData(i).controls[j].errors.rangeError">
+                Please select a valid duration (start time before end time) not exceeding 4 hours.
+              </div>
+            </div>
+
+            <button (click)="addTimeslot(i)">Add time</button>
           </div>
         </form>
       </form>
