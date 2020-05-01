@@ -2,44 +2,27 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const { pool } = require('./config')
-const read = require('./routes/users')
 
 const app = express()
+
+const restaurantsDb = require('./routes/restaurantStaffs')
+const usersDb = require('./routes/users')
+const customersDb = require('./routes/customers')
+const managersDb = require('./routes/managers')
+
+
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cors())
 
-const getBooks = (request, response) => {
-  pool.query('SELECT * FROM restaurant_categories', (error, results) => {
-    if (error) {
-      throw error
-    }
-    response.status(200).json(results.rows)
-  })
-}
-
-const addBook = (request, response) => {
-  const { categories } = request.body
-
-  pool.query('INSERT INTO restaurant_categories (category) VALUES ($1)', [categories], error => {
-    if (error) {
-      throw error
-    }
-    response.status(201).json({ status: 'success', message: 'Categories added.' })
-  })
-}
-
-app
-  .route('/restaurant_categories')
-  // GET endpoint
-  .get(getBooks)
-  // POST endpoint
-  .post(addBook)
+app.get('/', (req, res) => {
+  res.json({ info: 'Hello There!' })
+})
 
 app
   .route('/users')
-  .get(read);
+  // .get(usersDb.read);
 
 // Users
 
@@ -57,8 +40,16 @@ app
       res.send(201, req.body)
     });
 
-  // 
+  // List Restaurants
+  app
+  .route('/restaurants')
+  // .get(restaurantsDb)
+
   
+  // List Restaurant Categories
+  app
+  .route('/restaurant_categories')
+  .get(customersDb.getRestaurantCategories)
 
 // Riders
 
@@ -68,7 +59,10 @@ app
 
 // Restaurant Staffs
 
-
+  // Add Restaurant Categories
+  app
+  .route('/restaurant_categories')
+  .post(restaurantsDb.addRestaurantCategories)
 
 
 

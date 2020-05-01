@@ -13,4 +13,8 @@ async function readAll(req, res) {
 
 const read = readAll;
 
+// const createAccount = (request, response) => {
+//   const username = 
+// }
+
 module.exports = read;
