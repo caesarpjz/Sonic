@@ -17,7 +17,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cors())
 
 app.get('/', (req, res) => {
-  response.json({ info: 'Hello There!' })
+  res.json({ info: 'Hello There!' })
 })
 
 app
