@@ -30,8 +30,8 @@ CREATE TABLE FDS_Managers (
 
 CREATE TABLE Promotions (
     pid SERIAL,
-    start_time TIMESTAMP NOT NULL,
-    end_time TIMESTAMP NOT NULL,
+    start_time DATE NOT NULL,
+    end_time DATE NOT NULL,
     discount_description VARCHAR(50) NOT NULL,
     PRIMARY KEY (pid)
 );
@@ -75,6 +75,7 @@ CREATE TABLE Restaurants (
     info TEXT NOT NULL,
     min_spending INTEGER default 0,
     category VARCHAR(50),
+    restaurant_location VARCHAR(100) NOT NULL,
     PRIMARY KEY (rest_id),
     FOREIGN KEY (category) REFERENCES Restaurant_Categories (category)
 );
@@ -93,7 +94,7 @@ CREATE TABLE Restaurant_Staff (
     id INTEGER NOT NULL,
     PRIMARY KEY (rsid),
     FOREIGN KEY (rest_id) REFERENCES Restaurants (rest_id),
-    FOREIGN KEY (id) REFERENCES Users (id)
+    FOREIGN KEY (id) REFERENCES Users (id) ON DELETE CASCADE
 );
 
 CREATE TABLE Food_Items (
@@ -118,17 +119,19 @@ CREATE TABLE Reports (
 CREATE TABLE Managers_Has_Promotions (
     mid INTEGER NOT NULL,
     pid INTEGER NOT NULL,
+    in_effect BOOLEAN NOT NULL default false,
     PRIMARY KEY (mid, pid),
     FOREIGN KEY (mid) REFERENCES FDS_Managers (mid),
-    FOREIGN KEY (pid) REFERENCES Promotions (pid)
+    FOREIGN KEY (pid) REFERENCES Promotions (pid) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE Restaurants_Has_Promotions (
     rest_id INTEGER NOT NULL,
     pid INTEGER NOT NULL,
+    in_effect BOOLEAN NOT NULL default false,
     PRIMARY KEY (rest_id, pid),
     FOREIGN KEY (rest_id) REFERENCES Restaurants (rest_id),
-    FOREIGN KEY (pid) REFERENCES Promotions (pid)
+    FOREIGN KEY (pid) REFERENCES Promotions (pid) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE Reviews (
@@ -142,11 +145,12 @@ CREATE TABLE Reviews (
 
 CREATE TABLE Orders (
     oid SERIAL,
-    did INTEGER NOT NULL,
+    did INTEGER,
     cid INTEGER NOT NULL,
     cost FLOAT NOT NULL,
     status ORDER_STATUSES NOT NULL,
     payment_method METHODS NOT NULL,
+    restaurant_location VARCHAR(100) NOT NULL,
     location VARCHAR(100) NOT NULL,
     PRIMARY KEY (oid),
     FOREIGN KEY (cid) REFERENCES Customers (cid),
@@ -176,12 +180,9 @@ CREATE TABLE Shifts (
     rid INTEGER,
     start_time TIMESTAMP NOT NULL,
     end_time TIMESTAMP NOT NULL,
+    is_approved BOOLEAN NOT NULL default false,
     PRIMARY KEY (shift_id),
     FOREIGN KEY (rid) REFERENCES Riders (rid)
 );
 
 
-
--- Dummy values
-
-INSERT INTO Restaurant_Categories values ('Western');

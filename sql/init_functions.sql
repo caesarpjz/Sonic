@@ -61,10 +61,10 @@ $$ LANGUAGE SQL;
 ------- FDS FUNCTIONS -------
 -----------------------------
 
-CREATE OR REPLACE FUNCTION addRestaurant(name VARCHAR, info TEXT, min_spending INTEGER, category VARCHAR)
+CREATE OR REPLACE FUNCTION addRestaurant(name VARCHAR, info TEXT, min_spending INTEGER, category VARCHAR, restaurant_location VARCHAR)
 RETURNS void AS $$
     INSERT INTO Restaurants 
-    VALUES (DEFAULT, name, info, min_spending, category);
+    VALUES (DEFAULT, name, info, min_spending, category, restaurant_location);
 $$ LANGUAGE SQL;
 
 CREATE OR REPLACE FUNCTION addRestaurantStaff(username VARCHAR, password VARCHAR, name VARCHAR, rest_id INTEGER)
@@ -79,9 +79,37 @@ begin
 end
 $$ LANGUAGE PLPGSQL;
 
+CREATE OR REPLACE FUNCTION addPromotionForManagers(start_time DATE, end_time DATE, discount_desc VARCHAR, mid INTEGER, in_effect BOOLEAN)
+RETURNS void AS $$
+declare
+    promo_id integer;
+begin
+    INSERT INTO Promotions
+    VALUES (DEFAULT, start_time, end_time, discount_desc);
+
+    SELECT pid FROM Promotions P WHERE P.start_time = start_time AND P.end_time = end_time AND P.discount_description = discount_desc into promo_id;
+
+    INSERT INTO Managers_has_Promotions
+    VALUES (mid, promo_id, in_effect);
+end
+$$ LANGUAGE PLPGSQL;
+
 -----------------------------
 ------ STAFF FUNCTIONS ------
 -----------------------------
+
+CREATE OR REPLACE FUNCTION updatePassword(username VARCHAR, newpassword VARCHAR)
+RETURNS void AS $$
+begin
+    UPDATE Users 
+    SET password = newpassword 
+    WHERE username = username;
+
+    UPDATE Restaurant_Staff 
+    SET password = newpassword 
+    WHERE username = username;
+end
+$$ LANGUAGE PLPGSQL;
 
 CREATE OR REPLACE FUNCTION getRestaurants() 
 RETURNS TABLE(name VARCHAR, info text, category VARCHAR) AS $$
@@ -119,6 +147,20 @@ RETURNS void AS $$
     VALUES (DEFAULT, quantity, daily_limit, name, price, menu_id, TRUE);
 $$ LANGUAGE SQL;
 
+CREATE OR REPLACE FUNCTION addPromotion(start_time DATE, end_time DATE, discount_desc VARCHAR, rest_id INTEGER, in_effect BOOLEAN)
+RETURNS void AS $$
+declare
+    promo_id integer;
+begin
+    INSERT INTO Promotions
+    VALUES (DEFAULT, start_time, end_time, discount_desc);
+
+    SELECT pid FROM Promotions P WHERE P.start_time = start_time AND P.end_time = end_time AND P.discount_description = discount_desc into promo_id;
+
+    INSERT INTO Restaurants_has_Promotions
+    VALUES (rest_id, promo_id, in_effect);
+end
+$$ LANGUAGE PLPGSQL;
 -----------------------------
 ----- CUSTOMER FUNCTIONS ----
 -----------------------------
@@ -154,7 +196,7 @@ RETURNS INTEGER AS $$
     RETURNING did;
 $$ LANGUAGE SQL;
 
-CREATE OR REPLACE FUNCTION addOrder(fee FLOAT, cid INTEGER, payment_method METHODS, location VARCHAR)
+CREATE OR REPLACE FUNCTION addOrder(fee FLOAT, cid INTEGER, payment_method METHODS,restaurant_location VARCHAR, location VARCHAR)
 RETURNS INTEGER AS $$
 declare 
     did integer;
@@ -163,7 +205,7 @@ begin
     select addDelivery(fee) into did;
 
     INSERT INTO Orders
-    VALUES (DEFAULT, did, cid, 0, 'ORDERED', payment_method, location)
+    VALUES (DEFAULT, did, cid, 0, 'ORDERED', payment_method, restaurant_location, location)
     RETURNING oid into ret_oid;
 
     RETURN ret_oid;
