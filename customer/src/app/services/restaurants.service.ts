@@ -14,12 +14,10 @@ const httpOptions = {
   providedIn: 'root'
 })
 export class RestaurantsService {
-  path = "/api/customers";
-
   constructor(private httpClient: HttpClient) { }
 
   // get all restraurants
   getRestaurants(): Observable<any> {
-    return this.httpClient.get<any>(this.path + "/getRestaurants");
+    return this.httpClient.get<any>('/api/restaurant');
   }
 }
