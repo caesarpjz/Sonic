@@ -50,7 +50,7 @@ export class RestaurantComponent implements OnInit {
       this.restaurantService.getRestaurantMenuFoodItems(this.restaurantId, this.menus[i].menu_id).subscribe((res) => {
         if (res.length > 0) {
           for (var j = 0; j < this.menus.length; j++) {
-            if (this.menus[j].menu_id == res[0].menu_id) {
+            if (this.menus[j].menu_id === res[0].menu_id) {
               this.menus[j].foods = res;
             }
           }
