@@ -16,26 +16,19 @@ const read = readAll;
 
 const createCustomerAccount = (request, response) => {
   const username = request.body.username
-  const hashedPassword = bcrypt.hash(request.body.password, 10)
+  // const hashedPassword = bcrypt.hash(request.body.password, 10)
+  const password = request.body.password
   const name = request.body.name
-  const access_rights = 'Customer'
 
   const usernameCheck = pool.query('SELECT 1 FROM users WHERE username = $1', [username])
 
   if (usernameCheck == 1) {
-    return res.send(error)
+    return response.status(400).send(`Username taken. Try again`)
   }
 
-  // pool.query('INSERT INTO Users (username, password, name, created_at, access_rights) VALUES ($1, $2, $3, $4)', [username, password, name, access_rights], (error, results) => {
-  //   if (error) {
-  //     throw error
-  //   }
-
-  //   response.status(201)
-  // })
-
-  pool.query('SELECT addCustomer($1, $2, $3)', [username, hashedPassword, name], (error, results) => {
+  pool.query('SELECT addCustomer($1, $2, $3)', [username, password, name], (error, results) => {
     if (error) {
+      response.status(400).send(`Unable to create customer account for ${username}`)
       throw error
     }
 
@@ -45,27 +38,19 @@ const createCustomerAccount = (request, response) => {
 
 const createRestaurantStaffAccount = (request, response) => {
   const username = request.body.username
-  const hashedPassword = bcrypt.hash(request.body.password, 10)
+  const password = request.body.password
   const name = request.body.name
-  const access_rights = 'Restaurant_Staff'
   const rest_id = request.body.restId
 
   const usernameCheck = pool.query('SELECT 1 FROM users WHERE username = $1', [username])
 
   if (usernameCheck == 1) {
-    return res.send(error)
+    return response.status(400).send(`Username taken. Try again`)
   }
-
-  // pool.query('INSERT INTO Users (username, password, name, created_at, access_rights) VALUES ($1, $2, $3, $4)', [username, password, name, access_rights], (error, results) => {
-  //   if (error) {
-  //     throw error
-  //   }
-
-  //   response.status(201)
-  // })
 
   pool.query('SELECT addRestaurantStaff($1, $2, $3, $4)', [username, hashedPassword, name, rest_id], (error, results) => {
     if (error) {
+      response.status(400).send(`Unable to create restaurant staff account for ${username}`)
       throw error
     }
 
@@ -75,27 +60,20 @@ const createRestaurantStaffAccount = (request, response) => {
 
 const createRiderAccount = (request, response) => {
   const username = request.body.username
-  const hashedPassword = bcrypt.hash(request.body.password, 10)
+  const password = request.body.password
   const name = request.body.name
   const fullTimeBoolean = request.body.fullTimer
-  const access_rights = 'Rider'
 
   const usernameCheck = pool.query('SELECT 1 FROM users WHERE username = $1', [username])
 
   if (usernameCheck == 1) {
-    return res.send(error)
+    return response.status(400).send(`Username taken. Try again`)
   }
 
-  // pool.query('INSERT INTO Users (username, password, name, created_at, access_rights) VALUES ($1, $2, $3, $4)', [username, password, name, access_rights], (error, results) => {
-  //   if (error) {
-  //     throw error
-  //   }
 
-  //   response.status(201)
-  // })
-
-  pool.query('SELECT addRider($1, $2, $3, $4)', [username, hashedPassword, name, fullTimeBoolean], (error, results) => {
+  pool.query('SELECT addRider($1, $2, $3, $4)', [username, password, name, fullTimeBoolean], (error, results) => {
     if (error) {
+      response.status(400).send(`Unable to create rider account for ${username}`)
       throw error
     }
 
@@ -105,26 +83,18 @@ const createRiderAccount = (request, response) => {
 
 const createFDSManagerAccount = (request, response) => {
   const username = request.body.username
-  const hashedPassword = bcrypt.hash(request.body.password, 10)
+  const password = request.body.password
   const name = request.body.name
-  const access_rights = 'FDS_Manager'
 
   const usernameCheck = pool.query('SELECT 1 FROM users WHERE username = $1', [username])
 
   if (usernameCheck == 1) {
-    return res.send(error)
+    return response.status(400).send(`Username taken. Try again`)
   }
 
-  // pool.query('INSERT INTO Users (username, password, name, created_at, access_rights) VALUES ($1, $2, $3, $4)', [username, password, name, access_rights], (error, results) => {
-  //   if (error) {
-  //     throw error
-  //   }
-
-  //   response.status(201)
-  // })
-
-  pool.query('SELECT addFdsManager($1, $2, $3)', [username, hashedPassword, name], (error, results) => {
+  pool.query('SELECT addFdsManager($1, $2, $3)', [username, password, name], (error, results) => {
     if (error) {
+      response.status(400).send(`Unable to create FDS Manager account for ${username}`)
       throw error
     }
 
