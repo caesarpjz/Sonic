@@ -14,6 +14,8 @@ import { RestaurantsService } from '../services/restaurants.service';
 export class RestaurantComponent implements OnInit {
   products: any; // todos: change to product[]
   restaurant: any;
+  restaurantId: any;
+  menus: any;
 
   constructor(
     private cartService: CartService,
@@ -24,6 +26,8 @@ export class RestaurantComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.restaurantId = this.route.snapshot.paramMap.get('restaurantId');
+
     // test data
     this.products = [
       { id: 1, name: 'Chicken chop', menu: 'Mains', quantity: 0, price: 6 },
@@ -34,9 +38,33 @@ export class RestaurantComponent implements OnInit {
   }
 
   getRestaurant() {
-    this.restaurantService.getRestaurant(this.route.snapshot.paramMap.get('restaurantId')).subscribe((res) => {
+    this.restaurantService.getRestaurant(this.restaurantId).subscribe((res) => {
       this.restaurant = res[0];
+      this.getMenus();
     });
+  }
+
+  getMenus() {
+    this.restaurantService.getRestaurantMenus(this.restaurantId).subscribe((res) => {
+      this.menus = res;
+      this.getFoods();
+      console.log(res);
+    });
+  }
+
+  // populate the menus with foods
+  getFoods() {
+    for (var i = 0; i < this.menus.length; i++) {
+      this.restaurantService.getRestaurantMenuFoodItems(this.restaurantId, this.menus[i].menu_id).subscribe((res) => {
+        if (res.length > 0) {
+          for (var j = 0; j < this.menus.length; j++) {
+            if (this.menus[j].menu_id == res[0].menu_id) {
+              this.menus[j].foods = res;
+            }
+          }
+        }
+      });
+    }
   }
 
   addToCart = (item) => {
