@@ -15,7 +15,7 @@ const login = (request, response) => {
 }
 
 // /riders/:rid/orders
-const viewOrdersToDeliver = (request, response) => {
+const viewOrdersNotAcceptedToDeliver = (request, response) => {
   
   const status = 'ORDERED'
 
@@ -29,7 +29,11 @@ const viewOrdersToDeliver = (request, response) => {
 }
 
 // /riders/:rid/orders/:oid
-// const acceptOrder
+const acceptOrder = (request, response) => {
+  const { rid, oid } = request.params
+
+  pool.query('SELECT addOrder($1, $2, $3, $4)')
+}
 
 module.exports = {
 
