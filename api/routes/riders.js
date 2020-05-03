@@ -10,7 +10,13 @@ const login = (request, response) => {
       response.status(400).send(`Cannot Login for user ${username}. Please try again.`)
       throw error
     }
-    response.status(200).send(`Successfully logged in ${username}!`)
+    var isUser = results.rows[0].authuser
+    
+    if (isUser) {
+      response.status(200).send(`Successfully logged in ${username}!`)
+    } else {
+      response.status(400).send(`Cannot Login for user ${username}. No such username.`)
+    }
   })
 }
 

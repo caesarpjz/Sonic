@@ -23,6 +23,7 @@ const orderFood = (request, response) => {
 
     })
   }
+  response.status(200).send('Your Order has been placed!')
   
 }
 
@@ -30,19 +31,21 @@ const orderFood = (request, response) => {
 const login = (request, response) => {
   const username = request.body.username
   const password = request.body.password
-
-  var isUser = pool.query('SELECT authUser($1, $2)', [username, password], (error, results) => {
+  
+  pool.query('SELECT authUser($1, $2)', [username, password], (error, results) => {
     if (error) {
       response.status(400).send(`Cannot Login for user ${username}. Please try again.`)
       throw error
     }
+    var isUser = results.rows[0].authuser
+    
+    if (isUser) {
+      response.status(200).send(`Successfully logged in ${username}!`)
+    } else {
+      response.status(400).send(`Cannot Login for user ${username}. No such username.`)
+    }
   })
-
-  if (isUser) {
-    response.status(200).send(`Successfully logged in ${username}!`)
-  } else {
-    response.status(400).send(`Cannot Login for user ${username}. Please try again.`)
-  }
+ 
 }
 
 // /restaurant
