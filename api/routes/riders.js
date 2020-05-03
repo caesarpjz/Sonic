@@ -37,9 +37,25 @@ const viewOrdersNotAcceptedToDeliver = (request, response) => {
 // /riders/:rid/orders/:oid
 const acceptOrder = (request, response) => {
   const { rid, oid } = request.params
+  var fee = 5.00
 
-  pool.query('SELECT addOrder($1, $2, $3, $4)')
+  pool.query('SELECT addDelivery($1, $2)', [rid, fee], (error, results) => {
+    if (error) {
+      response.status(400).send(`Unable to add delivery`)
+      throw error
+    }
+    const did = results.rows[0].adddelivery
+    const status = 'ORDER ACCEPTED'
+    pool.query('UPDATE Orders SET did = $1, status = $2 WHERE oid = $3', [did, status, oid], (error, results) => {
+      if (error) {
+        response.status(400).send(`Unable to add delivery`)
+        throw error
+      }
+      response.status(200).send(`Order Assigned`)
+    })
+  })
 }
+
 
 module.exports = {
 
