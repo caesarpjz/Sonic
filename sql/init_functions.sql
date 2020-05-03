@@ -122,14 +122,14 @@ CREATE OR REPLACE FUNCTION getRestaurantById(rid INTEGER)
 RETURNS TABLE(name VARCHAR, info text, category VARCHAR) AS $$
     SELECT name, info, category
     FROM Restaurants R
-    where R.rid = $1
+    where R.rest_id = rid
 $$ LANGUAGE SQL;
 
-CREATE OR REPLACE FUNCTION getMenus(VARCHAR) 
+CREATE OR REPLACE FUNCTION getMenus(rest_name VARCHAR) 
 RETURNS table(name VARCHAR) AS $$
     SELECT M.name
     FROM restaurants R JOIN menus M ON R.rest_id = M.rest_id
-    WHERE R.name = $1;
+    WHERE R.name = rest_name
 $$ LANGUAGE SQL;
 
 CREATE OR REPLACE FUNCTION getFoodItems(rest_name VARCHAR, menu_name VARCHAR) 
@@ -242,7 +242,7 @@ RETURNS void as $$
     WHERE cid = $1;
 $$ LANGUAGE SQL;
 
-CREATE OR REPLACE FUNCITON getRecentLocations(cid INTEGER)
+CREATE OR REPLACE FUNCTION getRecentLocations(cid INTEGER)
 RETURNS TABLE(location VARCHAR) AS $$
     SELECT location
     FROM Orders O join Deliveries D on O.did = D.did
