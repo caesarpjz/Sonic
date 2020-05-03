@@ -127,6 +127,41 @@ app.get('/', (req, res) => {
     .route('/customer/:username/profile/insertCC')
     .post(customersDb.insertCCInfo)
 
+    // View Restaurant Food Item Reviews For EVERYONE to see
+    app
+    .route('/restaurant/:rest_id/menus/:menu_id/foods/:fid/reviews')
+    .get(customersDb.viewReviews)
+
+    // Get 5 recent locations
+    app
+    .route('/customer/:username/locations')
+    .get(customersDb.getRecentLocations)
+
+    // Get Reviews posted by self
+    app
+    .route('/customer/:username/reviews')
+    .get(customersDb.getReviews)
+
+    // Delete Own Review
+    app
+    .route('/customer/:username/reviews/:fid/delete')
+    .delete(customersDb.deleteReviewByFid)
+
+    // Update Own Review
+    app
+    .route('/customer/:username/reviews/:fid/update')
+    .post(customersDb.updateReviewByFid)
+
+    // Filter Restaurant By Category
+    app
+    .route('/restaurant/filter/category')
+    .get(customersDb.filterRestaurantByCategory)
+    
+    // Filter Restaurant By Location
+    app
+    .route('/restaurant/filter/location')
+    .get(customersDb.filterRestaurantByLocation)
+    
     // Points offset Cost
 
 /***** Riders *****/

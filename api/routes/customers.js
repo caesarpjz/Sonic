@@ -41,7 +41,7 @@ const login = (request, response) => {
   })
 }
 
-// /customer/:username/restaurant
+// /restaurant
 const getRestaurants = (request, response) => {
   pool.query('SELECT * FROM restaurants', (error, results) => {
     if (error) {
@@ -52,7 +52,7 @@ const getRestaurants = (request, response) => {
   })
 }
 
-// /customer/:username/restuarant/:rest_id
+// /restuarant/:rest_id
 const getRestaurantsById = (request, response) => {
   const { rest_id } = request.params
 
@@ -239,11 +239,108 @@ const insertCCInfo = (request, response) => {
   })
 }
 
+// /restaurant/:rest_id/menus/:menu_id/foods/:fid/reviews
+const viewReviews = (request, response) => {
+  const { fid } = request.params
+  const food_name = pool.query('SELECT name FROM Food_Items WHERE fid = $1', [fid])
+  pool.query('SELECT review_desc FROM Reviews WHERE fid = $1', [fid], (error, results) => {
+    if (error) {
+      response.status(400).send(`Unable to get review for ${food_name}`)
+      throw error
+    }
+    response.status(200).json(results.rows)
+  })
+}
 
+// /customer/:username/locations
+const getRecentLocations = (request, response) => {
+  const { username } = request.params
 
-// const usePoints = (request, response) => {
-//   const 
-// }
+  const cid = pool.query('SELECT cid FROM Customers WHERE username = $1', [username])
+
+  pool.query('SELECT getRecentLocations($1)', [cid], (error, results) => {
+    if (error) {
+      response.status(400).send(`Unable to get recent locations`)
+      throw error
+    }
+    response.status(200).json(results.rows)
+  })
+}
+
+// /customer/:username/reviews
+const getReviews = (request, response) => {
+  const { username } = request.params
+  const cid = pool.query('SELECT cid FROM Customers WHERE username = $1', [username])
+
+  pool.query('SELECT f.fid, f.name, r.review_desc FROM Reviews r, Food_Items f WHERE r.cid = $1 AND f.fid = r.fid', [cid], (error, results) => {
+    if (error) {
+      response.status(400).send(`Unable to get food reviews`)
+      throw error
+    }
+    response.status(200).json(results.rows)
+  })
+}
+// /customer/:username/reviews/:fid/delete
+const deleteReviewByFid = (request, response) => {
+  const { username, fid } = request.params
+  const cid = pool.query('SELECT cid FROM Customers WHERE username = $1', [username])
+
+  pool.query('DELETE FROM Reviews WHERE cid = $1 AND fid = $2', [cid, fid], (error, results) => {
+    if (error) {
+      response.status(400).send(`Unable to delete food review`)
+      throw error
+    }
+    response.status(200).send(`Food Review deleted`)
+  })
+}
+
+// /customer/:username/reviews/:fid/update
+const updateReviewByFid = (request, response) => {
+  const { username, fid } = request.params
+  const { review_desc } = request.body
+  const cid = pool.query('SELECT cid FROM Customers WHERE username = $1', [username])
+
+  pool.query('UPDATE Reviews SET review_desc = $1 WHERE cid = $2 AND fid = $3', [review_desc, cid, fid], (error, results) => {
+    if (error) {
+      response.status(400).send(`Unable to update food review to ${review_desc}`)
+      throw error
+    }
+    response.status(200).send(`Food Review updated!`)
+  })
+}
+
+// /restuarant/filter/category
+const filterRestaurantByCategory = (request, response) => {
+  const { category } = request.query
+
+  pool.query('SELECT * FROM Restaurants WHERE category = $1', [category], (error, results) => {
+    if (error) {
+      response.status(400).send(`Unable to get restaurants in ${category} category`)
+      throw error
+
+    }
+    response.status(200).json(results.rows)
+  })
+}
+
+// /restuarant/filter/location
+const filterRestaurantByLocation = (request, response) => {
+  const { location } = request.query
+
+  pool.query('SELECT * FROM Restaurants WHERE restaurant_location = $1', [location], (error, results) => {
+    if (error) {
+      response.status(400).send(`Unable to get restaurants in ${location} location`)
+      throw error
+
+    }
+    response.status(200).json(results.rows)
+  })
+}
+
+// /restaurant
+
+/** POINTS TO OFFEST COST */
+
 
 
 
@@ -264,5 +361,12 @@ module.exports = {
   rateDeliveriesByDid,
   getFoodItemsBySpecifiedOrderId,
   reviewsFoodItems,
-  insertCCInfo
+  insertCCInfo,
+  viewReviews,
+  getRecentLocations,
+  getReviews,
+  deleteReviewByFid,
+  updateReviewByFid,
+  filterRestaurantByCategory,
+  filterRestaurantByLocation
 }
