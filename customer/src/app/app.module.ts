@@ -18,6 +18,8 @@ import { SignupComponent } from './signup/signup.component';
 import { CheckoutComponent } from './checkout/checkout.component';
 import { ProfileComponent } from './profile/profile.component';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { AlertService } from './services/alert.service';
+import { AlertComponent } from './alert/alert.component';
 
 
 @NgModule({
@@ -35,15 +37,18 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
     LoginComponent,
     SignupComponent,
     CheckoutComponent,
-    ProfileComponent
+    ProfileComponent,
+    AlertComponent
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
     AppRoutingModule,
-    ReactiveFormsModule,
+    ReactiveFormsModule
   ],
-  providers: [],
+  providers: [
+    AlertService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
