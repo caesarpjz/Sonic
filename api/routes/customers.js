@@ -52,6 +52,20 @@ const getRestaurants = (request, response) => {
   })
 }
 
+// /customer/:username/restuarant/:rest_id
+const getRestaurantsById = (request, response) => {
+  const { rest_id } = request.params
+
+  pool.query('SELECT * FROM Restaurants WHERE rest_id = $1', [rest_id], (error, results) => {
+    if (error) {
+      response.status(400).send(`Unable to get restaurant with id ${rest_id}`)
+      throw error
+    }
+    response.status(200).json(results.rows)
+  })
+
+}
+
 // /customer/:username/restaurant_categories
 const getRestaurantCategories = (request, response) => {
   pool.query('SELECT * FROM restaurant_categories', (error, results) => {
@@ -226,6 +240,7 @@ const insertCCInfo = (request, response) => {
 }
 
 
+
 // const usePoints = (request, response) => {
 //   const 
 // }
@@ -237,6 +252,7 @@ module.exports = {
   orderFood,
   login,
   getRestaurants,
+  getRestaurantsById,
   getRestaurantCategories,
   getMenusByRestId,
   getFoodItemsByMenuId,
