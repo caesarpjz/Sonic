@@ -1,16 +1,19 @@
+import { AuthService } from './../services/auth.service';
 import { Component, OnInit } from '@angular/core';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-signup',
   templateUrl: './signup.component.html',
-  styleUrls: ['./signup.component.css']
+  styleUrls: ['./signup.component.css'],
+  providers: [AuthService]
 })
 export class SignupComponent implements OnInit {
   signupForm: FormGroup;
 
   constructor(
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private authService: AuthService
   ) {
     this.initSignupForm();
   }
@@ -21,11 +24,10 @@ export class SignupComponent implements OnInit {
   initSignupForm() {
     this.signupForm = this.formBuilder.group({
       name: ['', Validators.required],
-      email: [
+      username: [
         '',
         Validators.compose([
-          Validators.required,
-          Validators.pattern(/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/)
+          Validators.required
         ])
       ],
       password: ['', Validators.required],
@@ -42,6 +44,7 @@ export class SignupComponent implements OnInit {
 
   signUp() {
     console.log(this.signupForm);
+    this.authService.createCustomer(this.signupForm);
   }
 
 }

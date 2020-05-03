@@ -16,6 +16,8 @@ import { CartItemComponent } from './shared/cart-item.component';
 import { LoginComponent } from './login/login.component';
 import { SignupComponent } from './signup/signup.component';
 import { CheckoutComponent } from './checkout/checkout.component';
+import { ProfileComponent } from './profile/profile.component';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 
 
 @NgModule({
@@ -32,12 +34,14 @@ import { CheckoutComponent } from './checkout/checkout.component';
     CartItemComponent,
     LoginComponent,
     SignupComponent,
-    CheckoutComponent
+    CheckoutComponent,
+    ProfileComponent
   ],
   imports: [
     BrowserModule,
+    HttpClientModule,
     AppRoutingModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
