@@ -10,11 +10,18 @@ const managerLogin = (request, response) => {
 
   pool.query('SELECT authUser($1, $2)', [username, password], (error, results) => {
     if (error) {
-      response.status(400).send('Cannot Login. Please try again.')
+      response.status(400).send(`Cannot Login for user ${username}. Please try again.`)
       throw error
     }
-    response.status(200).send('Successfully logged in!')
+    var isUser = results.rows[0].authuser
+  
+    if (isUser) {
+      response.status(200).send(`Successfully logged in ${username}!`)
+    } else {
+      response.status(400).send(`Cannot Login for user ${username}. No such username.`)
+    }
   })
+
 }
 
 // /managers/:mid/reports
