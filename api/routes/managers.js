@@ -1,6 +1,7 @@
 const { pool } = require('../config')
 // const bcrypt = require('bcrypt')
 
+
 // /managers/:mid/login
 const managerLogin = (request, response) => {
   const username = request.body.username
@@ -19,10 +20,10 @@ const managerLogin = (request, response) => {
 // /managers/:mid/reports
 const getReportsByMid = (request, response) => {
   const { mid } = request.params
-  
+  const username = pool.query('SELECT username from FDS_Managers WHERE mid = $1', [mid])
   pool.query('SELECT * FROM Reports WHERE mid = $1', [mid], (error, results) => {
     if (error) {
-      response.status(400).send('Unable to get reports')
+      response.status(400).send(`Unable to get reports for ${username} `)
       throw error
     }
     response.status(200).json(results.rows)
@@ -33,10 +34,11 @@ const getReportsByMid = (request, response) => {
 const createPromotionsByMid = (request, response) => {
   const { mid } = request.params
   const { start_time, end_time, discount_desc, in_effect } = request.body
+  const username = pool.query('SELECT username from FDS_Managers WHERE mid = $1', [mid])
 
   pool.query('SELECT addPromotionForManagers($1, $2, $3, $4, $5)', [start_time, end_time, discount_desc, mid, in_effect], (error, results) => {
     if (error) {
-      response.status(400).send('Unable to create Promotion. Please try again.')
+      response.status(400).send(`Unable to create Promotion with start_time: ${start_time}, end_time: ${end_time} and discount_description: ${discount_desc} for ${username}. Please try again.`)
       throw error
     }
     response.status(200).send('Promotion created successfullly')
@@ -59,15 +61,15 @@ const getPromotionsByMid = (request, response) => {
 
 // /managers/:mid/promotions/:pid/ineffect
 const updateInEffectPromotionsByMid = (request, response) => {
-  const { mid } = request.params
+  const { mid, pid } = request.params
   const { in_effect } = request.body
-
-  pool.query('UPDATE Managers_Has_Promotions SET in_effect = $1 WHERE mid = $2', [in_effect, mid], (error, results) => {
+  const discount_desc = pool.query('SELECT discount_description FROM Promotions WHERE pid = $1', [pid])
+  pool.query('UPDATE Managers_Has_Promotions SET in_effect = $1 WHERE mid = $2 AND pid = $3', [in_effect, mid, pid], (error, results) => {
     if (error) {
-      response.status(400).send('Unable to update promotion')
+      response.status(400).send(`Unable to update promotion with discount description ${discount_desc}`)
       throw error 
     }
-    response.status(201).send(`Promotion is in effect!`)
+    response.status(201).send(`Promotion ${pid} with discount description ${discount_desc} is in effect!`)
   })
 }
 
@@ -79,7 +81,7 @@ const updatePromotionByPid = (request, response) => {
   if (start_time !== undefined) {
     pool.query('UPDATE Promotions SET start_time = $1 WHERE pid = $2', [start_time, pid], (error, results) => {
       if (error) {
-        response.status(400).send('Unable to update promotion')
+        response.status(400).send('Unable to update promotion start time')
         throw error
 
       }
@@ -90,7 +92,7 @@ const updatePromotionByPid = (request, response) => {
   if (end_time !== undefined) {
     pool.query('UPDATE Promotions SET end_time = $1 WHERE pid = $2', [end_time, pid], (error, results) => {
       if (error) {
-        response.status(400).send('Unable to update promotion')
+        response.status(400).send('Unable to update promotion end time')
         throw error
   
       }
@@ -101,7 +103,7 @@ const updatePromotionByPid = (request, response) => {
   if (discount_desc !== undefined) {
     pool.query('UPDATE Promotions SET discount_description = $1 WHERE pid = $2', [discount_desc, pid], (error, results) => {
       if (error) {
-        response.status(400).send('Unable to update promotion')
+        response.status(400).send('Unable to update promotion discount description')
         throw error
       }
       // response.status(201).send(`Promotion discount description updated to ${discount_desc}`)
@@ -115,9 +117,10 @@ const updatePromotionByPid = (request, response) => {
 const deletePromotionByPid = (request, response) => {
   const { pid } = request.params
 
+  const discount_desc = pool.query('SELECT discount_description FROM Promotions WHERE pid = $1', [pid])
   pool.query('DELETE FROM Restaurants_Has_Promotions WHERE pid = $1', [pid], (error, results) => {
     if (error) {
-      response.status(400).send('Unable to delete promotion')
+      response.status(400).send(`Unable to delete promotion ${pid} with discount_description ${discount_desc}`)
       throw error
 
     }
@@ -131,7 +134,7 @@ const createRestaurant = (request, response) => {
 
   pool.query('SELECT addRestaurant($1, $2, $3, $4, $5)', [name, info, min_spending, category, restaurant_location], (error, results) => {
     if (error) {
-      response.status(400).send('Unable to create restaurant')
+      response.status(400).send(`Unable to create restaurant ${name}`)
       throw error
     }
     response.status(200).send(`Restaurant ${name} created`)
@@ -142,6 +145,7 @@ const createRestaurant = (request, response) => {
 const getRestaurants = (request, response) => {
   pool.query('SELECT * FROM restaurants', (error, results) => {
     if (error) {
+      response.status(400).send('Unable to get restaurants')
       throw error
     }
     response.status(200).json(results.rows)
@@ -203,7 +207,7 @@ const updateRestaurantInfoByRestId = (request, response) => {
     })
   }
 
-  response.status(200).send('Restaurant Updated')
+  response.status(200).send(`Restaurant ${rest_id} Updated`)
 }
 
 // /managers/:mid/restaurant/:rest_id/delete
@@ -227,11 +231,11 @@ const createRestaurantStaff = (request, response) => {
 
   pool.query('SELECT addRestaurantStaff($1, $2, $3, $4)', [username, password, name, rest_id], (error, results) => {
     if (error) {
-      response.status(400).send('Unable to add staff')
+      response.status(400).send(`Unable to add staff ${username}`)
       throw error
 
     }
-    response.status(201).send(`Restaurant Staff ${name} added to Restaurant ${rest_id}`)
+    response.status(201).send(`Restaurant Staff ${username} added to Restaurant ${rest_id}`)
   })
 }
 

@@ -14,7 +14,7 @@ const orderFood = (request, response) => {
   for (i = 0; i < array_length; i++) {
     pool.query('SELECT addFoodToOrder($1, $2, $3)', [order_id, food_array[i].fid, food_array[i].quantity], (error, results) => {
       if (error) {
-        response.status(400).send('Unable to order')
+        response.status(400).send('Unable to order. Please try again')
         throw error
       }
 
@@ -33,10 +33,10 @@ const login = (request, response) => {
 
   pool.query('SELECT authUser($1, $2)', [username, password], (error, results) => {
     if (error) {
-      response.status(400).send('Cannot Login. Please try again.')
+      response.status(400).send(`Cannot Login for user ${username}. Please try again.`)
       throw error
     }
-    response.status(200).send('Successfully logged in!')
+    response.status(200).send(`Successfully logged in ${username}!`)
   })
 }
 
@@ -44,6 +44,7 @@ const login = (request, response) => {
 const getRestaurants = (request, response) => {
   pool.query('SELECT * FROM restaurants', (error, results) => {
     if (error) {
+      response.status(400).send('Unable to get restaurants')
       throw error
     }
     response.status(200).json(results.rows)
@@ -54,6 +55,7 @@ const getRestaurants = (request, response) => {
 const getRestaurantCategories = (request, response) => {
   pool.query('SELECT * FROM restaurant_categories', (error, results) => {
     if (error) {
+      response.status(400).send('Unable to get restaurant categories')
       throw error
     }
 
@@ -67,6 +69,7 @@ const getMenusByRestId = (request, response) => {
 
   pool.query('SELECT * FROM Menus where rest_id = $1', [rest_id], (error, results) => {
     if (error) {
+      response.status(400).send(`Unable to get restaurant menu`)
       throw error
     }
     response.status(200).json(results.rows)
@@ -79,6 +82,7 @@ const getFoodItemsByMenuId = (request, response) => {
 
   pool.query('SELECT * FROM food_items where menu_id = $1', [menu_id], (error, results) => {
     if (error) {
+      response.status(400).send('Unable to get food items')
       throw error
     }
     response.status(200).json(results.rows)
@@ -92,7 +96,7 @@ const getFoodAvailabilityByFid = (request, response) => {
 
   pool.query('SELECT f.name, f.availability FROM Food_Items f WHERE f.menu_id = $1 AND f.fid = $2', [menu_id, fid], (error, results) => {
     if (error) {
-      response.status(400).send('Unable to get food availability')
+      response.status(400).send(`Unable to get food availability with fid ${fid}`)
       throw error
     }
     response.status(200).json(results.rows)
@@ -105,7 +109,7 @@ const getFoodAvailabilityByName = (request, response) => {
 
   pool.query('SELECT f.name, f.availability FROM Food_Items f WHERE f.menu_id = $1 AND f.name = $2', [menu_id, name], (error, results) => {
     if (error) {
-      response.status(400).send('Unable to get food availability')
+      response.status(400).send(`Unable to get food availability with name ${name}`)
       throw error
     }
     response.status(200).json(results.rows)
@@ -119,6 +123,7 @@ const viewProfile = (request, response) => {
   
   pool.query('SELECT getCustomerProfile($1)', [cid], (error, results) => {
     if (error) {
+      response.status(400).send(`Unable to view profile`)
       throw error
     }
 
@@ -132,6 +137,7 @@ const getPointsById = (request, response) => {
 
   pool.query('SELECT * FROM Customers WHERE cid = $1', [cid], (error, results) => {
     if (error) {
+      response.status(400).send(`Unable to get points`)
       throw error
     }
 
@@ -145,6 +151,7 @@ const getOrdersByCid = (request, response) => {
 
   pool.query('SELECT * FROM Orders WHERE cid = $1', [cid], (error, results) => {
     if (error) {
+      response.status(400).send(`Unable to get orders`)
       throw error
     }
     response.status(200).json(results.rows)
@@ -158,6 +165,7 @@ const rateDeliveriesByDid = (request, response) => {
 
   pool.query('INSERT INTO customer_rates_delivery (cid, did, rating) VALUES ($1, $2, $3)', [cid, did, rating], (error, results) => {
     if (error) {
+      response.status(400).send(`Unable to set rating: ${rating} for delivery: ${did}`)
       throw error
     }
     response.status(201).send(`Delivery Rating added`)
@@ -182,12 +190,13 @@ const getFoodItemsBySpecifiedOrderId = (request, response) => {
 const reviewsFoodItems = (request, response) => {
   const { cid, fid } = request.params
   const { review } = request.body
-
+  const food_name = pool.query('SELECT name FROM Food_Items WHERE fid = $1', [fid])
   pool.query('INSERT INTO reviews (cid, fid, review_desc) VALUES ($1, $2, $3)', [cid, fid, review], (error, results) => {
     if (error) {
+      response.status(400).send(`Unable to add review ${review} for food item: ${food_name}`)
       throw error
     }
-    response.status(201).send('Review sent')
+    response.status(201).send(`Review sent for food item: ${food_name}`)
   })
 }
 
@@ -200,6 +209,7 @@ const insertCCInfo = (request, response) => {
 
   pool.query('SELECT updateCC($1, $2, $3, $4)', [cid, cc_name, expiryDate, num], (error, results) => {
     if (error) {
+      response.status(400).send(`Unable to add credit card info`)
       throw error
     }
     response.status(201).send('Credit Card Updated')
