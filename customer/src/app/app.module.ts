@@ -16,6 +16,10 @@ import { CartItemComponent } from './shared/cart-item.component';
 import { LoginComponent } from './login/login.component';
 import { SignupComponent } from './signup/signup.component';
 import { CheckoutComponent } from './checkout/checkout.component';
+import { ProfileComponent } from './profile/profile.component';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { AlertService } from './services/alert.service';
+import { AlertComponent } from './alert/alert.component';
 
 
 @NgModule({
@@ -32,14 +36,19 @@ import { CheckoutComponent } from './checkout/checkout.component';
     CartItemComponent,
     LoginComponent,
     SignupComponent,
-    CheckoutComponent
+    CheckoutComponent,
+    ProfileComponent,
+    AlertComponent
   ],
   imports: [
     BrowserModule,
+    HttpClientModule,
     AppRoutingModule,
     ReactiveFormsModule
   ],
-  providers: [],
+  providers: [
+    AlertService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

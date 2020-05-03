@@ -10,7 +10,7 @@ import { Component, OnInit, Input } from '@angular/core';
 })
 export class MenuFoodCardComponent implements OnInit {
   @Input() foodName: string;
-  @Input() food: string;
+  @Input() food;
   @Input() addToCart: (food) => {};
 
   constructor() { }
