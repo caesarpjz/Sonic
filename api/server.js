@@ -44,17 +44,17 @@ app.get('/', (req, res) => {
 
     // Create Account
     app
-    .route('/customer/signup/:name')
+    .route('/customer/signup/')
     .post(usersDb.createCustomerAccount)
 
     // Order Food
     app
-    .route('/customer/:cid/restaurant/:rest_id/order')
+    .route('/customer/:username/restaurant/:rest_id/order')
     .post(customersDb.orderFood)
 
     // Login
     app
-    .route('/customer/:cid/login')
+    .route('/customer/login')
     .post(customersDb.login)
 
     // List Restaurants
@@ -79,47 +79,47 @@ app.get('/', (req, res) => {
 
     // Get Food Avail By Fid
     app
-    .route('/customer/:cid/restaurant/:rest_id/menus/:menu_id/:fid')
+    .route('/customer/:username/restaurant/:rest_id/menus/:menu_id/:fid')
     .get(customersDb.getFoodAvailabilityByFid)
 
     // Get Food Avail By Name
     app
-    .route('/customer/:cid/restaurant/:rest_id/menus/:menu_id/:name')
+    .route('/customer/:username/restaurant/:rest_id/menus/:menu_id/:name')
     .get(customersDb.getFoodAvailabilityByName)
 
     // View Profile
     app
-    .route('/customer/:cid/profile')
+    .route('/customer/:username/profile')
     .get(customersDb.viewProfile)
 
     // Retrives Points
     app
-    .route('/customer/:cid/points')
+    .route('/customer/:username/points')
     .get(customersDb.getPointsById)
 
     // Get Orders By Cid
     app
-    .route('/customer/:cid/orders')
+    .route('/customer/:username/orders')
     .get(customersDb.getOrdersByCid)
 
     // Rates Deliveries by Did
     app
-    .route('/customer/:cid/orders/:did/review')
+    .route('/customer/:username/orders/:did/review')
     .post(customersDb.rateDeliveriesByDid)
 
     // Get Food Items by Order Id
     app
-    .route('/customer/:cid/orders/food_items/:oid')
+    .route('/customer/:username/orders/food_items/:oid')
     .get(customersDb.getFoodItemsBySpecifiedOrderId)
 
     // Reviews Food Items
     app
-    .route('/customer/:cid/orders/food_item/:oid/:fid/review')
+    .route('/customer/:username/orders/food_item/:oid/:fid/review')
     .post(customersDb.reviewsFoodItems)
 
     // Insert CC Info
     app
-    .route('/customer/:cid/profile/insertCC')
+    .route('/customer/:username/profile/insertCC')
     .post(customersDb.insertCCInfo)
 
     // Points offset Cost
