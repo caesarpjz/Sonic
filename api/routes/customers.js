@@ -1,14 +1,15 @@
 const { pool } = require('../config')
 // const bcrypt = require('bcrypt')
 
-// /customer/:cid/restaurant/:rest_id/order
+// /customer/:username/restaurant/:rest_id/order
 const orderFood = (request, response) => {
-  const { cid, rest_id } = request.params
+  const { username, rest_id } = request.params
   // this should be an array of array. there should be food name, fid, price, quantity ORDERED (NOT QUANTITY LEFT)
   var food_array = request.body.orderList
   const array_length = food_array.length
   const { payment_method, restaurant_location, location } = request.body
   var fee = 3.00
+  const cid = pool.query('SELECT cid FROM Customers where username = $1', [username])
   const order_id = pool.query('SELECT addOrder($1, $2, $3, $4, $5)', [fee, cid, payment_method, restaurant_location, location])
   var i = 0
   for (i = 0; i < array_length; i++) {
@@ -25,7 +26,7 @@ const orderFood = (request, response) => {
   
 }
 
-// /customer/:cid/login
+// /customer/login
 const login = (request, response) => {
   const username = request.body.username
   // const hashedPassword = bcrypt.hash(request.body.password, 10)
@@ -40,7 +41,7 @@ const login = (request, response) => {
   })
 }
 
-// /customer/:cid/restaurant
+// /customer/:username/restaurant
 const getRestaurants = (request, response) => {
   pool.query('SELECT * FROM restaurants', (error, results) => {
     if (error) {
@@ -51,7 +52,7 @@ const getRestaurants = (request, response) => {
   })
 }
 
-// /customer/:cid/restaurant_categories
+// /customer/:username/restaurant_categories
 const getRestaurantCategories = (request, response) => {
   pool.query('SELECT * FROM restaurant_categories', (error, results) => {
     if (error) {
@@ -63,7 +64,7 @@ const getRestaurantCategories = (request, response) => {
   })
 }
 
-// /customer/:cid/restaurant/:rest_id/menus
+// /customer/:username/restaurant/:rest_id/menus
 const getMenusByRestId = (request, response) => {
   const {rest_id} = request.params
 
@@ -76,7 +77,7 @@ const getMenusByRestId = (request, response) => {
   })
 }
 
-// /customer/:cid/restaurant/:rest_id/menus/:menu_id
+// /customer/:username/restaurant/:rest_id/menus/:menu_id
 const getFoodItemsByMenuId = (request, response) => {
   const {menu_id} = request.params
 
@@ -90,7 +91,7 @@ const getFoodItemsByMenuId = (request, response) => {
 }
 
 
-// /customer/:cid/restaurant/:rest_id/menus/:menu_id/:fid
+// /customer/:username/restaurant/:rest_id/menus/:menu_id/:fid
 const getFoodAvailabilityByFid = (request, response) => {
   const { menu_id, fid } = request.params
 
@@ -103,7 +104,7 @@ const getFoodAvailabilityByFid = (request, response) => {
   })
 }
 
-// /customer/:cid/restaurant/:rest_id/menus/:menu_id/:name
+// /customer/:username/restaurant/:rest_id/menus/:menu_id/:name
 const getFoodAvailabilityByName = (request, response) => {
   const { menu_id, name } = request.params
 
@@ -117,10 +118,11 @@ const getFoodAvailabilityByName = (request, response) => {
 }
 
 
-// /customer/:cid/profile
+// /customer/:username/profile
 const viewProfile = (request, response) => {
-  const { cid } = request.params
+  const { username } = request.params
   
+  const cid = pool.query('SELECT cid FROM Customers where username = $1', [username])
   pool.query('SELECT getCustomerProfile($1)', [cid], (error, results) => {
     if (error) {
       response.status(400).send(`Unable to view profile`)
@@ -131,11 +133,11 @@ const viewProfile = (request, response) => {
   })
 }
 
-// /customer/:cid/points
+// /customer/:username/points
 const getPointsById = (request, response) => {
-  const { cid } = request.params
-
-  pool.query('SELECT * FROM Customers WHERE cid = $1', [cid], (error, results) => {
+  const { username } = request.params
+  
+  pool.query('SELECT * FROM Customers WHERE username = $1', [username], (error, results) => {
     if (error) {
       response.status(400).send(`Unable to get points`)
       throw error
@@ -145,10 +147,11 @@ const getPointsById = (request, response) => {
   })
 }
 
-// /customer/:cid/orders
+// /customer/:username/orders
 const getOrdersByCid = (request, response) => {
-  const { cid } = request.params
-
+  const { username } = request.params
+  
+  const cid = pool.query('SELECT cid FROM Customers where username = $1', [username])
   pool.query('SELECT * FROM Orders WHERE cid = $1', [cid], (error, results) => {
     if (error) {
       response.status(400).send(`Unable to get orders`)
@@ -158,11 +161,12 @@ const getOrdersByCid = (request, response) => {
   })
 }
 
-// /customer/:cid/orders/:did/review
+// /customer/:username/orders/:did/review
 const rateDeliveriesByDid = (request, response) => {
-  const { cid, did } = request.params
+  const { username, did } = request.params
   const { rating } = request.body
-
+  
+  const cid = pool.query('SELECT cid FROM Customers where username = $1', [username])
   pool.query('INSERT INTO customer_rates_delivery (cid, did, rating) VALUES ($1, $2, $3)', [cid, did, rating], (error, results) => {
     if (error) {
       response.status(400).send(`Unable to set rating: ${rating} for delivery: ${did}`)
@@ -173,7 +177,7 @@ const rateDeliveriesByDid = (request, response) => {
   })
 }
 
-// /customer/:cid/orders/food_items/:oid
+// /customer/:username/orders/food_items/:oid
 const getFoodItemsBySpecifiedOrderId = (request, response) => {
   const { oid } = request.params
 
@@ -186,11 +190,14 @@ const getFoodItemsBySpecifiedOrderId = (request, response) => {
   })
 }
 
-// /customer/:cid/orders/food_item/:oid/:fid/review
+// /customer/:username/orders/food_item/:oid/:fid/review
 const reviewsFoodItems = (request, response) => {
-  const { cid, fid } = request.params
+  const { username, fid } = request.params
   const { review } = request.body
+
+  const cid = pool.query('SELECT cid FROM Customers WHERE username = $1', [username])
   const food_name = pool.query('SELECT name FROM Food_Items WHERE fid = $1', [fid])
+
   pool.query('INSERT INTO reviews (cid, fid, review_desc) VALUES ($1, $2, $3)', [cid, fid, review], (error, results) => {
     if (error) {
       response.status(400).send(`Unable to add review ${review} for food item: ${food_name}`)
@@ -200,12 +207,14 @@ const reviewsFoodItems = (request, response) => {
   })
 }
 
-// /customer/:cid/profile/insertCC
+// /customer/:username/profile/insertCC
 const insertCCInfo = (request, response) => {
-  const { cid } = request.params
+  const { username } = request.params
   const cc_name = request.body.cc_name
   const expiryDate = request.body.expiryDate
   const num = request.body.num
+
+  const cid = pool.query('SELECT cid FROM Customers WHERE username = $1', [username])
 
   pool.query('SELECT updateCC($1, $2, $3, $4)', [cid, cc_name, expiryDate, num], (error, results) => {
     if (error) {

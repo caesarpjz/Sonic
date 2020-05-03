@@ -27,7 +27,8 @@ CREATE TABLE FDS_Managers (
     username VARCHAR(50) NOT NULL,
     name VARCHAR(50),
     PRIMARY KEY (mid),
-    FOREIGN KEY (id) REFERENCES Users (id)
+    FOREIGN KEY (id) REFERENCES Users (id),
+    unique (username)
 );
 
 CREATE TABLE Promotions (
@@ -48,7 +49,8 @@ CREATE TABLE Customers (
     username VARCHAR(50) NOT NULL,
     name VARCHAR(50),
     PRIMARY KEY (cid),
-    FOREIGN KEY (id) REFERENCES Users (id)
+    FOREIGN KEY (id) REFERENCES Users (id),
+    unique (username)
 );
 
 CREATE TABLE Riders (
@@ -59,7 +61,8 @@ CREATE TABLE Riders (
     username VARCHAR(50) NOT NULL,
     name VARCHAR(50),
     PRIMARY KEY (rid),
-    FOREIGN KEY (id) REFERENCES Users (id)
+    FOREIGN KEY (id) REFERENCES Users (id),
+    unique (username)
 );
 
 CREATE TABLE Deliveries (
@@ -102,7 +105,8 @@ CREATE TABLE Restaurant_Staff (
     name VARCHAR(50),
     PRIMARY KEY (rsid),
     FOREIGN KEY (rest_id) REFERENCES Restaurants (rest_id),
-    FOREIGN KEY (id) REFERENCES Users (id) ON DELETE CASCADE
+    FOREIGN KEY (id) REFERENCES Users (id) ON DELETE CASCADE,
+    unique (username)
 );
 
 CREATE TABLE Food_Items (
