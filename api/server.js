@@ -59,22 +59,22 @@ app.get('/', (req, res) => {
 
     // List Restaurants
     app
-    .route('/customer/:cid/restaurant')
+    .route('/restaurant')
     .get(customersDb.getRestaurants)
     
     // List Restaurant Categories
     app
-    .route('/customer/:cid/restaurant_categories')
+    .route('restaurant_categories')
     .get(customersDb.getRestaurantCategories)
 
     // View Menus By Rest Id
     app
-    .route('/customer/:cid/restaurant/:rest_id/menus')
+    .route('/restaurant/:rest_id/menus')
     .get(customersDb.getMenusByRestId)
 
     // View Food Items
     app
-    .route('/customer/:cid/restaurant/:rest_id/menus/:menu_id')
+    .route('/restaurant/:rest_id/menus/:menu_id')
     .get(customersDb.getFoodItemsByMenuId)
 
     // Get Food Avail By Fid
@@ -131,7 +131,7 @@ app.get('/', (req, res) => {
 
     // Manager Login
     app
-    .route('/managers/:mid/login')
+    .route('/managers/login')
     .post(managersDb.managerLogin)
 
     // Get Reports
@@ -215,7 +215,7 @@ app.get('/', (req, res) => {
     .post(managersDb.updateShiftApproval)
 
     // Approve Riders Signup
-    
+
 
 
 /***** Restaurant Staffs *****/
