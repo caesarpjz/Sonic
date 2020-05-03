@@ -17,7 +17,7 @@ begin
     select addUser(username, password, name, 'FDS_Manager') into userId;
 
     INSERT INTO FDS_Managers
-    VALUES (DEFAULT, userId);
+    VALUES (DEFAULT, userId, name);
 end
 $$ LANGUAGE PLPGSQL;
 
@@ -29,7 +29,7 @@ begin
     select addUser(username, password, name, 'Customer') into userId;
 
     INSERT INTO Customers
-    VALUES (DEFAULT, userId, DEFAULT);
+    VALUES (DEFAULT, userId, DEFAULT, name);
 end
 $$ LANGUAGE PLPGSQL;
 
@@ -41,7 +41,7 @@ begin
     select addUser(username, password, name, 'Rider') into userId;
 
     INSERT INTO Riders
-    VALUES (DEFAULT, userId, is_full_time, status);
+    VALUES (DEFAULT, userId, is_full_time, status, name);
 end
 $$ LANGUAGE PLPGSQL;
 
@@ -75,7 +75,7 @@ begin
     select addUser(username, password, name, 'Restaurant_Staff') into userId;
 
     INSERT INTO Restaurant_Staff
-    VALUES (DEFAULT, rest_id, userId);
+    VALUES (DEFAULT, rest_id, userId, name);
 end
 $$ LANGUAGE PLPGSQL;
 
