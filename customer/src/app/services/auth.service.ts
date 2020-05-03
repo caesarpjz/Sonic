@@ -26,4 +26,14 @@ export class AuthService {
     return this.httpClient.post<any>('/api/customers', customer,
            { responseType: 'text' as 'json' });
   }
+
+  login(form): Observable<any> {
+    let user = {
+      'username': form.value.username,
+      'password': form.value.password
+    };
+
+    return this.httpClient.post<any>('/api/customer/login', user,
+      { responseType: 'text' as 'json' });
+  }
 }
