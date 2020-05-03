@@ -6,10 +6,7 @@ import { Component, OnInit, Input } from '@angular/core';
   styleUrls: ['./restaurant-card.component.css']
 })
 export class RestaurantCardComponent implements OnInit {
-  @Input() name;
-  @Input() info;
-  @Input() category;
-  @Input() location;
+  @Input() restaurant;
 
   constructor() { }
 

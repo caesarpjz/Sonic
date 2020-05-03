@@ -5,10 +5,7 @@
 <div class="container mt-5 mb-5 pt-5">
   <div class="row">
     <div *ngFor="let restaurant of restaurants">
-      <app-restaurant-card
-        name={{restaurant.name}}
-        info={{restaurant.info}}
-      >
+      <app-restaurant-card [restaurant]=restaurant>
       </app-restaurant-card>
     </div>
   </div>

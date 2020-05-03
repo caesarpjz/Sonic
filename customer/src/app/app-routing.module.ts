@@ -14,7 +14,7 @@ import { CommonModule } from '@angular/common';
 const routes: Routes = [
   { path: '', component: HomeComponent, pathMatch: 'full' },
   { path: 'restaurants', component: RestaurantsComponent },
-  { path: 'restaurants/restaurant', component: RestaurantComponent },
+  { path: 'restaurants/:restaurantId', component: RestaurantComponent },
   { path: 'cart', component: CartComponent },
   { path: 'login', component: LoginComponent },
   { path: 'signup', component: SignupComponent },
