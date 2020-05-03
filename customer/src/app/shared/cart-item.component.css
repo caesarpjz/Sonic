@@ -1,0 +1,35 @@
+.cart__item {
+  /* display: flex; */
+  /* width: 100%; */
+  /* justify-content: space-between */
+}
+
+.quantity__controls {
+  display: flex;
+}
+
+.quantity__button {
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  border: 1px solid grey;
+  color: #333;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.quantity__number {
+  padding: 0 1em;
+}
+
+.remove__button {
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.remove__button button {
+  background-color: none;
+  border: 0;
+}

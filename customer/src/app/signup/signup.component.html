@@ -1,0 +1,38 @@
+<app-header></app-header>
+
+<div class="container mt-5 mb-5 pt-5 justify-content-center w-50">
+  <form class="form-signin" [formGroup]="signupForm" (ngSubmit)="signUp()">
+    <img class="mb-4" src="/docs/4.4/assets/brand/bootstrap-solid.svg" alt="" width="72" height="72">
+    <h1 class="h3 mb-3 font-weight-normal text-center">Please sign up</h1>
+
+    <div class="form-group">
+      <label for="name text-left">Name</label>
+      <input type="text" class="form-control" id="name" aria-describedby="name"
+        placeholder="Enter name" formControlName="name">
+    </div>
+
+    <div class="form-group">
+      <label for="email text-left">Email address</label>
+      <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+        placeholder="Enter email" formControlName="email">
+    </div>
+
+    <div class="form-group">
+      <label for="password text-left">Password</label>
+      <input type="password" class="form-control" id="password" placeholder="Password" formControlName="password">
+    </div>
+
+    <div class="form-group">
+      <label for="confirmPassword text-left">Confirm Password</label>
+      <input type="password" class="form-control" id="confirmPassword" placeholder="Password" formControlName="confirmPassword">
+      <span *ngIf="signupForm.hasError('notSame')">Passwords do not match</span>
+    </div>
+
+    <div class="text-center justify-content-center">
+      <button class="mt-3 btn btn-lg btn-primary" type="submit">Sign up</button>
+      <p class="card-text"><small class="text-muted">Or login</small></p>
+    </div>
+  </form>
+</div>
+
+<app-footer></app-footer>

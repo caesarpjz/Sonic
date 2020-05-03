@@ -1,0 +1,30 @@
+
+<div class="card mb-3">
+  <div class="row no-gutters">
+    <div class="col-md-4">
+      <img src="..." class="card-img" alt="...">
+    </div>
+    <div class="col-md-7">
+      <div class="card-body">
+        <h5 class="card-title">{{item.name}}</h5>
+        <p class="card-text">${{item.price}}</p>
+
+        <div class="quantity__controls">
+          <button class="quantity__button quantity__button--decrease" (click)="decreaseQuantity(item)">-</button>
+          <p class="card-text quantity__number"><small class="text-muted">{{item.quantity}}</small></p>
+          <button class="quantity__button quantity__button--increase" (click)="increaseQuantity(item)">+</button>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="col-md-1 h-100 remove__button">
+      <button (click)="remove(item)">
+        <i class="fas fa-trash-alt"></i>
+      </button>
+    </div>
+  </div>
+</div>
+
+
+
