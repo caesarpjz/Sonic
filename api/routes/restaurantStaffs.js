@@ -360,13 +360,7 @@ const retrieveReviews = (request, response) => {
   })
 }
 
-// SPACE FOR GENERATING SUMMARY INFOOOOOOOOOOOOOOOOOOOOOO
-/*
-
-
-
-
-*/ 
+/** SPACE FOR DIFFERENT GENERATING SUMMARY INFOOOOOOOOOOOOOOOOOOOOOO  BUT HOWWWWWWWWWW*/
 
 
 module.exports = {

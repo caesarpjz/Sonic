@@ -308,8 +308,8 @@ const updateShiftApproval = (request, response) => {
   })
 }
 
-// FOR APPROVING RIDERS SIGNUP HAVENT FINISH........
-// /managers/:mid/
+/** FOR APPROVING RIDERS SIGNUP HAVENT FINISH */
+/** HOW TO GENERATE DIFFERENT REPORTS????????????? */
 
 module.exports = {
   managerLogin,
