@@ -45,13 +45,13 @@ begin
 end
 $$ LANGUAGE PLPGSQL;
 
-CREATE OR REPLACE FUNCTION authUser(username VARCHAR, password VARCHAR)
+CREATE OR REPLACE FUNCTION authUser(usernameCheck VARCHAR, passwordCheck VARCHAR)
 RETURNS BOOLEAN as $$
     SELECT CASE
         WHEN EXISTS(
             SELECT * FROM Users
-            where username = $1
-            and password = $2
+            where username = usernameCheck
+            and password = passwordCheck
         ) THEN TRUE
         ELSE FALSE
     END
