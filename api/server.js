@@ -161,7 +161,7 @@ app.get('/', (req, res) => {
     app
     .route('/restaurant/filter/location')
     .get(customersDb.filterRestaurantByLocation)
-    
+
     // Points offset Cost
 
 /***** Riders *****/
@@ -176,82 +176,82 @@ app.get('/', (req, res) => {
 
     // Get Reports
     app
-    .route('/managers/:mid/reports')
+    .route('/managers/:username/reports')
     .get(managersDb.getReportsByMid)
 
     // Create Promotions
     app
-    .route('/managers/:mid/createpromotions')
+    .route('/managers/:username/createpromotions')
     .post(managersDb.createPromotionsByMid)
 
     // Get Promotions By Mid
     app
-    .route('/managers/:mid/promotions')
+    .route('/managers/:username/promotions')
     .get(managersDb.getPromotionsByMid)
 
     // Update in effect Promotions By Mid
     app
-    .route('/managers/:mid/promotions/:pid/ineffect')
+    .route('/managers/:username/promotions/:pid/ineffect')
     .post(managersDb.updateInEffectPromotionsByMid)
 
     // Update Promotion by Pid
     app
-    .route('/managers/:mid/promotions/:pid')
+    .route('/managers/:username/promotions/:pid')
     .post(managersDb.updatePromotionByPid)
 
     // Delete Promotions By Pid
     app
-    .route('/managers/:mid/promotions/delete/:pid')
+    .route('/managers/:username/promotions/delete/:pid')
     .delete(managersDb.deletePromotionByPid)
 
     // Create Restaurant
     app
-    .route('/managers/:mid/createRestaurant')
+    .route('/managers/:username/createRestaurant')
     .post(managersDb.createRestaurant)
 
     // Get Restaurants
     app
-    .route('/managers/:mid/restaurant')
+    .route('/managers/:username/restaurant')
     .get(managersDb.getRestaurants)
 
     // Update Restaurant Info
     app
-    .route('/managers/:mid/restaurant/:rest_id/update')
+    .route('/managers/:username/restaurant/:rest_id/update')
     .post(managersDb.updateRestaurantInfoByRestId)
 
     // Delete Restaurant By Rest Id
     app
-    .route('/managers/:mid/restaurant/:rest_id/delete')
+    .route('/managers/:username/restaurant/:rest_id/delete')
     .delete(managersDb.deleteRestaurantByRestId)
 
     // Create Restaurant Staff
     app
-    .route('/managers/:mid/restaurant/:rest_id/staff')
+    .route('/managers/:username/restaurant/:rest_id/staff')
     .post(managersDb.createRestaurantStaff)
 
     // Get Restaurant Staff
     app
-    .route('/managers/:mid/restaurant/:rest_id/restaurant_staff')
+    .route('/managers/:username/restaurant/:rest_id/restaurant_staff')
     .get(managersDb.getRestaurantStaff)
 
     // Delete Restaurant Staff
     app
-    .route('/managers/:mid/restaurant/:rest_id/restaurant_staff/:rsid/delete')
+    .route('/managers/:username/restaurant/:rest_id/restaurant_staff/:rsid/delete')
     .delete(managersDb.deleteRestaurantStaff)
 
     // Get Riders
     app
-    .route('/managers/:mid/riders')
+    .route('/managers/:username/riders')
     .get(managersDb.getRiders)
 
     // Get Riders Shifts
     app
-    .route('/managers/:mid/riders/:rid/shifts')
+    .route('/managers/:username/riders/:rid/shifts')
     .get(managersDb.getRiderShifts)
 
     // Update Riders Shift Approval
     app
-    .route('/managers/:mid/riders/:rid/shifts/approval')
+    .route('/managers/:username/riders/:rid/shifts/approval')
     .post(managersDb.updateShiftApproval)
 
     // Approve Riders Signup

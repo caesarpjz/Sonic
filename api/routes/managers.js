@@ -2,7 +2,7 @@ const { pool } = require('../config')
 // const bcrypt = require('bcrypt')
 
 
-// /managers/:mid/login
+// /managers/login
 const managerLogin = (request, response) => {
   const username = request.body.username
   // const hashedPassword = bcrypt.hash(request.body.password, 10)
@@ -18,42 +18,55 @@ const managerLogin = (request, response) => {
     if (isUser) {
       response.status(200).send(`Successfully logged in ${username}!`)
     } else {
-      response.status(400).send(`Cannot Login for user ${username}. No such username.`)
+      response.status(400).send(`Cannot Login for user ${username}. Wrong username or password.`)
     }
   })
 
 }
 
-// /managers/:mid/reports
+// /managers/:username/reports
 const getReportsByMid = (request, response) => {
-  const { mid } = request.params
-  const username = pool.query('SELECT username from FDS_Managers WHERE mid = $1', [mid])
-  pool.query('SELECT * FROM Reports WHERE mid = $1', [mid], (error, results) => {
+  const { username } = request.params
+
+  pool.query('SELECT mid FROM FDS_Managers WHERE username = $1', [username], (error, results) => {
     if (error) {
       response.status(400).send(`Unable to get reports for ${username} `)
       throw error
     }
-    response.status(200).json(results.rows)
+    const mid = results.rows[0].mid
+    pool.query('SELECT * FROM Reports WHERE mid = $1', [mid], (error, results) => {
+      if (error) {
+        response.status(400).send(`Unable to get reports for ${username} `)
+        throw error
+      }
+      response.status(200).json(results.rows)
+    })
   })
+  
 }
 
-// /managers/:mid/createpromotions
+// /managers/:username/createpromotions
 const createPromotionsByMid = (request, response) => {
-  const { mid } = request.params
+  const { username } = request.params
   const { start_time, end_time, discount_desc, in_effect } = request.body
-  const username = pool.query('SELECT username from FDS_Managers WHERE mid = $1', [mid])
-
-  pool.query('SELECT addPromotionForManagers($1, $2, $3, $4, $5)', [start_time, end_time, discount_desc, mid, in_effect], (error, results) => {
+  pool.query('SELECT mid from FDS_Managers WHERE username = $1', [username], (error, results) => {
     if (error) {
       response.status(400).send(`Unable to create Promotion with start_time: ${start_time}, end_time: ${end_time} and discount_description: ${discount_desc} for ${username}. Please try again.`)
       throw error
     }
-    response.status(200).send('Promotion created successfullly')
-
+    const mid = results.rows[0].mid
+    pool.query('SELECT addPromotionForManagers($1, $2, $3, $4, $5)', [start_time, end_time, discount_desc, mid, in_effect], (error, results) => {
+      if (error) {
+        response.status(400).send(`Unable to create Promotion with start_time: ${start_time}, end_time: ${end_time} and discount_description: ${discount_desc} for ${username}. Please try again.`)
+        throw error
+      }
+      response.status(200).send('Promotion created successfullly')
+  
+    })
   })
 }
 
-// /managers/:mid/promotions
+// /managers/:username/promotions
 const getPromotionsByMid = (request, response) => {
   const { mid } = request.params
 
