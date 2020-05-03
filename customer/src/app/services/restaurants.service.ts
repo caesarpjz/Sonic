@@ -20,4 +20,9 @@ export class RestaurantsService {
   getRestaurants(): Observable<any> {
     return this.httpClient.get<any>('/api/restaurant');
   }
+
+  // get restaurant by Id
+  getRestaurant(id): Observable<any> {
+    return this.httpClient.get<any>('/api/restaurant/' + id);
+  }
 }

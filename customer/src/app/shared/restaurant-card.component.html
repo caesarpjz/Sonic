@@ -5,7 +5,6 @@
     <h5 class="card-title">{{restaurant.name}}</h5>
     <p class="card-text">{{restaurant.info}}</p>
     <a [routerLink]="['/restaurants', restaurant.rest_id]"
-      [state]="{ data: restaurant }"
       class="btn btn-primary">Shop here</a>
   </div>
 </div>

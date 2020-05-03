@@ -3,6 +3,7 @@ import { CartService } from '../services/cart.service';
 import { Product } from '../models/product';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { RestaurantsService } from '../services/restaurants.service';
 
 @Component({
   selector: 'app-restaurant',
@@ -12,12 +13,12 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class RestaurantComponent implements OnInit {
   products: any; // todos: change to product[]
-  state$: Observable<object>;
   restaurant: any;
 
   constructor(
     private cartService: CartService,
-    public activatedRoute: ActivatedRoute
+    private restaurantService: RestaurantsService,
+    private route: ActivatedRoute
   ) {
     this.cartService.initCart();
   }
@@ -29,12 +30,13 @@ export class RestaurantComponent implements OnInit {
       { id: 2, name: 'Spaggheti', menu: 'Mains', quantity: 0, price: 10 }
     ];
 
-    this.state$ = this.activatedRoute.paramMap
-      .pipe((() => window.history.state.data));
+    this.getRestaurant();
+  }
 
-      // replace with retrieveRestaurantById if possible
-
-    console.log(this.state$);
+  getRestaurant() {
+    this.restaurantService.getRestaurant(this.route.snapshot.paramMap.get('restaurantId')).subscribe((res) => {
+      this.restaurant = res[0];
+    });
   }
 
   addToCart = (item) => {
