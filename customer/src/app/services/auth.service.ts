@@ -18,11 +18,12 @@ export class AuthService {
   // create customer
   createCustomer(signupForm): Observable<any> {
     let customer = {
-      username: signupForm.value.username,
-      password: signupForm.value.password,
-      name: signupForm.value.name
+      'username': signupForm.value.username,
+      'password': signupForm.value.password,
+      'name': signupForm.value.name
     };
 
-    return this.httpClient.post<any>(this.path + '/customers', customer);
+    return this.httpClient.post<any>('/api/customers', customer,
+           { responseType: 'text' as 'json' });
   }
 }

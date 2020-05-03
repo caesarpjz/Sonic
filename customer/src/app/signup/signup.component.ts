@@ -44,7 +44,11 @@ export class SignupComponent implements OnInit {
 
   signUp() {
     console.log(this.signupForm);
-    this.authService.createCustomer(this.signupForm);
+    this.authService.createCustomer(this.signupForm).subscribe((res) => {
+      console.log(res);
+    }, (err) => {
+
+    });
   }
 
 }
