@@ -12,7 +12,7 @@ import { RestaurantsService } from '../services/restaurants.service';
   providers: [CartService]
 })
 export class RestaurantComponent implements OnInit {
-  products: any; // todos: change to product[]
+  products: any;
   restaurant: any;
   restaurantId: any;
   menus: any;
@@ -27,13 +27,6 @@ export class RestaurantComponent implements OnInit {
 
   ngOnInit() {
     this.restaurantId = this.route.snapshot.paramMap.get('restaurantId');
-
-    // test data
-    this.products = [
-      { id: 1, name: 'Chicken chop', menu: 'Mains', quantity: 0, price: 6 },
-      { id: 2, name: 'Spaggheti', menu: 'Mains', quantity: 0, price: 10 }
-    ];
-
     this.getRestaurant();
   }
 
@@ -48,7 +41,6 @@ export class RestaurantComponent implements OnInit {
     this.restaurantService.getRestaurantMenus(this.restaurantId).subscribe((res) => {
       this.menus = res;
       this.getFoods();
-      console.log(res);
     });
   }
 
