@@ -29,16 +29,20 @@ const orderFood = (request, response) => {
 // /customer/login
 const login = (request, response) => {
   const username = request.body.username
-  // const hashedPassword = bcrypt.hash(request.body.password, 10)
   const password = request.body.password
 
-  pool.query('SELECT authUser($1, $2)', [username, password], (error, results) => {
+  var isUser = pool.query('SELECT authUser($1, $2)', [username, password], (error, results) => {
     if (error) {
       response.status(400).send(`Cannot Login for user ${username}. Please try again.`)
       throw error
     }
-    response.status(200).send(`Successfully logged in ${username}!`)
   })
+
+  if (isUser) {
+    response.status(200).send(`Successfully logged in ${username}!`)
+  } else {
+    response.status(400).send(`Cannot Login for user ${username}. Please try again.`)
+  }
 }
 
 // /restaurant
