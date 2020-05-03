@@ -24,6 +24,7 @@ CREATE TABLE Restaurant_Categories (
 CREATE TABLE FDS_Managers (
     mid SERIAL,
     id INTEGER NOT NULL,
+    username VARCHAR(50) NOT NULL,
     name VARCHAR(50),
     PRIMARY KEY (mid),
     FOREIGN KEY (id) REFERENCES Users (id)
@@ -44,6 +45,7 @@ CREATE TABLE Customers (
     cc_expiry VARCHAR(50),
     cc_num VARCHAR(50),
     points INTEGER NOT NULL DEFAULT 0,
+    username VARCHAR(50) NOT NULL,
     name VARCHAR(50),
     PRIMARY KEY (cid),
     FOREIGN KEY (id) REFERENCES Users (id)
@@ -54,6 +56,7 @@ CREATE TABLE Riders (
     id INTEGER NOT NULL,
     is_full_time BOOLEAN NOT NULL,
     status RIDER_STATUSES NOT NULL,
+    username VARCHAR(50) NOT NULL,
     name VARCHAR(50),
     PRIMARY KEY (rid),
     FOREIGN KEY (id) REFERENCES Users (id)
@@ -95,6 +98,7 @@ CREATE TABLE Restaurant_Staff (
     rsid SERIAL,
     rest_id INTEGER,
     id INTEGER NOT NULL,
+    username VARCHAR(50) NOT NULL,
     name VARCHAR(50),
     PRIMARY KEY (rsid),
     FOREIGN KEY (rest_id) REFERENCES Restaurants (rest_id),
