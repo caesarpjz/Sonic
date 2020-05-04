@@ -4,6 +4,7 @@ create type RIGHTS as ENUM('FDS_Manager', 'Restaurant_Staff', 'Customer', 'Rider
 create type ORDER_STATUSES as ENUM('ORDERED', 'ORDER ACCEPTED', 'DELIVERED');
 create type METHODS as ENUM('CASH', 'CREDIT CARD');
 create type RIDER_STATUSES as ENUM('AVAILABLE', 'DELIVERING', 'NOT WORKING');
+create type PROMOTION_TYPES as ENUM('CUSTOMER', 'RESTAURANT');
 
 CREATE TABLE Users (
     id SERIAL,
@@ -33,9 +34,12 @@ CREATE TABLE FDS_Managers (
 
 CREATE TABLE Promotions (
     pid SERIAL,
-    start_time DATE NOT NULL,
-    end_time DATE NOT NULL,
-    discount_description VARCHAR(50) NOT NULL,
+    start_date DATE NOT NULL,
+    end_date DATE NOT NULL,
+    type PROMOTION_TYPES NOT NULL,
+    discount_description TEXT NOT NULL,
+    discount_percentage FLOAT NOT NULL,
+    count INTEGER NOT NULL DEFAULT 0,
     PRIMARY KEY (pid)
 );
 
@@ -131,7 +135,6 @@ CREATE TABLE Reports (
 CREATE TABLE Managers_Has_Promotions (
     mid INTEGER NOT NULL,
     pid INTEGER NOT NULL,
-    in_effect BOOLEAN NOT NULL default false,
     PRIMARY KEY (mid, pid),
     FOREIGN KEY (mid) REFERENCES FDS_Managers (mid),
     FOREIGN KEY (pid) REFERENCES Promotions (pid) ON DELETE CASCADE ON UPDATE CASCADE
@@ -140,7 +143,6 @@ CREATE TABLE Managers_Has_Promotions (
 CREATE TABLE Restaurants_Has_Promotions (
     rest_id INTEGER NOT NULL,
     pid INTEGER NOT NULL,
-    in_effect BOOLEAN NOT NULL default false,
     PRIMARY KEY (rest_id, pid),
     FOREIGN KEY (rest_id) REFERENCES Restaurants (rest_id),
     FOREIGN KEY (pid) REFERENCES Promotions (pid) ON DELETE CASCADE ON UPDATE CASCADE
@@ -192,9 +194,6 @@ CREATE TABLE Shifts (
     rid INTEGER,
     start_time TIMESTAMP NOT NULL,
     end_time TIMESTAMP NOT NULL,
-    is_approved BOOLEAN NOT NULL default false,
     PRIMARY KEY (shift_id),
     FOREIGN KEY (rid) REFERENCES Riders (rid)
 );
-
-
