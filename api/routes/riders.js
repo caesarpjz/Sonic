@@ -131,7 +131,7 @@ const timeDepartFromResturant = (request, response) => {
   })
 }
 
-// /riders/:username/delivery/:did/arrive
+// /riders/:username/delivery/:did/delivered
 const timeOrderDelivered = (request, response) => {
   const { did } = request.params
 
@@ -145,7 +145,7 @@ const timeOrderDelivered = (request, response) => {
 }
 
 // /riders/:username/check
-const checkIfPartTime = (request, response) => {
+const checkIfFullTime = (request, response) => {
   const { username } = request.params
 
   pool.query('SELECT is_full_time FROM Riders WHERE username = $1', [username], (error, results) => {
@@ -153,6 +153,7 @@ const checkIfPartTime = (request, response) => {
       response.status(400).send(`Unable to check`)
       throw error
     }
+
     response.status(200).json(results.rows)
   })
 }
@@ -178,13 +179,35 @@ const viewPastSchedule = (request, response) => {
 }
 
 // /riders/:username/schedule/submit
-const submitSchedule = (request, response) => {
-  const { username } = request.params
-  const {  }
-  pool
-}
+// const submitSchedule = (request, response) => {
+//   const { username } = request.params
+//   const {  }
+//   pool
+// }
 
+// /riders/:username/salary
+// const sendSalaryDatePeriod = (request, response) => {
+//   const { username } = request.params
+//   const { start_date, end_date } = request.query
+
+//   pool.query('SELECT rid FROM Riders WHERE username = $1', [username], (error, results) => {
+//     if (error) {
+//       response.status(400).send(`Unable to send start date: ${start_date} and end date: ${end_date}`)
+//       throw error
+//     }
+//     const rid = results.rows[0].rid
+//     pool.query('INSERT ')
+//   })
+// }
 
 module.exports = {
-
+  login,
+  viewDeliveriesHistory,
+  assignOrders,
+  viewAssignedDeliveries,
+  timeArriveAtResturant,
+  timeDepartFromResturant,
+  timeOrderDelivered,
+  checkIfFullTime,
+  viewPastSchedule
 }
