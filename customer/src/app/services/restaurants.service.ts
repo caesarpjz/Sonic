@@ -14,12 +14,25 @@ const httpOptions = {
   providedIn: 'root'
 })
 export class RestaurantsService {
-  path = "/api/customers";
-
   constructor(private httpClient: HttpClient) { }
 
   // get all restraurants
   getRestaurants(): Observable<any> {
-    return this.httpClient.get<any>(this.path + "/getRestaurants");
+    return this.httpClient.get<any>('/api/restaurant');
+  }
+
+  // get restaurant by Id
+  getRestaurant(id): Observable<any> {
+    return this.httpClient.get<any>('/api/restaurant/' + id);
+  }
+
+  // get restaurant menus
+  getRestaurantMenus(id): Observable<any> {
+    return this.httpClient.get<any>('/api/restaurant/' + id + '/menus');
+  }
+
+  // get food items from menu
+  getRestaurantMenuFoodItems(restaurantId, menuId): Observable<any> {
+    return this.httpClient.get<any>(`/api/restaurant/${restaurantId}/menus/${menuId}`);
   }
 }

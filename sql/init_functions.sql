@@ -45,13 +45,13 @@ begin
 end
 $$ LANGUAGE PLPGSQL;
 
-CREATE OR REPLACE FUNCTION authUser(username VARCHAR, password VARCHAR)
+CREATE OR REPLACE FUNCTION authUser(usernameCheck VARCHAR, passwordCheck VARCHAR)
 RETURNS BOOLEAN as $$
     SELECT CASE
         WHEN EXISTS(
             SELECT * FROM Users
-            where username = $1
-            and password = $2
+            where username = usernameCheck
+            and password = passwordCheck
         ) THEN TRUE
         ELSE FALSE
     END
@@ -127,11 +127,11 @@ RETURNS TABLE(name VARCHAR, info text, category VARCHAR) AS $$
     where R.rest_id = $1
 $$ LANGUAGE SQL;
 
-CREATE OR REPLACE FUNCTION getMenus(VARCHAR) 
+CREATE OR REPLACE FUNCTION getMenus(rest_name VARCHAR) 
 RETURNS table(name VARCHAR) AS $$
     SELECT M.name
     FROM restaurants R JOIN menus M ON R.rest_id = M.rest_id
-    WHERE R.name = $1;
+    WHERE R.name = rest_name
 $$ LANGUAGE SQL;
 
 CREATE OR REPLACE FUNCTION getFoodItems(rest_name VARCHAR, menu_name VARCHAR) 
