@@ -1,9 +1,10 @@
-<div class="card" style="width: 18rem;">
+<div class="card mr-2 ml-2 mt-2 mb-2" style="width: 18rem;">
+  <!-- todos: change to a default image? -->
   <img src="../../assets/images/restaurant-test-small.jpeg" class="card-img-top" alt="...">
   <div class="card-body">
-    <h5 class="card-title">Restaurant name</h5>
-    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.
-    </p>
-    <a href="#" class="btn btn-primary">Go somewhere</a>
+    <h5 class="card-title">{{restaurant.name}}</h5>
+    <p class="card-text">{{restaurant.info}}</p>
+    <a [routerLink]="['/restaurants', restaurant.rest_id]"
+      class="btn btn-primary">Shop here</a>
   </div>
 </div>

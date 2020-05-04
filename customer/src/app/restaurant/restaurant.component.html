@@ -1,16 +1,16 @@
 <app-header></app-header>
 
-<div class="container mt-5 mb-5 pt-5">
+<div class="container mt-5 mb-5 pt-5" *ngIf=restaurant>
   <div class="row">
-    <div class="jumbotron text-center">
-      <div class="container">
-        <h1>Restaurant name</h1>
-        <p class="lead text-muted">Something short and leading about the collection below—its contents, the creator,
-          etc.
-          Make it short and sweet, but not too short so folks don’t simply skip over it entirely.</p>
+    <div class="jumbotron" style="margin: auto;">
+      <div class="container text-center">
+        <h1>{{restaurant.name}}</h1>
+        <p class="lead text-muted">
+          {{restaurant.info}}
+        </p>
         <p>
-          <a href="#" class="btn btn-primary my-2">Main call to action</a>
-          <a href="#" class="btn btn-secondary my-2">Secondary action</a>
+          <a href="#" class="btn btn-primary my-2">View reviews</a>
+          <!-- <a href="#" class="btn btn-secondary my-2">Secondary action</a> -->
         </p>
       </div>
     </div>
@@ -18,8 +18,12 @@
 
   <!-- todos: add tabs for menus? -->
   <div class="menu-container">
-    <div class="menu" *ngFor="let product of products">
-      <app-menu-food-card [foodName]="product.name" [food]="product" [addToCart]="addToCart"></app-menu-food-card>
+    <div class="menu" *ngFor="let menu of menus">
+      <h3>{{menu.name}}</h3>
+
+      <div *ngFor="let product of menu.foods">
+        <app-menu-food-card [foodName]="product.name" [food]="product" [addToCart]="addToCart"></app-menu-food-card>
+      </div>
     </div>
   </div>
 </div>

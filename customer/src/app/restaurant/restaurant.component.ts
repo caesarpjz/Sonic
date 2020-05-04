@@ -1,6 +1,9 @@
+import { Observable } from 'rxjs';
 import { CartService } from '../services/cart.service';
 import { Product } from '../models/product';
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { RestaurantsService } from '../services/restaurants.service';
 
 @Component({
   selector: 'app-restaurant',
@@ -9,20 +12,51 @@ import { Component, OnInit } from '@angular/core';
   providers: [CartService]
 })
 export class RestaurantComponent implements OnInit {
-  products: any; // todos: change to product[]
+  products: any;
+  restaurant: any;
+  restaurantId: any;
+  menus: any;
 
   constructor(
-    private cartService: CartService
+    private cartService: CartService,
+    private restaurantService: RestaurantsService,
+    private route: ActivatedRoute
   ) {
     this.cartService.initCart();
   }
 
   ngOnInit() {
-    // test data
-    this.products = [
-      { id: 1, name: 'Chicken chop', menu: 'Mains', quantity: 0, price: 6 },
-      { id: 2, name: 'Spaggheti', menu: 'Mains', quantity: 0, price: 10 }
-    ];
+    this.restaurantId = this.route.snapshot.paramMap.get('restaurantId');
+    this.getRestaurant();
+  }
+
+  getRestaurant() {
+    this.restaurantService.getRestaurant(this.restaurantId).subscribe((res) => {
+      this.restaurant = res[0];
+      this.getMenus();
+    });
+  }
+
+  getMenus() {
+    this.restaurantService.getRestaurantMenus(this.restaurantId).subscribe((res) => {
+      this.menus = res;
+      this.getFoods();
+    });
+  }
+
+  // populate the menus with foods
+  getFoods() {
+    for (var i = 0; i < this.menus.length; i++) {
+      this.restaurantService.getRestaurantMenuFoodItems(this.restaurantId, this.menus[i].menu_id).subscribe((res) => {
+        if (res.length > 0) {
+          for (var j = 0; j < this.menus.length; j++) {
+            if (this.menus[j].menu_id === res[0].menu_id) {
+              this.menus[j].foods = res;
+            }
+          }
+        }
+      });
+    }
   }
 
   addToCart = (item) => {
