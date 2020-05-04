@@ -403,3 +403,46 @@ RETURNS TABLE(did INTEGER, rating INTEGER) AS $$
     WHERE R.rid = $1
     ORDER BY time_order_delivered desc;
 $$ LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION addShift(rid INTEGER, start_time TIMESTAMP, end_time TIMESTAMP)
+RETURNS VOID AS $$
+    INSERT INTO Shifts VALUES
+    (DEFAULT, $1, $2, $3);
+$$ LANGUAGE SQL;
+
+-- FUNCTIONS FOR REPORTS
+-- CREATE OR REPLACE FUNCTION getTotalOrders(rid INTEGER, start_date DATE, end_date DATE)
+-- RETURNS INTEGER AS $$
+--     SELECT count(*)
+--     FROM Deliveries D 
+--     WHERE D.rid = $1
+--     AND D.time_order_delivered >= start_date
+--     AND D.time_order_delivered < end_date;
+-- $$ LANGUAGE SQL;
+
+-- CREATE OR REPLACE FUNCTION getTotalHours(rid INTEGER, start_date DATE, end_date DATE)
+-- RETURNS FLOAT AS $$
+--     SELECT sum(EXTRACT(EPOCH FROM (S.end_time - S.start_time) / 60)
+--     FROM Riders R join Shifts S on R.rid = S.rid
+--     WHERE R.rid = $1
+--     AND S.start_time >= $2
+--     AND S.start_time < $3
+-- $$ LANGUAGE SQL;
+
+-- CREATE OR REPLACE FUNCTION getTotalSalary(rid INTEGER, start_date DATE, end_date DATE)
+-- RETURNS FLOAT AS $$
+
+-- $$ LANGUAGE SQL;
+
+-- CREATE OR REPLACE FUNCTION getRiderSummary(
+--     IN rid INTEGER, 
+--     IN start_date DATE,
+--     IN end_date DATE, -- end_date exclusive
+--     OUT total_orders INTEGER, 
+--     OUT total_hours FLOAT, 
+--     OUT total_salary FLOAT)
+-- AS $$
+--     SELECT getTotalOrders(rid, start_date, end_date) INTO total_orders;
+--     SELECT getTotalHours(rid, start_date, end_date) INTO total_hours;
+--     SELECT getTotalSalary(rid, start_date, end_date) INTO total_salary;
+-- $$ LANGUAGE PLPGSQL;
