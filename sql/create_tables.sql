@@ -196,5 +196,3 @@ CREATE TABLE Shifts (
     PRIMARY KEY (shift_id),
     FOREIGN KEY (rid) REFERENCES Riders (rid)
 );
-
-

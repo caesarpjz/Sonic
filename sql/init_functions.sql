@@ -122,7 +122,7 @@ CREATE OR REPLACE FUNCTION getRestaurantById(rid INTEGER)
 RETURNS TABLE(name VARCHAR, info text, category VARCHAR) AS $$
     SELECT name, info, category
     FROM Restaurants R
-    where R.rid = $1
+    where R.rest_id = $1
 $$ LANGUAGE SQL;
 
 CREATE OR REPLACE FUNCTION getMenus(VARCHAR) 
@@ -168,6 +168,7 @@ begin
     VALUES (rest_id, promo_id, in_effect);
 end
 $$ LANGUAGE PLPGSQL;
+
 -----------------------------
 ----- CUSTOMER FUNCTIONS ----
 -----------------------------
@@ -217,7 +218,7 @@ begin
 
     RETURN ret_oid;
 end
-$$ LANGUAGE PLPGSQL;
+$$ LANGUAGE PLPGSQL;    
 
 CREATE OR REPLACE FUNCTION getOrderStatus(oid INTEGER)
 RETURNS ORDER_STATUSES AS $$
@@ -242,13 +243,21 @@ RETURNS void as $$
     WHERE cid = $1;
 $$ LANGUAGE SQL;
 
-CREATE OR REPLACE FUNCITON getRecentLocations(cid INTEGER)
+CREATE OR REPLACE FUNCTION getRecentLocations(cid INTEGER)
 RETURNS TABLE(location VARCHAR) AS $$
     SELECT location
     FROM Orders O join Deliveries D on O.did = D.did
     WHERE O.cid = $1
     ORDER BY D.time_order_delivered
     LIMIT 5;
+$$ LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION getTotalPayable(oid INTEGER) 
+RETURNS FLOAT AS $$
+    SELECT sum(OCF.quantity * FI.price)
+    FROM Orders O join Order_Contains_Food OCF on O.oid = OCF.oid
+    join Food_Items FI on OCF.fid = FI.fid
+    WHERE O.oid = $1;
 $$ LANGUAGE SQL;
 
 -----------------------------
