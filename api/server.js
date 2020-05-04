@@ -9,7 +9,7 @@ const restaurantsDb = require('./routes/restaurantStaffs')
 const usersDb = require('./routes/users')
 const customersDb = require('./routes/customers')
 const managersDb = require('./routes/managers')
-
+const ridersDb = require('./routes/riders')
 
 
 app.use(bodyParser.json())
@@ -71,6 +71,11 @@ app.get('/', (req, res) => {
     app
     .route('restaurant_categories')
     .get(customersDb.getRestaurantCategories)
+
+    // Get Restaurants By category
+    app
+    .route('restaurant/rest_category/:category')
+    .get(customersDb.getRestaurantByCategory)
 
     // View Menus By Rest Id
     app
@@ -165,7 +170,54 @@ app.get('/', (req, res) => {
     // Points offset Cost
 
 /***** Riders *****/
+    // Riders Login
+    app
+    .route('/riders/login')
+    .post(ridersDb.login)
 
+    // View Delivery History
+    app
+    .route('/riders/:username/deliveries/history')
+    .get(ridersDb.viewDeliveriesHistory)
+
+    // Auto Assign of deliveries/orders
+    app
+    .route('/riders/:username/assign')
+    .get(ridersDb.assignOrders)
+
+    // View Assigned Deliveries
+    app
+    .route('/riders/:username/deliveries/assigned')
+    .get(ridersDb.viewAssignedDeliveries)
+
+    // Button function for time arrive at restaurant
+    app
+    .route('/riders/:username/delivery/:did/arriveRest')
+    .get(ridersDb.timeArriveAtResturant)
+
+    // Button function for time depart from restaurant
+    app
+    .route('/riders/:username/delivery/:did/departRest')
+    .get(ridersDb.timeDepartFromResturant)
+
+    // Button function for time order has been delivered
+    app
+    .route('/riders/:username/delivery/:did/delivered')
+    .get(ridersDb.timeOrderDelivered)
+
+    // Check if rider is Full time
+    app
+    .route('/riders/:username/check')
+    .get(ridersDb.checkIfFullTime)
+
+    // View Past Schedule
+    app
+    .route('/riders/:username/schedule')
+    .get(ridersDb.viewPastSchedule)
+
+    // Submit Schedule
+
+    // Check Salary for range period
 
 /***** FDS Managers *****/
 

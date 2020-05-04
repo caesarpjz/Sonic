@@ -335,6 +335,24 @@ $$ LANGUAGE SQL;
 ------ RIDER FUNCTIONS ------
 -----------------------------
 
+CREATE OR REPLACE FUNCTION updateDelivery(rid INTEGER, did INTEGER)
+RETURNS void AS $$
+    UPDATE Deliveries
+    SET rid = $1,
+    time_depart_for_rest = NOW()
+    WHERE did = $2
+$$ LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION assignOrders(did INTEGER)
+RETURNS void AS $$
+    UPDATE Orders 
+    SET status = 'ORDER ACCEPTED', 
+    did = $1 
+    WHERE status = 'ORDERED' 
+    ORDER BY oid 
+    LIMIT 1;
+$$ LANGUAGE SQL;
+
 CREATE OR REPLACE FUNCTION getDeliveringOrder(rid INTEGER)
 RETURNS TABLE(oid INTEGER, did INTEGER, payment_method METHODS, location VARCHAR, food_name VARCHAR, quantity INTEGER) AS $$
     SELECT O.oid, D.did, O.payment_method, O.location, FI.name, OCF.quantity
