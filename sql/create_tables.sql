@@ -194,7 +194,6 @@ CREATE TABLE Shifts (
     rid INTEGER,
     start_time TIMESTAMP NOT NULL,
     end_time TIMESTAMP NOT NULL,
-    is_approved BOOLEAN NOT NULL default false,
     PRIMARY KEY (shift_id),
     FOREIGN KEY (rid) REFERENCES Riders (rid)
 );
