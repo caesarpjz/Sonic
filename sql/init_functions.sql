@@ -96,6 +96,41 @@ begin
 end
 $$ LANGUAGE PLPGSQL;
 
+-- FUNCTIONS FOR REPORTS
+CREATE OR REPLACE FUNCTION getOverviewReport(
+    OUT total_new_customers INTEGER,
+    OUT total_orders INTEGER,
+    OUT total_cost INTEGER
+) AS $$
+declare 
+    start_date DATE;
+    end_date DATE;
+begin
+    SELECT CAST(date_trunc('month', NOW()) as DATE) INTO start_date;
+    SELECT CAST((start_date + interval '1 month') as DATE) INTO end_date;
+
+    SELECT count(*)
+    FROM Users U join Customers C on U.id = C.id
+    WHERE U.created_at >= start_date
+    AND U.created_at < end_date
+    INTO total_new_customers;
+
+    SELECT count(*)
+    FROM Deliveries 
+    WHERE time_order_placed >= start_date
+    AND time_order_placed < end_date
+    INTO total_orders;
+
+    SELECT sum(OCF.quantity * FI.price)
+    FROM Deliveries D join Orders O on D.did = O.did
+    join Order_Contains_Food OCF on O.oid = OCF.oid
+    join Food_Items FI on OCF.fid = FI.fid
+    WHERE D.time_order_placed >= start_date
+    AND D.time_order_placed < end_date
+    INTO total_cost;
+end
+$$ LANGUAGE PLPGSQL;
+
 -----------------------------
 ------ STAFF FUNCTIONS ------
 -----------------------------
