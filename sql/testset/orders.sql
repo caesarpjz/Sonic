@@ -1,6 +1,6 @@
-SELECT addOrder(0, 1, 'CASH', 'BUKIT TIMAH', 'WOODLANDS');
-SELECT addOrder(0, 2, 'CASH', 'CITY HALL', 'ANG MO KIO');
-SELECT addOrder(0, 3, 'CREDIT CARD',  'BUONA VISTA', 'TANJONG PAGAR');
+SELECT addOrder(0, 1, 'CASH', 'BUKIT TIMAH', 'WOODLANDS', 2);
+SELECT addOrder(0, 2, 'CASH', 'CITY HALL', 'ANG MO KIO', NULL);
+SELECT addOrder(0, 3, 'CREDIT CARD',  'BUONA VISTA', 'TANJONG PAGAR', NULL);
 SELECT allocateRider(1, 1);
 SELECT allocateRider(2, 2);
 SELECT allocateRider(4, 3);

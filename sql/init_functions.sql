@@ -263,7 +263,13 @@ RETURNS INTEGER AS $$
     RETURNING did;
 $$ LANGUAGE SQL;
 
-CREATE OR REPLACE FUNCTION addOrder(fee FLOAT, cid INTEGER, payment_method METHODS,restaurant_location VARCHAR, location VARCHAR)
+CREATE OR REPLACE FUNCTION addOrder(
+    fee FLOAT, 
+    cid INTEGER, 
+    payment_method METHODS, 
+    restaurant_location VARCHAR, 
+    location VARCHAR, 
+    pid INTEGER)
 RETURNS INTEGER AS $$
 declare 
     did integer;
@@ -274,6 +280,12 @@ begin
     INSERT INTO Orders
     VALUES (DEFAULT, did, cid, 0, 'ORDERED', payment_method, restaurant_location, location)
     RETURNING oid into ret_oid;
+
+    IF ($6 IS NOT NULL) THEN
+        UPDATE Promotions
+        SET count = count + 1
+        WHERE Promotions.pid = $6;
+    END IF;
 
     RETURN ret_oid;
 end
