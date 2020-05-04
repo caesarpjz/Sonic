@@ -79,18 +79,20 @@ begin
 end
 $$ LANGUAGE PLPGSQL;
 
-CREATE OR REPLACE FUNCTION addPromotionForManagers(start_time DATE, end_time DATE, discount_desc VARCHAR, mid INTEGER, in_effect BOOLEAN)
+CREATE OR REPLACE FUNCTION addPromotionForManagers(start_date DATE, end_date DATE, discount_desc TEXT, 
+    discount_percentage FLOAT, mid INTEGER)
 RETURNS void AS $$
 declare
     promo_id integer;
 begin
     INSERT INTO Promotions
-    VALUES (DEFAULT, start_time, end_time, discount_desc);
+    VALUES (DEFAULT, start_date, end_date, 'CUSTOMER', discount_desc, discount_percentage)
+    RETURNING pid INTO promo_id;
 
-    SELECT pid FROM Promotions P WHERE P.start_time = start_time AND P.end_time = end_time AND P.discount_description = discount_desc into promo_id;
+    -- SELECT pid FROM Promotions P WHERE P.start_time = start_time AND P.end_time = end_time AND P.discount_description = discount_desc into promo_id;
 
     INSERT INTO Managers_has_Promotions
-    VALUES (mid, promo_id, in_effect);
+    VALUES (mid, promo_id);
 end
 $$ LANGUAGE PLPGSQL;
 
@@ -122,7 +124,7 @@ CREATE OR REPLACE FUNCTION getRestaurantById(rid INTEGER)
 RETURNS TABLE(name VARCHAR, info text, category VARCHAR) AS $$
     SELECT name, info, category
     FROM Restaurants R
-    where R.rest_id = rid
+    where R.rest_id = $1
 $$ LANGUAGE SQL;
 
 CREATE OR REPLACE FUNCTION getMenus(rest_name VARCHAR) 
@@ -154,20 +156,78 @@ RETURNS void AS $$
     VALUES (DEFAULT, quantity, daily_limit, name, price, menu_id, TRUE);
 $$ LANGUAGE SQL;
 
-CREATE OR REPLACE FUNCTION addPromotion(start_time DATE, end_time DATE, discount_desc VARCHAR, rest_id INTEGER, in_effect BOOLEAN)
+CREATE OR REPLACE FUNCTION addRestaurantPromotion(start_date DATE, end_date DATE, discount_desc TEXT, 
+    discount_percentage FLOAT, rest_id INTEGER)
 RETURNS void AS $$
 declare
     promo_id integer;
 begin
     INSERT INTO Promotions
-    VALUES (DEFAULT, start_time, end_time, discount_desc);
+    VALUES (DEFAULT, start_date, end_date, 'RESTAURANT', discount_desc, discount_percentage, DEFAULT)
+    RETURNING pid INTO promo_id;
 
-    SELECT pid FROM Promotions P WHERE P.start_time = start_time AND P.end_time = end_time AND P.discount_description = discount_desc into promo_id;
+    -- SELECT pid FROM Promotions P WHERE P.start_time = start_time AND P.end_time = end_time AND P.discount_description = discount_desc into promo_id;
 
     INSERT INTO Restaurants_has_Promotions
-    VALUES (rest_id, promo_id, in_effect);
+    VALUES (rest_id, promo_id);
 end
 $$ LANGUAGE PLPGSQL;
+
+-- FUNCTIONS FOR REPORTS
+CREATE OR REPLACE FUNCTION getOrderSummary(rest_id INTEGER, month INTEGER)
+RETURNS record AS $$
+    SELECT count(*), sum(OCF.quantity * FI.price)
+    FROM Order_Contains_Food OCF join Food_Items FI on OCF.fid = FI.fid
+    join Menus M on M.menu_id = FI.menu_id
+    join Orders O on OCF.oid = O.oid
+    join Deliveries D on O.did = D.did
+    WHERE M.rest_id = $1
+    AND EXTRACT(MONTH FROM D.time_order_placed) = $2;
+$$ LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION getCurrMonthOrderSummary(rest_id INTEGER)
+RETURNS record AS $$
+    SELECT getOrderSummary($1, CAST(EXTRACT(MONTH FROM NOW()) AS INTEGER));
+$$ LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION getTopFive(rest_id INTEGER, month INTEGER)
+RETURNS TABLE(fid INTEGER, name VARCHAR) AS $$
+    SELECT fid, name
+    FROM (
+        SELECT FI.fid, FI.name, sum(OCF.quantity) as total_quantity
+        FROM Order_Contains_Food OCF join Food_Items FI on OCF.fid = FI.fid
+        join Menus M on M.menu_id = FI.menu_id
+        join Orders O on OCF.oid = O.oid
+        join Deliveries D on O.did = D.did  
+        WHERE M.rest_id = $1
+        AND EXTRACT(MONTH FROM D.time_order_placed) = $2
+        group by FI.fid
+    ) as CollatedOrders
+    order by total_quantity desc
+    limit 5;
+$$ LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION getCurrMonthTopFive(rest_id INTEGER)
+RETURNS TABLE(fid INTEGER, name VARCHAR) AS $$
+    SELECT getTopFive($1, CAST(EXTRACT(MONTH FROM NOW()) AS INTEGER));
+$$ LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION getPromoSummary(IN pid INTEGER, OUT total_days INTEGER, OUT avg_orders FLOAT)
+AS $$
+begin
+    SELECT CAST(end_date - start_date AS FLOAT)
+    FROM Promotions P
+    WHERE P.pid = $1
+    LIMIT 1
+    INTO total_days;
+
+    SELECT CAST(count AS FLOAT) / total_days
+    FROM Promotions P
+    WHERE P.pid = $1
+    INTO avg_orders;
+end
+$$ LANGUAGE PLPGSQL;
+
 -----------------------------
 ----- CUSTOMER FUNCTIONS ----
 -----------------------------
@@ -217,7 +277,7 @@ begin
 
     RETURN ret_oid;
 end
-$$ LANGUAGE PLPGSQL;
+$$ LANGUAGE PLPGSQL;    
 
 CREATE OR REPLACE FUNCTION getOrderStatus(oid INTEGER)
 RETURNS ORDER_STATUSES AS $$
@@ -249,6 +309,14 @@ RETURNS TABLE(location VARCHAR) AS $$
     WHERE O.cid = $1
     ORDER BY D.time_order_delivered
     LIMIT 5;
+$$ LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION getTotalPayable(oid INTEGER) 
+RETURNS FLOAT AS $$
+    SELECT sum(OCF.quantity * FI.price)
+    FROM Orders O join Order_Contains_Food OCF on O.oid = OCF.oid
+    join Food_Items FI on OCF.fid = FI.fid
+    WHERE O.oid = $1;
 $$ LANGUAGE SQL;
 
 -----------------------------
