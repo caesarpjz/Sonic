@@ -173,7 +173,7 @@ begin
 end
 $$ LANGUAGE PLPGSQL;
 
--- functions for reports
+-- FUNCTIONS FOR REPORTS
 CREATE OR REPLACE FUNCTION getOrderSummary(rest_id INTEGER, month INTEGER)
 RETURNS record AS $$
     SELECT count(*), sum(OCF.quantity * FI.price)
@@ -212,7 +212,28 @@ RETURNS TABLE(fid INTEGER, name VARCHAR) AS $$
     SELECT getTopFive($1, CAST(EXTRACT(MONTH FROM NOW()) AS INTEGER));
 $$ LANGUAGE SQL;
 
+CREATE OR REPLACE FUNCTION getPromoSummary(pid INTEGER)
+RETURNS record AS $$
+declare
+    total_days INTEGER;
+    avg_orders FLOAT;
+    ret RECORD;
+begin
+    SELECT CAST(end_date - start_date AS FLOAT)
+    FROM Promotions P
+    WHERE P.pid = $1
+    LIMIT 1
+    INTO total_days;
 
+    SELECT count / total_days
+    FROM Promotions P
+    WHERE P.pid = $1
+    INTO avg_orders;
+
+    SELECT total_days, avg_orders INTO ret;
+    RETURN ret;
+end
+$$ LANGUAGE PLPGSQL;
 
 -----------------------------
 ----- CUSTOMER FUNCTIONS ----
