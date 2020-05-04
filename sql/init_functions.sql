@@ -212,12 +212,8 @@ RETURNS TABLE(fid INTEGER, name VARCHAR) AS $$
     SELECT getTopFive($1, CAST(EXTRACT(MONTH FROM NOW()) AS INTEGER));
 $$ LANGUAGE SQL;
 
-CREATE OR REPLACE FUNCTION getPromoSummary(pid INTEGER)
-RETURNS record AS $$
-declare
-    total_days INTEGER;
-    avg_orders FLOAT;
-    ret RECORD;
+CREATE OR REPLACE FUNCTION getPromoSummary(IN pid INTEGER, OUT total_days INTEGER, OUT avg_orders FLOAT)
+AS $$
 begin
     SELECT CAST(end_date - start_date AS FLOAT)
     FROM Promotions P
@@ -225,13 +221,10 @@ begin
     LIMIT 1
     INTO total_days;
 
-    SELECT count / total_days
+    SELECT CAST(count AS FLOAT) / total_days
     FROM Promotions P
     WHERE P.pid = $1
     INTO avg_orders;
-
-    SELECT total_days, avg_orders INTO ret;
-    RETURN ret;
 end
 $$ LANGUAGE PLPGSQL;
 
