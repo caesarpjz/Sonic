@@ -72,6 +72,11 @@ app.get('/', (req, res) => {
     .route('restaurant_categories')
     .get(customersDb.getRestaurantCategories)
 
+    // Get Restaurants By category
+    app
+    .route('restaurant/rest_category/:category')
+    .get(customersDb.getRestaurantByCategory)
+    
     // View Menus By Rest Id
     app
     .route('/restaurant/:rest_id/menus')

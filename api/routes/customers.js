@@ -56,7 +56,7 @@ const login = (request, response) => {
     if (isUser) {
       response.status(200).send(`Successfully logged in ${username}!`)
     } else {
-      response.status(400).send(`Cannot Login for user ${username}. No such username.`)
+      response.status(400).send(`Cannot Login for user ${username}. Wrong username or password.`)
     }
   })
  
@@ -99,7 +99,20 @@ const getRestaurantCategories = (request, response) => {
   })
 }
 
-// /customer/:username/restaurant/:rest_id/menus
+// /restaurant/rest_category/:category
+const getRestaurantByCategory = (request, response) => {
+  const { category } = request.params
+
+  pool.query('SELECT * FROM Restaurant WHERE category = $1', [category], (error, results) => {
+    if (error) {
+      response.status(400).send(`Unable to get restaurants with category ${category}`)
+      throw error
+    }
+    response.status(200).json(results.rows)
+  })
+}
+
+// /restaurant/:rest_id/menus
 const getMenusByRestId = (request, response) => {
   const {rest_id} = request.params
 
@@ -112,7 +125,7 @@ const getMenusByRestId = (request, response) => {
   })
 }
 
-// /customer/:username/restaurant/:rest_id/menus/:menu_id
+// /restaurant/:rest_id/menus/:menu_id
 const getFoodItemsByMenuId = (request, response) => {
   const {menu_id} = request.params
 
@@ -449,6 +462,7 @@ module.exports = {
   getRestaurants,
   getRestaurantsById,
   getRestaurantCategories,
+  getRestaurantByCategory,
   getMenusByRestId,
   getFoodItemsByMenuId,
   getFoodAvailabilityByFid,
