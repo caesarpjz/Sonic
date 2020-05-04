@@ -154,7 +154,7 @@ RETURNS void AS $$
     VALUES (DEFAULT, quantity, daily_limit, name, price, menu_id, TRUE);
 $$ LANGUAGE SQL;
 
-CREATE OR REPLACE FUNCTION addPromotion(start_time DATE, end_time DATE, discount_desc VARCHAR, rest_id INTEGER, in_effect BOOLEAN)
+CREATE OR REPLACE FUNCTION addPromotion(start_time DATE, end_time DATE, discount_desc TEXT, rest_id INTEGER, in_effect BOOLEAN)
 RETURNS void AS $$
 declare
     promo_id integer;

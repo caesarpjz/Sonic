@@ -4,6 +4,7 @@ create type RIGHTS as ENUM('FDS_Manager', 'Restaurant_Staff', 'Customer', 'Rider
 create type ORDER_STATUSES as ENUM('ORDERED', 'ORDER ACCEPTED', 'DELIVERED');
 create type METHODS as ENUM('CASH', 'CREDIT CARD');
 create type RIDER_STATUSES as ENUM('AVAILABLE', 'DELIVERING', 'NOT WORKING');
+create type PROMOTION_TYPES as ENUM('CUSTOMER', 'RESTAURANT');
 
 CREATE TABLE Users (
     id SERIAL,
@@ -35,7 +36,9 @@ CREATE TABLE Promotions (
     pid SERIAL,
     start_time DATE NOT NULL,
     end_time DATE NOT NULL,
-    discount_description VARCHAR(50) NOT NULL,
+    type PROMOTION_TYPES NOT NULL,
+    discount_description TEXT NOT NULL,
+    discount_percentage FLOAT NOT NULL,
     PRIMARY KEY (pid)
 );
 
