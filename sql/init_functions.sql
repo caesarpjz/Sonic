@@ -349,7 +349,7 @@ RETURNS void AS $$
     SET status = 'ORDER ACCEPTED', 
     did = $1 
     WHERE status = 'ORDERED' 
-    ORDER BY oid 
+    ORDER BY oid desc
     LIMIT 1;
 $$ LANGUAGE SQL;
 

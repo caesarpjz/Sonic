@@ -48,16 +48,17 @@ const getReportsByMid = (request, response) => {
 // /managers/:username/createpromotions
 const createPromotionsByMid = (request, response) => {
   const { username } = request.params
-  const { start_time, end_time, discount_desc, in_effect } = request.body
+  const { start_time, end_time, discount_desc, discount_percentage } = request.body
+
   pool.query('SELECT mid from FDS_Managers WHERE username = $1', [username], (error, results) => {
     if (error) {
-      response.status(400).send(`Unable to create Promotion with start_time: ${start_time}, end_time: ${end_time} and discount_description: ${discount_desc} for ${username}. Please try again.`)
+      response.status(400).send(`Unable to create Promotion with start_time: ${start_time}, end_time: ${end_time} and discount_percentage: ${discount_percentage} for ${username}. Please try again.`)
       throw error
     }
     const mid = results.rows[0].mid
-    pool.query('SELECT addPromotionForManagers($1, $2, $3, $4, $5)', [start_time, end_time, discount_desc, mid, in_effect], (error, results) => {
+    pool.query('SELECT addPromotionForManagers($1, $2, $3, $4, $5)', [start_time, end_time, discount_desc, discount_percentage, mid], (error, results) => {
       if (error) {
-        response.status(400).send(`Unable to create Promotion with start_time: ${start_time}, end_time: ${end_time} and discount_description: ${discount_desc} for ${username}. Please try again.`)
+        response.status(400).send(`Unable to create Promotion with start_time: ${start_time}, end_time: ${end_time}, discount_percentage: ${discount_percentage} for ${username}. Please try again.`)
         throw error
       }
       response.status(200).send('Promotion created successfullly')
@@ -68,32 +69,66 @@ const createPromotionsByMid = (request, response) => {
 
 // /managers/:username/promotions
 const getPromotionsByMid = (request, response) => {
-  const { mid } = request.params
+  const { username } = request.params
 
-  pool.query('SELECT * FROM Managers_Has_Promotions WHERE mid = $1', [mid], (error, results) => {
+  pool.query('SELECT mid FROM FDS_Managers WHERE username = $1', [username], (error, results) => {
     if (error) {
-      response.status(400).send('Unable to get Promotions')
+      response.status(400).send(`Unable to get promotions for ${username} `)
       throw error
     }
-    response.status(200).json(results.rows)
+    const mid = results.rows[0].mid
+    pool.query('SELECT p.pid, p.start_date, p.end_date, p.type, p.discount_percentage FROM Managers_Has_Promotions mp, Promotions p WHERE mp.mid = $1 AND mp.pid = p.pid', [mid], (error, results) => {
+      if (error) {
+        response.status(400).send(`Unable to get promotions for ${username}`)
+        throw error
+      }
+      response.status(200).json(results.rows)
+    })
   })
+  
 }
 
-// /managers/:mid/promotions/:pid/ineffect
-const updateInEffectPromotionsByMid = (request, response) => {
-  const { mid, pid } = request.params
-  const { in_effect } = request.body
-  const discount_desc = pool.query('SELECT discount_description FROM Promotions WHERE pid = $1', [pid])
-  pool.query('UPDATE Managers_Has_Promotions SET in_effect = $1 WHERE mid = $2 AND pid = $3', [in_effect, mid, pid], (error, results) => {
+// /managers/:username/promotions/:pid/validity
+const checkIfManagerPromotionIsValidByPid = (request, response) => {
+  const { username, pid } = request.params
+
+  pool.query('SELECT start_date, end_date FROM Promotions WHERE pid = $1', [pid], (error, results) => {
     if (error) {
-      response.status(400).send(`Unable to update promotion with discount description ${discount_desc}`)
-      throw error 
+      response.status(400).send(`Unable to get validity`)
+      throw error
     }
-    response.status(201).send(`Promotion ${pid} with discount description ${discount_desc} is in effect!`)
+    const start_date = results.rows[0].start_date
+    const end_date = results.rows[0].end_date
+    if (start_date >= (new Date()) && end_date <= (new Date())) {
+      response.status(200).send(`Valid`)
+    } else {
+      response.status(400).send('Not Valid')
+    }
   })
+
 }
 
-// /managers/:mid/promotions/:pid
+// /managers/:username/promotions/name/:name
+// const checkIfPromotionIsValidByName = (request, response) => {
+//   const { name } = request.params
+
+//   pool.query('SELECT start_date, end_date FROM Promotions WHERE name = $1', [], (error, results) => {
+//     if (error) {
+//       response.status(400).send(`Unable to get validity`)
+//       throw error
+//     }
+//     const start_date = results.rows[0].start_date
+//     const end_date = results.rows[0].end_date
+//     if (start_date >= (new Date()) && end_date <= (new Date())) {
+//       response.status(200).send(`Valid`)
+//     } else {
+//       response.status(400).send('Not Valid')
+//     }
+//   })
+// }
+
+
+// /managers/:username/promotions/:pid
 const updatePromotionByPid = (request, response) => {
   const { pid } = request.params
   const { start_time, end_time, discount_desc } = request.body
@@ -133,14 +168,13 @@ const updatePromotionByPid = (request, response) => {
   response.status(200).send(`Promotion ${pid} has been updated`)
 }
 
-// /managers/:mid/promotions/delete/:pid
+// /managers/:username/promotions/delete/:pid
 const deletePromotionByPid = (request, response) => {
   const { pid } = request.params
 
-  const discount_desc = pool.query('SELECT discount_description FROM Promotions WHERE pid = $1', [pid])
   pool.query('DELETE FROM Restaurants_Has_Promotions WHERE pid = $1', [pid], (error, results) => {
     if (error) {
-      response.status(400).send(`Unable to delete promotion ${pid} with discount_description ${discount_desc}`)
+      response.status(400).send(`Unable to delete promotion ${pid}`)
       throw error
 
     }
@@ -148,7 +182,7 @@ const deletePromotionByPid = (request, response) => {
   })
 }
 
-// /managers/:mid/createRestaurant
+// /managers/:username/createRestaurant
 const createRestaurant = (request, response) => {
   const { name, info, min_spending, category, restaurant_location } = request.body
 
@@ -161,7 +195,7 @@ const createRestaurant = (request, response) => {
   })
 }
 
-// /managers/:mid/restaurant
+// /managers/:username/restaurant
 const getRestaurants = (request, response) => {
   pool.query('SELECT * FROM restaurants', (error, results) => {
     if (error) {
@@ -172,7 +206,7 @@ const getRestaurants = (request, response) => {
   })
 }
 
-// /managers/:mid/restaurant/:rest_id/update
+// /managers/:username/restaurant/:rest_id/update
 const updateRestaurantInfoByRestId = (request, response) => {
   const { rest_id } = request.params
   const { name, info, min_spending, category, restaurant_location } = request.body
@@ -230,7 +264,7 @@ const updateRestaurantInfoByRestId = (request, response) => {
   response.status(200).send(`Restaurant ${rest_id} Updated`)
 }
 
-// /managers/:mid/restaurant/:rest_id/delete
+// /managers/:username/restaurant/:rest_id/delete
 const deleteRestaurantByRestId = (request, response) => {
   const { rest_id } = request.params
 
@@ -244,7 +278,7 @@ const deleteRestaurantByRestId = (request, response) => {
   })
 }
 
-// /managers/:mid/restaurant/:rest_id/staff
+// /managers/:username/restaurant/:rest_id/staff
 const createRestaurantStaff = (request, response) => {
   const { rest_id } = request.params
   const { username, password, name } = request.body
@@ -259,7 +293,7 @@ const createRestaurantStaff = (request, response) => {
   })
 }
 
-// /managers/:mid/restaurant/:rest_id/restaurant_staff
+// /managers/:username/restaurant/:rest_id/restaurant_staff
 const getRestaurantStaff = (request, response) => {
   const { rest_id } = request.params
 
@@ -273,7 +307,7 @@ const getRestaurantStaff = (request, response) => {
   })
 }
 
-// /managers/:mid/restaurant/:rest_id/restaurant_staff/:rsid/delete
+// /managers/:username/restaurant/:rest_id/restaurant_staff/:rsid/delete
 const deleteRestaurantStaff = (request, response) => {
   const { rest_id, rsid } = request.params
   
@@ -287,7 +321,7 @@ const deleteRestaurantStaff = (request, response) => {
   })
 }
 
-// /managers/:mid/riders
+// /managers/:username/riders
 const getRiders = (request, response) => {
   pool.query('SELECT * FROM Riders', (error, results) => {
     if (error) {
@@ -299,7 +333,7 @@ const getRiders = (request, response) => {
   })
 }
 
-// /managers/:mid/riders/:rid/shifts
+// /managers/:username/riders/:rid/shifts
 const getRiderShifts = (request, response) => {
   const { rid } = request.params
 
@@ -314,19 +348,19 @@ const getRiderShifts = (request, response) => {
 }
 
 // /managers/:mid/riders/:rid/shifts/approval
-const updateShiftApproval = (request, response) => {
-  const { rid } = request.params
-  const { is_approved } = request.body
+// const updateShiftApproval = (request, response) => {
+//   const { rid } = request.params
+//   const { is_approved } = request.body
 
-  pool.query('UPDATE Shift SET is_approved = $1 WHERE rid = $2', [is_approved, rid], (error, results) => {
-    if (error) {
-      response.status(400).send('Unable to approve riders shift. Please try again')
-      throw error
+//   pool.query('UPDATE Shift SET is_approved = $1 WHERE rid = $2', [is_approved, rid], (error, results) => {
+//     if (error) {
+//       response.status(400).send('Unable to approve riders shift. Please try again')
+//       throw error
 
-    }
-    response.status(201).send('Rider Shift has been updated')
-  })
-}
+//     }
+//     response.status(201).send('Rider Shift has been updated')
+//   })
+// }
 
 /** FOR APPROVING RIDERS SIGNUP HAVENT FINISH */
 /** HOW TO GENERATE DIFFERENT REPORTS????????????? */
@@ -336,7 +370,6 @@ module.exports = {
   getReportsByMid,
   createPromotionsByMid,
   getPromotionsByMid,
-  updateInEffectPromotionsByMid,
   updatePromotionByPid,
   deletePromotionByPid,
   createRestaurant,
@@ -347,6 +380,6 @@ module.exports = {
   getRestaurantStaff,
   deleteRestaurantStaff,
   getRiders,
-  getRiderShifts,
-  updateShiftApproval
+  getRiderShifts
+  // updateShiftApproval
 }
