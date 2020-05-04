@@ -1,1 +1,1 @@
-SELECT addPromotionForManagers('20/04/2020', '30/04/2020', 'SELECT * FROM CUSTOMERS', 2.5, 1, TRUE);
+SELECT addPromotionForManagers('20/04/2020', '30/04/2020', 'SELECT * FROM CUSTOMERS', 2.5, 1);

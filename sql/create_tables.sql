@@ -134,7 +134,6 @@ CREATE TABLE Reports (
 CREATE TABLE Managers_Has_Promotions (
     mid INTEGER NOT NULL,
     pid INTEGER NOT NULL,
-    in_effect BOOLEAN NOT NULL default false,
     PRIMARY KEY (mid, pid),
     FOREIGN KEY (mid) REFERENCES FDS_Managers (mid),
     FOREIGN KEY (pid) REFERENCES Promotions (pid) ON DELETE CASCADE ON UPDATE CASCADE
@@ -143,7 +142,6 @@ CREATE TABLE Managers_Has_Promotions (
 CREATE TABLE Restaurants_Has_Promotions (
     rest_id INTEGER NOT NULL,
     pid INTEGER NOT NULL,
-    in_effect BOOLEAN NOT NULL default false,
     PRIMARY KEY (rest_id, pid),
     FOREIGN KEY (rest_id) REFERENCES Restaurants (rest_id),
     FOREIGN KEY (pid) REFERENCES Promotions (pid) ON DELETE CASCADE ON UPDATE CASCADE

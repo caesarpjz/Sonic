@@ -80,7 +80,7 @@ end
 $$ LANGUAGE PLPGSQL;
 
 CREATE OR REPLACE FUNCTION addPromotionForManagers(start_date DATE, end_date DATE, discount_desc TEXT, 
-    discount_percentage FLOAT, mid INTEGER, in_effect BOOLEAN)
+    discount_percentage FLOAT, mid INTEGER)
 RETURNS void AS $$
 declare
     promo_id integer;
@@ -92,7 +92,7 @@ begin
     -- SELECT pid FROM Promotions P WHERE P.start_time = start_time AND P.end_time = end_time AND P.discount_description = discount_desc into promo_id;
 
     INSERT INTO Managers_has_Promotions
-    VALUES (mid, promo_id, in_effect);
+    VALUES (mid, promo_id);
 end
 $$ LANGUAGE PLPGSQL;
 
@@ -157,7 +157,7 @@ RETURNS void AS $$
 $$ LANGUAGE SQL;
 
 CREATE OR REPLACE FUNCTION addRestaurantPromotion(start_date DATE, end_date DATE, discount_desc TEXT, 
-    discount_percentage FLOAT, rest_id INTEGER, in_effect BOOLEAN)
+    discount_percentage FLOAT, rest_id INTEGER)
 RETURNS void AS $$
 declare
     promo_id integer;
@@ -169,7 +169,7 @@ begin
     -- SELECT pid FROM Promotions P WHERE P.start_time = start_time AND P.end_time = end_time AND P.discount_description = discount_desc into promo_id;
 
     INSERT INTO Restaurants_has_Promotions
-    VALUES (rest_id, promo_id, in_effect);
+    VALUES (rest_id, promo_id);
 end
 $$ LANGUAGE PLPGSQL;
 
