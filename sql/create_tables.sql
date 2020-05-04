@@ -34,8 +34,8 @@ CREATE TABLE FDS_Managers (
 
 CREATE TABLE Promotions (
     pid SERIAL,
-    start_time DATE NOT NULL,
-    end_time DATE NOT NULL,
+    start_date DATE NOT NULL,
+    end_date DATE NOT NULL,
     type PROMOTION_TYPES NOT NULL,
     discount_description TEXT NOT NULL,
     discount_percentage FLOAT NOT NULL,
@@ -142,6 +142,7 @@ CREATE TABLE Managers_Has_Promotions (
 CREATE TABLE Restaurants_Has_Promotions (
     rest_id INTEGER NOT NULL,
     pid INTEGER NOT NULL,
+    count INTEGER DEFAULT 0,
     PRIMARY KEY (rest_id, pid),
     FOREIGN KEY (rest_id) REFERENCES Restaurants (rest_id),
     FOREIGN KEY (pid) REFERENCES Promotions (pid) ON DELETE CASCADE ON UPDATE CASCADE

@@ -169,9 +169,48 @@ begin
     -- SELECT pid FROM Promotions P WHERE P.start_time = start_time AND P.end_time = end_time AND P.discount_description = discount_desc into promo_id;
 
     INSERT INTO Restaurants_has_Promotions
-    VALUES (rest_id, promo_id);
+    VALUES (rest_id, promo_id, DEFAULT);
 end
 $$ LANGUAGE PLPGSQL;
+
+-- functions for reports
+CREATE OR REPLACE FUNCTION getOrderSummary(rest_id INTEGER, month INTEGER)
+RETURNS record AS $$
+    SELECT count(*), sum(OCF.quantity * FI.price)
+    FROM Order_Contains_Food OCF join Food_Items FI on OCF.fid = FI.fid
+    join Menus M on M.menu_id = FI.menu_id
+    join Orders O on OCF.oid = O.oid
+    join Deliveries D on O.did = D.did
+    WHERE M.rest_id = $1
+    AND EXTRACT(MONTH FROM D.time_order_placed) = $2;
+$$ LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION getCurrMonthOrderSummary(rest_id INTEGER)
+RETURNS record AS $$
+    SELECT getOrderSummary($1, CAST(EXTRACT(MONTH FROM NOW()) AS INTEGER));
+$$ LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION getTopFive(rest_id INTEGER, month INTEGER)
+RETURNS TABLE(fid INTEGER, name VARCHAR) AS $$
+    SELECT fid, name
+    FROM (
+        SELECT FI.fid, FI.name, sum(OCF.quantity) as total_quantity
+        FROM Order_Contains_Food OCF join Food_Items FI on OCF.fid = FI.fid
+        join Menus M on M.menu_id = FI.menu_id
+        join Orders O on OCF.oid = O.oid
+        join Deliveries D on O.did = D.did  
+        WHERE M.rest_id = $1
+        AND EXTRACT(MONTH FROM D.time_order_placed) = $2
+        group by FI.fid
+    ) as CollatedOrders
+    order by total_quantity desc
+    limit 5;
+$$ LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION getCurrMonthTopFive(rest_id INTEGER)
+RETURNS TABLE(fid INTEGER, name VARCHAR) AS $$
+    SELECT getTopFive($1, CAST(EXTRACT(MONTH FROM NOW()) AS INTEGER));
+$$ LANGUAGE SQL;
 
 -----------------------------
 ----- CUSTOMER FUNCTIONS ----
