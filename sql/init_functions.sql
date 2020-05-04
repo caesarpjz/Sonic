@@ -163,13 +163,13 @@ declare
     promo_id integer;
 begin
     INSERT INTO Promotions
-    VALUES (DEFAULT, start_date, end_date, 'RESTAURANT', discount_desc, discount_percentage)
+    VALUES (DEFAULT, start_date, end_date, 'RESTAURANT', discount_desc, discount_percentage, DEFAULT)
     RETURNING pid INTO promo_id;
 
     -- SELECT pid FROM Promotions P WHERE P.start_time = start_time AND P.end_time = end_time AND P.discount_description = discount_desc into promo_id;
 
     INSERT INTO Restaurants_has_Promotions
-    VALUES (rest_id, promo_id, DEFAULT);
+    VALUES (rest_id, promo_id);
 end
 $$ LANGUAGE PLPGSQL;
 
@@ -211,6 +211,8 @@ CREATE OR REPLACE FUNCTION getCurrMonthTopFive(rest_id INTEGER)
 RETURNS TABLE(fid INTEGER, name VARCHAR) AS $$
     SELECT getTopFive($1, CAST(EXTRACT(MONTH FROM NOW()) AS INTEGER));
 $$ LANGUAGE SQL;
+
+
 
 -----------------------------
 ----- CUSTOMER FUNCTIONS ----

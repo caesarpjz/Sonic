@@ -39,6 +39,7 @@ CREATE TABLE Promotions (
     type PROMOTION_TYPES NOT NULL,
     discount_description TEXT NOT NULL,
     discount_percentage FLOAT NOT NULL,
+    count INTEGER NOT NULL DEFAULT 0,
     PRIMARY KEY (pid)
 );
 
@@ -142,7 +143,6 @@ CREATE TABLE Managers_Has_Promotions (
 CREATE TABLE Restaurants_Has_Promotions (
     rest_id INTEGER NOT NULL,
     pid INTEGER NOT NULL,
-    count INTEGER DEFAULT 0,
     PRIMARY KEY (rest_id, pid),
     FOREIGN KEY (rest_id) REFERENCES Restaurants (rest_id),
     FOREIGN KEY (pid) REFERENCES Promotions (pid) ON DELETE CASCADE ON UPDATE CASCADE
