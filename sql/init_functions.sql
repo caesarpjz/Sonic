@@ -79,15 +79,17 @@ begin
 end
 $$ LANGUAGE PLPGSQL;
 
-CREATE OR REPLACE FUNCTION addPromotionForManagers(start_time DATE, end_time DATE, discount_desc VARCHAR, mid INTEGER, in_effect BOOLEAN)
+CREATE OR REPLACE FUNCTION addPromotionForManagers(start_date DATE, end_date DATE, discount_desc TEXT, 
+    discount_percentage FLOAT, mid INTEGER, in_effect BOOLEAN)
 RETURNS void AS $$
 declare
     promo_id integer;
 begin
     INSERT INTO Promotions
-    VALUES (DEFAULT, start_time, end_time, discount_desc);
+    VALUES (DEFAULT, start_date, end_date, 'CUSTOMER', discount_desc, discount_percentage)
+    RETURNING pid INTO promo_id;
 
-    SELECT pid FROM Promotions P WHERE P.start_time = start_time AND P.end_time = end_time AND P.discount_description = discount_desc into promo_id;
+    -- SELECT pid FROM Promotions P WHERE P.start_time = start_time AND P.end_time = end_time AND P.discount_description = discount_desc into promo_id;
 
     INSERT INTO Managers_has_Promotions
     VALUES (mid, promo_id, in_effect);
@@ -154,15 +156,17 @@ RETURNS void AS $$
     VALUES (DEFAULT, quantity, daily_limit, name, price, menu_id, TRUE);
 $$ LANGUAGE SQL;
 
-CREATE OR REPLACE FUNCTION addPromotion(start_time DATE, end_time DATE, discount_desc TEXT, rest_id INTEGER, in_effect BOOLEAN)
+CREATE OR REPLACE FUNCTION addRestaurantPromotion(start_date DATE, end_date DATE, discount_desc TEXT, 
+    discount_percentage FLOAT, rest_id INTEGER, in_effect BOOLEAN)
 RETURNS void AS $$
 declare
     promo_id integer;
 begin
     INSERT INTO Promotions
-    VALUES (DEFAULT, start_time, end_time, discount_desc);
+    VALUES (DEFAULT, start_date, end_date, 'RESTAURANT', discount_desc, discount_percentage)
+    RETURNING pid INTO promo_id;
 
-    SELECT pid FROM Promotions P WHERE P.start_time = start_time AND P.end_time = end_time AND P.discount_description = discount_desc into promo_id;
+    -- SELECT pid FROM Promotions P WHERE P.start_time = start_time AND P.end_time = end_time AND P.discount_description = discount_desc into promo_id;
 
     INSERT INTO Restaurants_has_Promotions
     VALUES (rest_id, promo_id, in_effect);
