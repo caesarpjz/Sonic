@@ -411,38 +411,52 @@ RETURNS VOID AS $$
 $$ LANGUAGE SQL;
 
 -- FUNCTIONS FOR REPORTS
--- CREATE OR REPLACE FUNCTION getTotalOrders(rid INTEGER, start_date DATE, end_date DATE)
--- RETURNS INTEGER AS $$
---     SELECT count(*)
---     FROM Deliveries D 
---     WHERE D.rid = $1
---     AND D.time_order_delivered >= start_date
---     AND D.time_order_delivered < end_date;
--- $$ LANGUAGE SQL;
+CREATE OR REPLACE FUNCTION getTotalOrders(rid INTEGER, start_date DATE, end_date DATE)
+RETURNS INTEGER AS $$
+    SELECT CAST(count(*) AS INTEGER)
+    FROM Deliveries D 
+    WHERE D.rid = $1
+    AND D.time_order_delivered >= start_date
+    AND D.time_order_delivered < end_date;
+$$ LANGUAGE SQL;
 
--- CREATE OR REPLACE FUNCTION getTotalHours(rid INTEGER, start_date DATE, end_date DATE)
--- RETURNS FLOAT AS $$
---     SELECT sum(EXTRACT(EPOCH FROM (S.end_time - S.start_time) / 60)
---     FROM Riders R join Shifts S on R.rid = S.rid
---     WHERE R.rid = $1
---     AND S.start_time >= $2
---     AND S.start_time < $3
--- $$ LANGUAGE SQL;
+CREATE OR REPLACE FUNCTION getTotalHours(rid INTEGER, start_date DATE, end_date DATE)
+RETURNS FLOAT AS $$
+    SELECT sum(EXTRACT(EPOCH FROM (S.end_time - S.start_time))/3600)
+    FROM Riders R join Shifts S on R.rid = S.rid
+    WHERE R.rid = $1
+    AND S.start_time >= $2
+    AND S.start_time < $3
+$$ LANGUAGE SQL;
 
--- CREATE OR REPLACE FUNCTION getTotalSalary(rid INTEGER, start_date DATE, end_date DATE)
--- RETURNS FLOAT AS $$
+CREATE OR REPLACE FUNCTION getTotalSalary(rid INTEGER, start_date DATE, end_date DATE)
+RETURNS FLOAT AS $$
+declare
+    total_hours FLOAT;
+    total_delivery_fee FLOAT;
+begin
+    SELECT getTotalHours($1, $2, $3) INTO total_hours;
 
--- $$ LANGUAGE SQL;
+    SELECT sum(D.fee)
+    FROM Deliveries D
+    WHERE d.rid = $1
+    INTO total_delivery_fee;
 
--- CREATE OR REPLACE FUNCTION getRiderSummary(
---     IN rid INTEGER, 
---     IN start_date DATE,
---     IN end_date DATE, -- end_date exclusive
---     OUT total_orders INTEGER, 
---     OUT total_hours FLOAT, 
---     OUT total_salary FLOAT)
--- AS $$
---     SELECT getTotalOrders(rid, start_date, end_date) INTO total_orders;
---     SELECT getTotalHours(rid, start_date, end_date) INTO total_hours;
---     SELECT getTotalSalary(rid, start_date, end_date) INTO total_salary;
--- $$ LANGUAGE PLPGSQL;
+    RETURN total_hours * 8 + total_delivery_fee / 2;
+end    
+$$ LANGUAGE PLPGSQL;
+
+CREATE OR REPLACE FUNCTION getRiderSummary(
+    IN rid INTEGER, 
+    IN start_date DATE,
+    IN end_date DATE, -- end_date exclusive
+    OUT total_orders INTEGER, 
+    OUT total_hours FLOAT, 
+    OUT total_salary FLOAT)
+AS $$
+begin
+    SELECT getTotalOrders(rid, start_date, end_date) INTO total_orders;
+    SELECT getTotalHours(rid, start_date, end_date) INTO total_hours;
+    SELECT getTotalSalary(rid, start_date, end_date) INTO total_salary;
+end
+$$ LANGUAGE PLPGSQL;
