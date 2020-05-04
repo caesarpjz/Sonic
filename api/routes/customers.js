@@ -7,15 +7,20 @@ const orderFood = (request, response) => {
   // this should be an array of array. there should be food name, fid, price, quantity ORDERED (NOT QUANTITY LEFT)
   var food_array = request.body.orderList
   const array_length = food_array.length
-  const { payment_method, restaurant_location, location } = request.body
+  const { payment_method, restaurant_location, location, pid } = request.body
   var fee = 5.00
+  var promo_id = pid
+  if (pid == undefined) {
+    promo_id = null
+  }
+  
   pool.query('SELECT cid FROM Customers where username = $1', [username], (error, results) => {
     if (error) {
       response.status(400).send('Unable to order. Please try again')
       throw error
     }
     const cid = results.rows[0].cid
-    pool.query('SELECT addOrder($1, $2, $3, $4, $5)', [fee, cid, payment_method, restaurant_location, location], (error, results) => {
+    pool.query('SELECT addOrder($1, $2, $3, $4, $5, $6)', [fee, cid, payment_method, restaurant_location, location, promo_id], (error, results) => {
       if (error) {
         response.status(400).send('Unable to order. Please try again')
         throw error
@@ -87,7 +92,7 @@ const getRestaurantsById = (request, response) => {
 
 }
 
-// /customer/:username/restaurant_categories
+// /restaurant_categories
 const getRestaurantCategories = (request, response) => {
   pool.query('SELECT * FROM restaurant_categories', (error, results) => {
     if (error) {

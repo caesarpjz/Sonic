@@ -241,10 +241,10 @@ app.get('/', (req, res) => {
     .route('/managers/:username/promotions')
     .get(managersDb.getPromotionsByMid)
 
-    // Update in effect Promotions By Mid
-    app
-    .route('/managers/:username/promotions/:pid/ineffect')
-    .post(managersDb.updateInEffectPromotionsByMid)
+    // // Update in effect Promotions By Mid
+    // app
+    // .route('/managers/:username/promotions/:pid/ineffect')
+    // .post(managersDb.updateInEffectPromotionsByMid)
 
     // Update Promotion by Pid
     app
@@ -302,9 +302,9 @@ app.get('/', (req, res) => {
     .get(managersDb.getRiderShifts)
 
     // Update Riders Shift Approval
-    app
-    .route('/managers/:username/riders/:rid/shifts/approval')
-    .post(managersDb.updateShiftApproval)
+    // app
+    // .route('/managers/:username/riders/:rid/shifts/approval')
+    // .post(managersDb.updateShiftApproval)
 
     // Approve Riders Signup
 
