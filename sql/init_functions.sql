@@ -151,6 +151,22 @@ begin
 end
 $$ LANGUAGE PLPGSQL;
 
+CREATE OR REPLACE FUNCTION getHourlyLocationReport(start_time TIMESTAMP)
+RETURNS TABLE(location VARCHAR, total_number INTEGER) AS $$
+declare
+    end_time TIMESTAMP;
+begin
+    SELECT CAST((start_time + interval '1 hour') as TIMESTAMP) INTO end_time;
+
+    RETURN QUERY 
+        SELECT O.location, CAST(count(*) AS INTEGER)
+        FROM Orders O join Deliveries D on O.did = D.did
+        WHERE D.time_order_placed >= start_time
+        AND D.time_order_placed < end_time
+        GROUP BY O.location;
+end
+$$ LANGUAGE PLPGSQL;
+
 -----------------------------
 ------ STAFF FUNCTIONS ------
 -----------------------------
