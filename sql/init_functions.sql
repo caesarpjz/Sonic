@@ -151,6 +151,32 @@ begin
 end
 $$ LANGUAGE PLPGSQL;
 
+CREATE OR REPLACE FUNCTION getAllMonthCustomerReport()
+RETURNS TABLE (start_of_month DATE, cid INTEGER, total_orders INTEGER, total_cost FLOAT) AS $$
+declare
+    T2 CURSOR FOR 
+        SELECT CAST(date_trunc('month', D.time_order_placed) AS DATE) as start_of_month
+        FROM Orders O join Deliveries D on O.did = D.did
+        group by CAST(date_trunc('month', D.time_order_placed) AS DATE);
+begin
+    DROP TABLE IF EXISTS T1;
+    CREATE TEMP TABLE T1(
+        start_of_month DATE,
+        cid INTEGER,
+        total_orders INTEGER,
+        total_costs FLOAT
+    );
+
+    FOR rec IN T2 LOOP
+        INSERT INTO T1
+        SELECT rec.start_of_month, T3.cid, T3.total_orders, T3.total_cost
+        FROM getMonthlyCustomerReport(rec.start_of_month) T3;
+    END LOOP;
+
+    RETURN QUERY TABLE T1;
+end
+$$ LANGUAGE PLPGSQL;
+
 CREATE OR REPLACE FUNCTION getHourlyLocationReport(estimated_time TIMESTAMP)
 RETURNS TABLE(location VARCHAR, total_number INTEGER) AS $$
 declare
@@ -378,7 +404,7 @@ begin
         total_cost FLOAT
     );
 
-    FOR rec in T2 LOOP
+    FOR rec IN T2 LOOP
         INSERT INTO T1
         SELECT rec.rest_id, rec.month, OS.total_orders, OS.total_costs
         FROM getOrderSummary(rec.rest_id, rec.month) OS;
