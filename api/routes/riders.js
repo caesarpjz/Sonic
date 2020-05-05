@@ -197,19 +197,9 @@ const viewPastSchedule = (request, response) => {
 //   pool
 // }
 
-// /riders/:username/salary
-// const sendSalaryDatePeriod = (request, response) => {
-//   const { username } = request.params
-//   const { start_date, end_date } = request.query
-
-//   pool.query('SELECT rid FROM Riders WHERE username = $1', [username], (error, results) => {
-//     if (error) {
-//       response.status(400).send(`Unable to send start date: ${start_date} and end date: ${end_date}`)
-//       throw error
-//     }
-//     const rid = results.rows[0].rid
-//     pool.query('INSERT ')
-//   })
+// /riders/:username/summary
+// const getSummaryInfo = (request, response) => {
+  
 // }
 
 module.exports = {

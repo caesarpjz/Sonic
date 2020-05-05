@@ -399,10 +399,13 @@ app.get('/', (req, res) => {
 
     // Check if restaurant Promotion is valid by pid
     app
-    .route('/restaurant_staff/:username/restaurant/:rest_id/promotions/:pid/validity')
+    .route('/restaurant_staff/promotions/:pid/validity')
     .get(restaurantsDb.checkIfRestaurantPromotionIsValidByPid)
 
     // Check if restaurant promotion is valid by name
+    app
+    .route('/restaurant_staff/promotions/name/:name/validity')
+    .get(restaurantsDb.checkIfRestaurantPromotionIsValidByName)
 
     // Update Promotions
     app
@@ -424,15 +427,26 @@ app.get('/', (req, res) => {
     .route('restaurant_staff/:username/restaurant/:rest_id/orders')
     .get(restaurantsDb.getRestaurantOrders)
 
-    // Get Order Summary Based on Month order
-    // app
-    // .route('/restaurant_staff/:username/summary')
-    // .get(restaurantsDb.getOrderSummaryBasedOnMonthNumber)
+    // Get Order Summary for all months
+    app
+    .route('/restaurant_staff/:username/allsummary')
+    .get(restaurantsDb.getAllOrderSummary)
 
-    // Generate Summary Info
+    // Get Order Summary Based on Current Month
+    app
+    .route('/restaurant_staff/:username/summary')
+    .get(restaurantsDb.getOrderSummaryBasedOnCurrentMonthNumber)
 
+    // Get Top Five Fav Food Based On current month
+    app
+    .route('/restaurant_staff/:username/currentmonthtopfive')
+    .get(restaurantsDb.getTopFiveFoodSummaryBasedOnCurrentMonthNumber)
 
-    
+    // Get Promo Summary 
+    app
+    .route('/restaurant_staff/:username/:pid/promosummary')
+    .get(restaurantsDb.getPromoSummaryBasedOnPid)
+       
 
 // Start server
 app.listen(process.env.PORT || 3002, () => {
