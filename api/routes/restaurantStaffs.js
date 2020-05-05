@@ -15,7 +15,20 @@ const restaurantStaffLogin = (request, response) => {
     var isUser = results.rows[0].authuser
    
     if (isUser) {
-      response.status(200).send(`Successfully logged in ${username}!`)
+      pool.query('SELECT access_right FROM Users WHERE username = $1', [username], (error, results) => {
+        if (error) {
+          response.status(400).send(`Cannot Login for user ${username}. Please try again.`)
+          throw error
+        }
+        var access_right = results.rows[0].access_right
+        if (access_right == 'Restaurant_Staff') {
+          response.status(200).send(`Successfully logged in ${username}!`)
+        } else {
+          response.status(400).send(`Cannot Login for user ${username}. Wrong username or password.`)
+        }
+        
+      })
+      
     } else {
       response.status(400).send(`Cannot Login for user ${username}. Wrong username or password.`)
     }
@@ -402,7 +415,7 @@ const retrieveReviews = (request, response) => {
 const getRestaurantOrders = (request, response) => {
   const { rest_id } = request.params
 
-  pool.query('SELECT getOrders($1)', [rest_id], (error, results) => {
+  pool.query('SELECT getRestOrders($1)', [rest_id], (error, results) => {
     if (error) {
       response.status(400).send('Unable to get orders')
       throw error

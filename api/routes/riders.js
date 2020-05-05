@@ -13,7 +13,20 @@ const login = (request, response) => {
     var isUser = results.rows[0].authuser
     
     if (isUser) {
-      response.status(200).send(`Successfully logged in ${username}!`)
+      pool.query('SELECT access_right FROM Users WHERE username = $1', [username], (error, results) => {
+        if (error) {
+          response.status(400).send(`Cannot Login for user ${username}. Please try again.`)
+          throw error
+        }
+        var access_right = results.rows[0].access_right
+        if (access_right == 'Rider') {
+          response.status(200).send(`Successfully logged in ${username}!`)
+        } else {
+          response.status(400).send(`Cannot Login for user ${username}. Wrong username or password.`)
+        }
+        
+      })
+      
     } else {
       response.status(400).send(`Cannot Login for user ${username}. Wrong username or password.`)
     }
@@ -52,32 +65,31 @@ const assignOrders = (request, response) => {
     }
     const rid = results.rows[0].rid
 
-    pool.query('SELECT did, time_order_delivered FROM Deliveries WHERE rid = $1 ORDER BY DESC LIMIT 1', [rid], (error, results) => {
+    pool.query('SELECT did FROM Deliveries WHERE rid is null', (error, results) => {
       if (error) {
         response.status(400).send(`Unable to assign orders`)
         throw error
       }
-      const time_ordered = results.rows[0].time_order_delivered
-      const did = results.rows[0].did
-
-      if (time_ordered != null) {
-        pool.query('SELECT updateDelivery($1, $2)', [rid, did], (error, results) => {
-          if (error) {
-            response.status(400).send(`Unable to assign orders`)
-            throw error
-          }
-          
-          pool.query('SELECT assignOrder($1)', [did], (error, results) => {
+      const didArray = results.rows
+      pool.query('SELECT getAvailableRiders()', (error, results) => {
+        if (error) {
+          response.status(400).send(`Unable to assign orders`)
+          throw error
+        }
+        const ridArray = results.rows
+        
+        var m
+        for (m = 0; (m < ridArray.length || m < didArray.length); m++) {
+          pool.query('SELECT allocateRiders($1, $2)', [didArray[m].did, ridArray[m].rid], (error, results) => {
             if (error) {
               response.status(400).send(`Unable to assign orders`)
               throw error
             }
-            response.status(200).send('Order Assigned')
           })
-        })
-      } else {
-        response.status(400).send('Rider Not available')
-      }
+        }
+        response.status(200).send(`Deliveries have been assigned`)
+      })
+
     })
   })
 }

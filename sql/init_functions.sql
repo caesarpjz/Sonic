@@ -100,7 +100,7 @@ $$ LANGUAGE PLPGSQL;
 ------ STAFF FUNCTIONS ------
 -----------------------------
 
-CREATE OR REPLACE FUNCTION getOrders(rest_id INTEGER)
+CREATE OR REPLACE FUNCTION getRestOrders(rest_id INTEGER)
 RETURNS table(oid INTEGER, fid INTEGER, name VARCHAR, quantity INTEGER) AS $$
     SELECT of.oid, f.fid, f.name, of.quantity
     FROM Menus m, Food_Items f, Order_Contains_Food of
