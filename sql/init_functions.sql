@@ -151,11 +151,13 @@ begin
 end
 $$ LANGUAGE PLPGSQL;
 
-CREATE OR REPLACE FUNCTION getHourlyLocationReport(start_time TIMESTAMP)
+CREATE OR REPLACE FUNCTION getHourlyLocationReport(estimated_time TIMESTAMP)
 RETURNS TABLE(location VARCHAR, total_number INTEGER) AS $$
 declare
+    start_time TIMESTAMP;
     end_time TIMESTAMP;
 begin
+    SELECT CAST(date_trunc('hour', $1) AS TIMESTAMP) INTO start_time;
     SELECT CAST((start_time + interval '1 hour') as TIMESTAMP) INTO end_time;
 
     RETURN QUERY 
