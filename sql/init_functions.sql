@@ -80,19 +80,164 @@ end
 $$ LANGUAGE PLPGSQL;
 
 CREATE OR REPLACE FUNCTION addPromotionForManagers(start_date DATE, end_date DATE, discount_desc TEXT, 
-    discount_percentage FLOAT, mid INTEGER)
+    discount_percentage FLOAT, name VARCHAR, mid INTEGER)
 RETURNS void AS $$
 declare
     promo_id integer;
 begin
     INSERT INTO Promotions
-    VALUES (DEFAULT, start_date, end_date, 'CUSTOMER', discount_desc, discount_percentage)
+    VALUES (DEFAULT, start_date, end_date, 'CUSTOMER', discount_desc, discount_percentage, DEFAULT, name)
     RETURNING pid INTO promo_id;
 
     -- SELECT pid FROM Promotions P WHERE P.start_time = start_time AND P.end_time = end_time AND P.discount_description = discount_desc into promo_id;
 
     INSERT INTO Managers_has_Promotions
     VALUES (mid, promo_id);
+end
+$$ LANGUAGE PLPGSQL;
+
+-- FUNCTIONS FOR REPORTS
+CREATE OR REPLACE FUNCTION getOverviewReport(
+    OUT total_new_customers INTEGER,
+    OUT total_orders INTEGER,
+    OUT total_cost INTEGER
+) AS $$
+declare 
+    start_date DATE;
+    end_date DATE;
+begin
+    SELECT CAST(date_trunc('month', NOW()) as DATE) INTO start_date;
+    SELECT CAST((start_date + interval '1 month') as DATE) INTO end_date;
+
+    SELECT count(*)
+    FROM Users U join Customers C on U.id = C.id
+    WHERE U.created_at >= start_date
+    AND U.created_at < end_date
+    INTO total_new_customers;
+
+    SELECT count(*)
+    FROM Deliveries 
+    WHERE time_order_placed >= start_date
+    AND time_order_placed < end_date
+    INTO total_orders;
+
+    SELECT sum(OCF.quantity * FI.price)
+    FROM Deliveries D join Orders O on D.did = O.did
+    join Order_Contains_Food OCF on O.oid = OCF.oid
+    join Food_Items FI on OCF.fid = FI.fid
+    WHERE D.time_order_placed >= start_date
+    AND D.time_order_placed < end_date
+    INTO total_cost;
+end
+$$ LANGUAGE PLPGSQL;
+
+CREATE OR REPLACE FUNCTION getMonthlyCustomerReport(month DATE)
+RETURNS TABLE(cid INTEGER, total_orders INTEGER, total_cost FLOAT) AS $$
+declare
+    start_date DATE;
+    end_date DATE;
+begin
+    SELECT CAST(date_trunc('month', $1) as DATE) INTO start_date;
+    SELECT CAST((start_date + interval '1 month') as DATE) INTO end_date;
+
+    RETURN QUERY 
+        SELECT O.cid, CAST(count(*) AS INTEGER), CAST(sum(OCF.quantity * FI.price) AS FLOAT)
+        FROM Orders O join Deliveries D on O.did = D.did
+        join Order_Contains_Food OCF on O.oid = OCF.oid
+        join Food_Items FI on OCF.fid = FI.fid
+        WHERE D.time_order_placed >= start_date
+        AND D.time_order_placed < end_date
+        group by O.cid;
+end
+$$ LANGUAGE PLPGSQL;
+
+CREATE OR REPLACE FUNCTION getHourlyLocationReport(estimated_time TIMESTAMP)
+RETURNS TABLE(location VARCHAR, total_number INTEGER) AS $$
+declare
+    start_time TIMESTAMP;
+    end_time TIMESTAMP;
+begin
+    SELECT CAST(date_trunc('hour', $1) AS TIMESTAMP) INTO start_time;
+    SELECT CAST((start_time + interval '1 hour') as TIMESTAMP) INTO end_time;
+
+    RETURN QUERY 
+        SELECT O.location, CAST(count(*) AS INTEGER)
+        FROM Orders O join Deliveries D on O.did = D.did
+        WHERE D.time_order_placed >= start_time
+        AND D.time_order_placed < end_time
+        GROUP BY O.location;
+end
+$$ LANGUAGE PLPGSQL;
+
+CREATE OR REPLACE FUNCTION getLocationReportOverview()
+RETURNS TABLE(start_of_hour TIMESTAMP, location VARCHAR, total_number INTEGER) AS $$
+    SELECT date_trunc('hour', D.time_order_placed), O.location, CAST(count(*) AS INTEGER)
+    FROM Orders O join Deliveries D on O.did = D.did
+    GROUP BY date_trunc('hour', D.time_order_placed), O.location;
+$$ LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION getIndivMonthlyRiderReport(
+    IN rid INTEGER,
+    IN estimated_start_month DATE,
+    OUT rider_id INTEGER,
+    OUT start_of_month DATE,
+    OUT total_orders INTEGER,
+    OUT total_salary FLOAT,
+    OUT avg_delivery_time_in_min FLOAT,
+    OUT ratings_received BIGINT,
+    OUT avg_ratings FLOAT
+)
+AS $$
+declare 
+    end_date DATE;
+begin
+    SELECT $1 INTO rider_id;
+    SELECT CAST(date_trunc('month', $2) AS DATE) INTO start_of_month;
+
+    SELECT CAST((start_of_month + interval '1 month') AS DATE) INTO end_date;
+
+    SELECT getTotalOrders($1, start_of_month, end_date) INTO total_orders;
+    SELECT getTotalSalary($1, start_of_month, end_date) INTO total_salary;
+    SELECT getAvgDeliveryTime($1, start_of_month, end_date) INTO avg_delivery_time_in_min;
+    SELECT getTotalRatings($1, start_of_month, end_date) INTO ratings_received;
+    SELECT getAvgRatings($1, start_of_month, end_date) INTO avg_ratings;
+end
+$$ LANGUAGE PLPGSQL;
+
+CREATE OR REPLACE FUNCTION getRiderReport()
+RETURNS TABLE(
+    rider_id INTEGER, 
+    start_of_month DATE,
+    total_orders INTEGER,
+    total_salary FLOAT,
+    avg_delivery_time_in_min FLOAT,
+    ratings_received BIGINT,
+    avg_ratings FLOAT
+ ) AS $$
+declare 
+    T2 CURSOR FOR
+        SELECT R.rid, CAST(date_trunc('month', S.start_time) AS DATE) as start_of_month
+        FROM Riders R join Shifts S on R.rid = S.rid
+        group by R.rid, CAST(date_trunc('month', S.start_time) AS DATE);
+begin
+    DROP TABLE IF EXISTS T1;
+    CREATE TEMP TABLE T1 (
+        rider_id INTEGER, 
+        start_of_month DATE,
+        total_orders INTEGER,
+        total_salary FLOAT,
+        avg_delivery_time_in_min FLOAT,
+        ratings_received BIGINT,
+        avg_ratings FLOAT
+    );
+
+    FOR rec in T2 LOOP
+        INSERT INTO T1 
+        SELECT * 
+        FROM getIndivMonthlyRiderReport(rec.rid, rec.start_of_month);
+    END LOOP;
+
+    RETURN QUERY TABLE T1;
 end
 $$ LANGUAGE PLPGSQL;
 
@@ -166,13 +311,13 @@ RETURNS void AS $$
 $$ LANGUAGE SQL;
 
 CREATE OR REPLACE FUNCTION addRestaurantPromotion(start_date DATE, end_date DATE, discount_desc TEXT, 
-    discount_percentage FLOAT, rest_id INTEGER)
+    discount_percentage FLOAT, name VARCHAR, rest_id INTEGER)
 RETURNS void AS $$
 declare
     promo_id integer;
 begin
     INSERT INTO Promotions
-    VALUES (DEFAULT, start_date, end_date, 'RESTAURANT', discount_desc, discount_percentage, DEFAULT)
+    VALUES (DEFAULT, start_date, end_date, 'RESTAURANT', discount_desc, discount_percentage, DEFAULT, name)
     RETURNING pid INTO promo_id;
 
     -- SELECT pid FROM Promotions P WHERE P.start_time = start_time AND P.end_time = end_time AND P.discount_description = discount_desc into promo_id;
@@ -183,9 +328,13 @@ end
 $$ LANGUAGE PLPGSQL;
 
 -- FUNCTIONS FOR REPORTS
-CREATE OR REPLACE FUNCTION getOrderSummary(rest_id INTEGER, month INTEGER)
-RETURNS record AS $$
-    SELECT count(*), sum(OCF.quantity * FI.price)
+CREATE OR REPLACE FUNCTION getOrderSummary(
+    IN rest_id INTEGER, 
+    IN month INTEGER,
+    OUT total_orders BIGINT,
+    OUT total_costs FLOAT)
+AS $$
+    SELECT count(*) as total_orders, sum(OCF.quantity * FI.price) as total_costs
     FROM Order_Contains_Food OCF join Food_Items FI on OCF.fid = FI.fid
     join Menus M on M.menu_id = FI.menu_id
     join Orders O on OCF.oid = O.oid
@@ -198,6 +347,36 @@ CREATE OR REPLACE FUNCTION getCurrMonthOrderSummary(rest_id INTEGER)
 RETURNS record AS $$
     SELECT getOrderSummary($1, CAST(EXTRACT(MONTH FROM NOW()) AS INTEGER));
 $$ LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION getAllMonthOrderSummary(rest_id INTEGER)
+RETURNS TABLE(restaurant_id INTEGER, month INTEGER, total_orders BIGINT, total_cost FLOAT) AS $$
+declare
+    T2 CURSOR FOR 
+        SELECT M.rest_id, CAST(EXTRACT(MONTH FROM CAST(date_trunc('month', D.time_order_placed) AS DATE)) AS INTEGER) as month
+        FROM Orders O join Deliveries D on O.did = D.did
+        join Order_Contains_Food OCF on O.oid = OCF.oid
+        join Food_Items FI on OCF.fid = FI.fid
+        join Menus M on M.menu_id = FI.menu_id
+        WHERE M.rest_id = $1
+        group by M.rest_id, CAST(date_trunc('month', D.time_order_placed) AS DATE);
+begin
+    DROP TABLE IF EXISTS T1;
+    CREATE TEMP TABLE T1(
+        rest_id INTEGER,
+        month INTEGER,
+        total_orders BIGINT,
+        total_cost FLOAT
+    );
+
+    FOR rec in T2 LOOP
+        INSERT INTO T1
+        SELECT rec.rest_id, rec.month, OS.total_orders, OS.total_costs
+        FROM getOrderSummary(rec.rest_id, rec.month) OS;
+    END LOOP;
+
+    RETURN QUERY TABLE T1;
+end
+$$ LANGUAGE PLPGSQL;
 
 CREATE OR REPLACE FUNCTION getTopFive(rest_id INTEGER, month INTEGER)
 RETURNS TABLE(fid INTEGER, name VARCHAR) AS $$
@@ -344,24 +523,6 @@ $$ LANGUAGE SQL;
 ------ RIDER FUNCTIONS ------
 -----------------------------
 
-CREATE OR REPLACE FUNCTION updateDelivery(rid INTEGER, did INTEGER)
-RETURNS void AS $$
-    UPDATE Deliveries
-    SET rid = $1,
-    time_depart_for_rest = NOW()
-    WHERE did = $2
-$$ LANGUAGE SQL;
-
-CREATE OR REPLACE FUNCTION assignOrders(did INTEGER)
-RETURNS void AS $$
-    UPDATE Orders 
-    SET status = 'ORDER ACCEPTED', 
-    did = $1 
-    WHERE status = 'ORDERED' 
-    ORDER BY oid desc
-    LIMIT 1;
-$$ LANGUAGE SQL;
-
 CREATE OR REPLACE FUNCTION getDeliveringOrder(rid INTEGER)
 RETURNS TABLE(oid INTEGER, did INTEGER, payment_method METHODS, location VARCHAR, food_name VARCHAR, quantity INTEGER) AS $$
     SELECT O.oid, D.did, O.payment_method, O.location, FI.name, OCF.quantity
@@ -484,6 +645,33 @@ begin
     RETURN total_hours * 8 + total_delivery_fee / 2;
 end    
 $$ LANGUAGE PLPGSQL;
+
+CREATE OR REPLACE FUNCTION getAvgDeliveryTime(rid INTEGER, start_date DATE, end_date DATE)
+RETURNS FLOAT AS $$
+    SELECT EXTRACT(EPOCH FROM (D.time_order_delivered - time_depart_from_rest) / 60)
+    FROM Deliveries D
+    WHERE D.rid = $1
+    AND time_depart_from_rest >= start_date
+    AND time_depart_from_rest < end_date
+$$ LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION getTotalRatings(rid INTEGER, start_date DATE, end_date DATE)
+RETURNS BIGINT AS $$
+    SELECT sum(CRD.rating)
+    FROM Customer_Rates_Delivery CRD join Deliveries D on CRD.did = D.did
+    WHERE D.rid = $1
+    AND D.time_order_delivered >= start_date
+    AND D.time_order_delivered < end_date;
+$$ LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION getAvgRatings(rid INTEGER, start_date DATE, end_date DATE)
+RETURNS FLOAT AS $$
+    SELECT CAST(sum(CRD.rating) AS FLOAT) / CAST(count(*) AS FLOAT)
+    FROM Customer_Rates_Delivery CRD join Deliveries D on CRD.did = D.did
+    WHERE D.rid = $1
+    AND D.time_order_delivered >= start_date
+    AND D.time_order_delivered < end_date;
+$$ LANGUAGE SQL;
 
 CREATE OR REPLACE FUNCTION getRiderSummary(
     IN rid INTEGER, 
