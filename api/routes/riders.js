@@ -117,7 +117,7 @@ const viewAssignedDeliveries = (request, response) => {
 
 }
 
-// /riders/:username/delivery/:did/arriveRest
+// /delivery/:did/arriveRest
 const timeArriveAtResturant = (request, response) => {
   const { did } = request.params
 
@@ -130,7 +130,7 @@ const timeArriveAtResturant = (request, response) => {
   })
 }
 
-// /riders/:username/delivery/:did/departRest
+// /delivery/:did/departRest
 const timeDepartFromResturant = (request, response) => {
   const { did } = request.params
 
@@ -143,7 +143,7 @@ const timeDepartFromResturant = (request, response) => {
   })
 }
 
-// /riders/:username/delivery/:did/delivered
+// /delivery/:did/delivered
 const timeOrderDelivered = (request, response) => {
   const { did } = request.params
 

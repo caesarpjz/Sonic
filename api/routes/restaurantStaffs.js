@@ -58,7 +58,7 @@ const getRestaurantInfoById = (request, response) => {
         response.status(400).send(`Unable to get restaurants`)
         throw error
       }
-      response.status(200).json(results.rows)
+      response.status(200).json(results.rows[0])
     })
 }
 
@@ -424,7 +424,7 @@ const getRestaurantOrders = (request, response) => {
   })
 }
 
-// /restaurant_staff/:username/currentmonthsummary
+// /restaurant_staff/currentmonthsummary
 const getOrderSummaryBasedOnCurrentMonthNumber = (request, response) => {
   const { username } = request.params
 
@@ -447,7 +447,7 @@ const getOrderSummaryBasedOnCurrentMonthNumber = (request, response) => {
   })
 }
 
-// /restaurant_staff/:username/allsummary
+// /restaurant_staff/allsummary
 const getAllOrderSummary = (request, response) => {
   const { username } = request.params
 
@@ -470,7 +470,7 @@ const getAllOrderSummary = (request, response) => {
   })
 }
 
-// /restaurant_staff/:username/currentmonthtopfive
+// /restaurant_staff//currentmonthtopfive
 const getTopFiveFoodSummaryBasedOnCurrentMonthNumber = (request, response) => {
   const { username } = request.params
 
@@ -493,7 +493,7 @@ const getTopFiveFoodSummaryBasedOnCurrentMonthNumber = (request, response) => {
   })
 }
 
-// /restaurant_staff/:username/:pid/promosummary
+// /restaurant_staff/:pid/promosummary
 const getPromoSummaryBasedOnPid = (request, response) => {
   const { pid } = request.params
 

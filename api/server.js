@@ -200,17 +200,17 @@ app.get('/', (req, res) => {
 
     // Button function for time arrive at restaurant
     app
-    .route('/riders/:username/delivery/:did/arriveRest')
+    .route('/delivery/:did/arriveRest')
     .get(ridersDb.timeArriveAtResturant)
 
     // Button function for time depart from restaurant
     app
-    .route('/riders/:username/delivery/:did/departRest')
+    .route('/delivery/:did/departRest')
     .get(ridersDb.timeDepartFromResturant)
 
     // Button function for time order has been delivered
     app
-    .route('/riders/:username/delivery/:did/delivered')
+    .route('/delivery/:did/delivered')
     .get(ridersDb.timeOrderDelivered)
 
     // Check if rider is Full time
@@ -251,69 +251,72 @@ app.get('/', (req, res) => {
 
     // Check if manager Promotion is valid by pid
     app
-    .route('/managers/:username/promotions/:pid/validity')
+    .route('/managers/promotions/:pid/validity')
     .get(managersDb.checkIfManagerPromotionIsValidByPid)
 
     // Check if manager promotion is valid by name
+    app
+    .route('/managers/:username/promotions/name/:name/validity')
+    .get(managersDb.checkIfPromotionIsValidByName)
 
     // Update Promotion by Pid
     app
-    .route('/managers/:username/promotions/:pid')
+    .route('/managers/promotions/:pid/update')
     .post(managersDb.updatePromotionByPid)
 
     // Delete Promotions By Pid
     app
-    .route('/managers/:username/promotions/delete/:pid')
+    .route('/managers/promotions/delete/:pid')
     .delete(managersDb.deletePromotionByPid)
 
     // Create Restaurant
     app
-    .route('/managers/:username/createRestaurant')
+    .route('/managers/admin/createRestaurant')
     .post(managersDb.createRestaurant)
 
     // Get Restaurants
     app
-    .route('/managers/:username/restaurant')
+    .route('/managers/restaurant')
     .get(managersDb.getRestaurants)
 
     // Update Restaurant Info
     app
-    .route('/managers/:username/restaurant/:rest_id/update')
+    .route('/managers/restaurant/:rest_id/update')
     .post(managersDb.updateRestaurantInfoByRestId)
 
     // Delete Restaurant By Rest Id
     app
-    .route('/managers/:username/restaurant/:rest_id/delete')
+    .route('/managers/restaurant/:rest_id/delete')
     .delete(managersDb.deleteRestaurantByRestId)
 
     // Create Restaurant Staff
     app
-    .route('/managers/:username/restaurant/:rest_id/staff')
+    .route('/managers/restaurant/:rest_id/staff')
     .post(managersDb.createRestaurantStaff)
 
     // Get Restaurant Staff
     app
-    .route('/managers/:username/restaurant/:rest_id/restaurant_staff')
+    .route('/managers/restaurant/:rest_id/restaurant_staff')
     .get(managersDb.getRestaurantStaff)
 
     // Delete Restaurant Staff
     app
-    .route('/managers/:username/restaurant/:rest_id/restaurant_staff/:rsid/delete')
+    .route('/managers/restaurant/:rest_id/restaurant_staff/:rsid/delete')
     .delete(managersDb.deleteRestaurantStaffByRsid)
 
     // Delete Restaurant Staff by username
     app
-    .route('/managers/:username/restaurant/:rest_id/restaurant_staff/:username/delete')
+    .route('/managers/restaurant/:rest_id/restaurant_staff/:username/delete')
     .delete(managersDb.deleteRestaurantStaffByUsername)
 
     // Get Riders
     app
-    .route('/managers/:username/riders')
+    .route('/managers/admin/riders')
     .get(managersDb.getRiders)
 
     // Get Riders Shifts
     app
-    .route('/managers/:username/riders/:rid/shifts')
+    .route('/managers/admin/riders/:rid/shifts')
     .get(managersDb.getRiderShifts)
 
     // Update Riders Shift Approval
@@ -321,8 +324,30 @@ app.get('/', (req, res) => {
     // .route('/managers/:username/riders/:rid/shifts/approval')
     // .post(managersDb.updateShiftApproval)
 
-    // Approve Riders Signup
+    // Get Overview of Total New Customers and orders for current month
+    app
+    .route('/managers/monthCustomerReport')
+    .get(managersDb.getOverviewOfNewCustomersAndOrdersForCurrMonth)
 
+    // Get Customer Report
+    app
+    .route('/managers/eachCustomerReport')
+    .get(managersDb.getEachCustomerReport)
+
+    // Get Hourly Location report
+    app
+    .route('/managers/hourlylocationreport')
+    .get(managersDb.getHourlyLocationReport)
+
+    // Get Location Report overview
+    app
+    .route('/managers/locationreportoverview')
+    .get(managersDb.getLocationReportOverview)
+
+    // Get Rider report overview
+    app
+    .route('/managers/riderreportoverview')
+    .get(managersDb.getRiderReportOverview)
 
 
 /***** Restaurant Staffs *****/
