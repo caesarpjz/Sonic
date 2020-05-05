@@ -131,6 +131,26 @@ begin
 end
 $$ LANGUAGE PLPGSQL;
 
+CREATE OR REPLACE FUNCTION getMonthlyCustomerReport(month DATE)
+RETURNS TABLE(cid INTEGER, total_orders INTEGER, total_cost FLOAT) AS $$
+declare
+    start_date DATE;
+    end_date DATE;
+begin
+    SELECT CAST(date_trunc('month', $1) as DATE) INTO start_date;
+    SELECT CAST((start_date + interval '1 month') as DATE) INTO end_date;
+
+    RETURN QUERY 
+        SELECT O.cid, CAST(count(*) AS INTEGER), CAST(sum(OCF.quantity * FI.price) AS FLOAT)
+        FROM Orders O join Deliveries D on O.did = D.did
+        join Order_Contains_Food OCF on O.oid = OCF.oid
+        join Food_Items FI on OCF.fid = FI.fid
+        WHERE D.time_order_placed >= start_date
+        AND D.time_order_placed < end_date
+        group by O.cid;
+end
+$$ LANGUAGE PLPGSQL;
+
 -----------------------------
 ------ STAFF FUNCTIONS ------
 -----------------------------
