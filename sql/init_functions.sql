@@ -723,3 +723,48 @@ begin
     SELECT getTotalSalary(rid, start_date, end_date) INTO total_salary;
 end
 $$ LANGUAGE PLPGSQL;
+
+CREATE OR REPLACE FUNCTION getEarliestShift(rid INTEGER)
+RETURNS TIMESTAMP AS $$
+    SELECT min(S.start_time)
+    FROM Shifts S
+    WHERE S.rid = $1
+$$ LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION getLatestShift(rid INTEGER)
+RETURNS TIMESTAMP AS $$
+    SELECT max(S.start_time)
+    FROM Shifts S
+    WHERE S.rid = $1;
+$$ LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION getMonthlyRiderSummary(rid INTEGER)
+RETURNS TABLE(rider_id INTEGER, month DATE, total_orders INTEGER, total_hours FLOAT, total_salary FLOAT) AS $$
+declare
+    T2 CURSOR FOR 
+        SELECT DISTINCT S.rid, CAST(date_trunc('month', S.start_time) AS DATE) as month
+        FROM Shifts S
+        WHERE S.rid = $1;
+begin
+    DROP TABLE IF EXISTS T1;
+    CREATE TEMP TABLE T1(
+        rider_id INTEGER,
+        month DATE,
+        total_orders INTEGER,
+        total_hours FLOAT,
+        total_salary FLOAT
+    );
+
+    FOR rec IN T2 LOOP
+        INSERT INTO T1
+        SELECT rec.rid, rec.month, RS.total_orders, RS.total_hours, RS.total_salary
+        FROM getRiderSummary(
+            rec.rid,
+            rec.month,
+            CAST((rec.month + interval '1 month') as DATE)
+        ) RS;
+    END LOOP;
+
+    RETURN QUERY TABLE T1;
+end
+$$ LANGUAGE PLPGSQL;
