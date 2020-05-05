@@ -41,6 +41,9 @@ export class LoginComponent implements OnInit {
     console.log(this.loginForm);
     this.authService.login(this.loginForm).subscribe((res) => {
       this.alertService.success('Login successful!');
+      sessionStorage.setItem('loggedIn', 'true');
+      // save username from res as well to display the name?
+      sessionStorage.setItem('username', this.loginForm.value.username);
       // route to login page?
     }, (err) => {
       this.alertService.error('Invalid login credentials, please try again')
