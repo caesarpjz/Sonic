@@ -183,7 +183,7 @@ CREATE OR REPLACE FUNCTION getRiderReport(
     OUT start_of_month DATE,
     OUT total_orders INTEGER,
     OUT total_salary FLOAT,
-    OUT avg_delivery_time FLOAT,
+    OUT avg_delivery_time_in_min FLOAT,
     OUT ratings_received BIGINT,
     OUT avg_ratings FLOAT
 )
@@ -198,7 +198,7 @@ begin
 
     SELECT getTotalOrders($1, start_of_month, end_date) INTO total_orders;
     SELECT getTotalSalary($1, start_of_month, end_date) INTO total_salary;
-    SELECT getAvgDeliveryTime($1, start_of_month, end_date) INTO avg_delivery_time;
+    SELECT getAvgDeliveryTime($1, start_of_month, end_date) INTO avg_delivery_time_in_min;
     SELECT getTotalRatings($1, start_of_month, end_date) INTO ratings_received;
     SELECT getAvgRatings($1, start_of_month, end_date) INTO avg_ratings;
 end
