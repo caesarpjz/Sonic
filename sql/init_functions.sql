@@ -80,13 +80,13 @@ end
 $$ LANGUAGE PLPGSQL;
 
 CREATE OR REPLACE FUNCTION addPromotionForManagers(start_date DATE, end_date DATE, discount_desc TEXT, 
-    discount_percentage FLOAT, mid INTEGER)
+    discount_percentage FLOAT, name VARCHAR, mid INTEGER)
 RETURNS void AS $$
 declare
     promo_id integer;
 begin
     INSERT INTO Promotions
-    VALUES (DEFAULT, start_date, end_date, 'CUSTOMER', discount_desc, discount_percentage)
+    VALUES (DEFAULT, start_date, end_date, 'CUSTOMER', discount_desc, discount_percentage, DEFAULT, name)
     RETURNING pid INTO promo_id;
 
     -- SELECT pid FROM Promotions P WHERE P.start_time = start_time AND P.end_time = end_time AND P.discount_description = discount_desc into promo_id;
@@ -176,7 +176,7 @@ RETURNS TABLE(start_of_hour TIMESTAMP, location VARCHAR, total_number INTEGER) A
     GROUP BY date_trunc('hour', D.time_order_placed), O.location;
 $$ LANGUAGE SQL;
 
-CREATE OR REPLACE FUNCTION getRiderReport(
+CREATE OR REPLACE FUNCTION getIndivMonthlyRiderReport(
     IN rid INTEGER,
     IN estimated_start_month DATE,
     OUT rider_id INTEGER,
@@ -203,11 +203,49 @@ begin
     SELECT getAvgRatings($1, start_of_month, end_date) INTO avg_ratings;
 end
 $$ LANGUAGE PLPGSQL;
+
+CREATE OR REPLACE FUNCTION getRiderReport()
+RETURNS TABLE(
+    rider_id INTEGER, 
+    start_of_month DATE,
+    total_orders INTEGER,
+    total_salary FLOAT,
+    avg_delivery_time_in_min FLOAT,
+    ratings_received BIGINT,
+    avg_ratings FLOAT
+ ) AS $$
+declare 
+    T2 CURSOR FOR
+        SELECT R.rid, CAST(date_trunc('month', S.start_time) AS DATE) as start_of_month
+        FROM Riders R join Shifts S on R.rid = S.rid
+        group by R.rid, CAST(date_trunc('month', S.start_time) AS DATE);
+begin
+    DROP TABLE IF EXISTS T1;
+    CREATE TEMP TABLE T1 (
+        rider_id INTEGER, 
+        start_of_month DATE,
+        total_orders INTEGER,
+        total_salary FLOAT,
+        avg_delivery_time_in_min FLOAT,
+        ratings_received BIGINT,
+        avg_ratings FLOAT
+    );
+
+    FOR rec in T2 LOOP
+        INSERT INTO T1 
+        SELECT * 
+        FROM getIndivMonthlyRiderReport(rec.rid, rec.start_of_month);
+    END LOOP;
+
+    RETURN QUERY TABLE T1;
+end
+$$ LANGUAGE PLPGSQL;
+
 -----------------------------
 ------ STAFF FUNCTIONS ------
 -----------------------------
 
-CREATE OR REPLACE FUNCTION getOrders(rest_id INTEGER)
+CREATE OR REPLACE FUNCTION getRestOrders(rest_id INTEGER)
 RETURNS table(oid INTEGER, fid INTEGER, name VARCHAR, quantity INTEGER) AS $$
     SELECT of.oid, f.fid, f.name, of.quantity
     FROM Menus m, Food_Items f, Order_Contains_Food of
@@ -273,13 +311,13 @@ RETURNS void AS $$
 $$ LANGUAGE SQL;
 
 CREATE OR REPLACE FUNCTION addRestaurantPromotion(start_date DATE, end_date DATE, discount_desc TEXT, 
-    discount_percentage FLOAT, rest_id INTEGER)
+    discount_percentage FLOAT, name VARCHAR, rest_id INTEGER)
 RETURNS void AS $$
 declare
     promo_id integer;
 begin
     INSERT INTO Promotions
-    VALUES (DEFAULT, start_date, end_date, 'RESTAURANT', discount_desc, discount_percentage, DEFAULT)
+    VALUES (DEFAULT, start_date, end_date, 'RESTAURANT', discount_desc, discount_percentage, DEFAULT, name)
     RETURNING pid INTO promo_id;
 
     -- SELECT pid FROM Promotions P WHERE P.start_time = start_time AND P.end_time = end_time AND P.discount_description = discount_desc into promo_id;
@@ -290,9 +328,13 @@ end
 $$ LANGUAGE PLPGSQL;
 
 -- FUNCTIONS FOR REPORTS
-CREATE OR REPLACE FUNCTION getOrderSummary(rest_id INTEGER, month INTEGER)
-RETURNS record AS $$
-    SELECT count(*), sum(OCF.quantity * FI.price)
+CREATE OR REPLACE FUNCTION getOrderSummary(
+    IN rest_id INTEGER, 
+    IN month INTEGER,
+    OUT total_orders BIGINT,
+    OUT total_costs FLOAT)
+AS $$
+    SELECT count(*) as total_orders, sum(OCF.quantity * FI.price) as total_costs
     FROM Order_Contains_Food OCF join Food_Items FI on OCF.fid = FI.fid
     join Menus M on M.menu_id = FI.menu_id
     join Orders O on OCF.oid = O.oid
@@ -305,6 +347,36 @@ CREATE OR REPLACE FUNCTION getCurrMonthOrderSummary(rest_id INTEGER)
 RETURNS record AS $$
     SELECT getOrderSummary($1, CAST(EXTRACT(MONTH FROM NOW()) AS INTEGER));
 $$ LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION getAllMonthOrderSummary(rest_id INTEGER)
+RETURNS TABLE(restaurant_id INTEGER, month INTEGER, total_orders BIGINT, total_cost FLOAT) AS $$
+declare
+    T2 CURSOR FOR 
+        SELECT M.rest_id, CAST(EXTRACT(MONTH FROM CAST(date_trunc('month', D.time_order_placed) AS DATE)) AS INTEGER) as month
+        FROM Orders O join Deliveries D on O.did = D.did
+        join Order_Contains_Food OCF on O.oid = OCF.oid
+        join Food_Items FI on OCF.fid = FI.fid
+        join Menus M on M.menu_id = FI.menu_id
+        WHERE M.rest_id = $1
+        group by M.rest_id, CAST(date_trunc('month', D.time_order_placed) AS DATE);
+begin
+    DROP TABLE IF EXISTS T1;
+    CREATE TEMP TABLE T1(
+        rest_id INTEGER,
+        month INTEGER,
+        total_orders BIGINT,
+        total_cost FLOAT
+    );
+
+    FOR rec in T2 LOOP
+        INSERT INTO T1
+        SELECT rec.rest_id, rec.month, OS.total_orders, OS.total_costs
+        FROM getOrderSummary(rec.rest_id, rec.month) OS;
+    END LOOP;
+
+    RETURN QUERY TABLE T1;
+end
+$$ LANGUAGE PLPGSQL;
 
 CREATE OR REPLACE FUNCTION getTopFive(rest_id INTEGER, month INTEGER)
 RETURNS TABLE(fid INTEGER, name VARCHAR) AS $$
@@ -450,24 +522,6 @@ $$ LANGUAGE SQL;
 -----------------------------
 ------ RIDER FUNCTIONS ------
 -----------------------------
-
-CREATE OR REPLACE FUNCTION updateDelivery(rid INTEGER, did INTEGER)
-RETURNS void AS $$
-    UPDATE Deliveries
-    SET rid = $1,
-    time_depart_for_rest = NOW()
-    WHERE did = $2
-$$ LANGUAGE SQL;
-
-CREATE OR REPLACE FUNCTION assignOrders(did INTEGER)
-RETURNS void AS $$
-    UPDATE Orders 
-    SET status = 'ORDER ACCEPTED', 
-    did = $1 
-    WHERE status = 'ORDERED' 
-    ORDER BY oid desc
-    LIMIT 1;
-$$ LANGUAGE SQL;
 
 CREATE OR REPLACE FUNCTION getDeliveringOrder(rid INTEGER)
 RETURNS TABLE(oid INTEGER, did INTEGER, payment_method METHODS, location VARCHAR, food_name VARCHAR, quantity INTEGER) AS $$
