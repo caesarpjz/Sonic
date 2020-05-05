@@ -348,7 +348,8 @@ begin
     join Deliveries D on O.did = D.did
     WHERE M.rest_id = $1
     AND D.time_order_placed >= start_month
-    AND D.time_order_placed < end_month;
+    AND D.time_order_placed < end_month
+    INTO $3, $4;
 end
 $$ LANGUAGE PLPGSQL;
 
@@ -378,8 +379,6 @@ begin
     );
 
     FOR rec in T2 LOOP
-        RAISE NOTICE 'rec: %, %', rec.rest_id, rec.month;
-
         INSERT INTO T1
         SELECT rec.rest_id, rec.month, OS.total_orders, OS.total_costs
         FROM getOrderSummary(rec.rest_id, rec.month) OS;
