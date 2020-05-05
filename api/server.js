@@ -69,12 +69,12 @@ app.get('/', (req, res) => {
 
     // List Restaurant Categories
     app
-    .route('restaurant_categories')
+    .route('/restaurant_categories')
     .get(customersDb.getRestaurantCategories)
 
     // Get Restaurants By category
     app
-    .route('restaurant/rest_category/:category')
+    .route('/restaurant/rest_category/:category')
     .get(customersDb.getRestaurantByCategory)
 
     // View Menus By Rest Id
@@ -421,10 +421,10 @@ app.get('/', (req, res) => {
 
 
     // Get Order Summary Based on Month order
-    app
-    .route('/restaurant_staff/:username/summary')
-    .get(restaurantsDb.getOrderSummaryBasedOnMonthNumber)
-    
+    // app
+    // .route('/restaurant_staff/:username/summary')
+    // .get(restaurantsDb.getOrderSummaryBasedOnMonthNumber)
+
     // Generate Summary Info
 
 

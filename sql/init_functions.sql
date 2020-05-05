@@ -319,7 +319,7 @@ RETURNS TABLE(location VARCHAR) AS $$
     SELECT location
     FROM Orders O join Deliveries D on O.did = D.did
     WHERE O.cid = $1
-    ORDER BY D.time_order_delivered
+    ORDER BY D.time_order_delivered desc
     LIMIT 5;
 $$ LANGUAGE SQL;
 
