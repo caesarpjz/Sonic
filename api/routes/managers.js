@@ -101,11 +101,11 @@ const getPromotionsByMid = (request, response) => {
   
 }
 
-// /managers/:username/promotions/:pid/validity
+// /managers/promotions/:pid/validity
 const checkIfManagerPromotionIsValidByPid = (request, response) => {
   const { username, pid } = request.params
 
-  pool.query('SELECT start_date, end_date FROM Promotions WHERE pid = $1', [pid], (error, results) => {
+  pool.query('SELECT p.start_date, p.end_date FROM Managers_Has_Promotions mp, Promotions p WHERE p.pid = $1 AND mp.pid = p.pid', [pid], (error, results) => {
     if (error) {
       response.status(400).send(`Unable to get validity`)
       throw error
@@ -121,27 +121,27 @@ const checkIfManagerPromotionIsValidByPid = (request, response) => {
 
 }
 
-// /managers/:username/promotions/name/:name/validity
-// const checkIfPromotionIsValidByName = (request, response) => {
-//   const { name } = request.params
+// /managers/promotions/name/:name/validity
+const checkIfPromotionIsValidByName = (request, response) => {
+  const { name } = request.params
 
-//   pool.query('SELECT start_date, end_date FROM Promotions WHERE name = $1', [], (error, results) => {
-//     if (error) {
-//       response.status(400).send(`Unable to get validity`)
-//       throw error
-//     }
-//     const start_date = results.rows[0].start_date
-//     const end_date = results.rows[0].end_date
-//     if (start_date >= (new Date()) && end_date <= (new Date())) {
-//       response.status(200).send(`Valid`)
-//     } else {
-//       response.status(400).send('Not Valid')
-//     }
-//   })
-// }
+  pool.query('SELECT p.start_date, p.end_date FROM Promotions p, Managers_Has_Promotions mp WHERE name = $1 AND mp.pid = p.pid', [name], (error, results) => {
+    if (error) {
+      response.status(400).send(`Unable to get validity`)
+      throw error
+    }
+    const start_date = results.rows[0].start_date
+    const end_date = results.rows[0].end_date
+    if (start_date >= (new Date()) && end_date <= (new Date())) {
+      response.status(200).send(`Valid`)
+    } else {
+      response.status(400).send('Not Valid')
+    }
+  })
+}
 
 
-// /managers/:username/promotions/:pid
+// /manager/promotions/:pid/update
 const updatePromotionByPid = (request, response) => {
   const { pid } = request.params
   const { start_time, end_time, discount_desc } = request.body
@@ -181,7 +181,7 @@ const updatePromotionByPid = (request, response) => {
   response.status(200).send(`Promotion ${pid} has been updated`)
 }
 
-// /managers/:username/promotions/delete/:pid
+// /managers/promotions/delete/:pid
 const deletePromotionByPid = (request, response) => {
   const { pid } = request.params
 
@@ -195,7 +195,7 @@ const deletePromotionByPid = (request, response) => {
   })
 }
 
-// /managers/:username/createRestaurant
+// /managers/admin/createRestaurant
 const createRestaurant = (request, response) => {
   const { name, info, min_spending, category, restaurant_location } = request.body
 
@@ -208,7 +208,7 @@ const createRestaurant = (request, response) => {
   })
 }
 
-// /managers/:username/restaurant
+// /managers/restaurant
 const getRestaurants = (request, response) => {
   pool.query('SELECT * FROM restaurants', (error, results) => {
     if (error) {
@@ -219,7 +219,7 @@ const getRestaurants = (request, response) => {
   })
 }
 
-// /managers/:username/restaurant/:rest_id/update
+// /managers//restaurant/:rest_id/update
 const updateRestaurantInfoByRestId = (request, response) => {
   const { rest_id } = request.params
   const { name, info, min_spending, category, restaurant_location } = request.body
@@ -277,7 +277,7 @@ const updateRestaurantInfoByRestId = (request, response) => {
   response.status(200).send(`Restaurant ${rest_id} Updated`)
 }
 
-// /managers/:username/restaurant/:rest_id/delete
+// /managers/restaurant/:rest_id/delete
 const deleteRestaurantByRestId = (request, response) => {
   const { rest_id } = request.params
 
@@ -291,7 +291,7 @@ const deleteRestaurantByRestId = (request, response) => {
   })
 }
 
-// /managers/:username/restaurant/:rest_id/staff
+// /managers/restaurant/:rest_id/staff
 const createRestaurantStaff = (request, response) => {
   const { rest_id } = request.params
   const { username, password, name } = request.body
@@ -306,7 +306,7 @@ const createRestaurantStaff = (request, response) => {
   })
 }
 
-// /managers/:username/restaurant/:rest_id/restaurant_staff
+// /managers/restaurant/:rest_id/restaurant_staff
 const getRestaurantStaff = (request, response) => {
   const { rest_id } = request.params
 
@@ -320,7 +320,7 @@ const getRestaurantStaff = (request, response) => {
   })
 }
 
-// /managers/:username/restaurant/:rest_id/restaurant_staff/:rsid/delete
+// /managers/restaurant/:rest_id/restaurant_staff/:rsid/delete
 const deleteRestaurantStaffByRsid = (request, response) => {
   const { rest_id, rsid } = request.params
   
@@ -334,7 +334,7 @@ const deleteRestaurantStaffByRsid = (request, response) => {
   })
 }
 
-// /managers/:username/restaurant/:rest_id/restaurant_staff/:username/delete
+// /managers/restaurant/:rest_id/restaurant_staff/:username/delete
 const deleteRestaurantStaffByUsername = (request, response) => {
   const { rest_id, username } = request.params
   
@@ -348,7 +348,7 @@ const deleteRestaurantStaffByUsername = (request, response) => {
   })
 }
 
-// /managers/:username/riders
+// /managers/admin/riders
 const getRiders = (request, response) => {
   pool.query('SELECT * FROM Riders', (error, results) => {
     if (error) {
@@ -360,7 +360,7 @@ const getRiders = (request, response) => {
   })
 }
 
-// /managers/:username/riders/:rid/shifts
+// /managers/admin/riders/:rid/shifts
 const getRiderShifts = (request, response) => {
   const { rid } = request.params
 
@@ -389,8 +389,66 @@ const getRiderShifts = (request, response) => {
 //   })
 // }
 
-/** FOR APPROVING RIDERS SIGNUP HAVENT FINISH */
-/** HOW TO GENERATE DIFFERENT REPORTS????????????? */
+// /managers/monthCustomerReport
+const getOverviewOfNewCustomersAndOrdersForCurrMonth = (request, response) => {
+  pool.query('SELECT getOverviewReport()', (error, results) => {
+    if (error) {
+      response.status(400).send('Unable to get overview reports')
+      throw error
+    }
+    response.status(200).json(results.rows)
+  })
+}
+
+// /managers/eachCustomerReport
+const getEachCustomerReport = (request, response) => {
+  pool.query('SELECT getAllMonthCustomerReport()', (error, results) => {
+    if (error) {
+      response.status(400).send('Unable to get customer overview reports')
+      throw error
+    }
+    
+    response.status(200).json(results.rows)
+  })
+}
+
+// /managers/hourlylocationreport
+const getHourlyLocationReport = (request, response) => {
+  const current_hour = new Date()
+
+  pool.query('SELECT getHourlyLocationReport($1)', [current_hour], (error, results) => {
+    if (error) {
+      response.status(400).send('Unable to get hourly location overview reports')
+      throw error
+    }
+    
+    response.status(200).json(results.rows)
+  })
+}
+
+// /managers/locationreportoverview
+const getLocationReportOverview = (request, response) => {
+  pool.query('SELECT getLocationReportOverview()', (error, results) => {
+    if (error) {
+      response.status(400).send('Unable to get location overview reports')
+      throw error
+    }
+    
+    response.status(200).json(results.rows)
+  })
+}
+
+// /managers/riderreportoverview
+const getRiderReportOverview = (request, response) => {
+  pool.query('SELECT getRiderReport()', (error, results) => {
+    if (error) {
+      response.status(400).send('Unable to get location overview reports')
+      throw error
+    }
+    
+    response.status(200).json(results.rows)
+  })
+}
 
 module.exports = {
   managerLogin,
@@ -409,6 +467,11 @@ module.exports = {
   deleteRestaurantStaffByUsername,
   getRiders,
   getRiderShifts,
-  checkIfManagerPromotionIsValidByPid
-  // updateShiftApproval
+  checkIfManagerPromotionIsValidByPid,
+  checkIfPromotionIsValidByName,
+  getOverviewOfNewCustomersAndOrdersForCurrMonth,
+  getEachCustomerReport,
+  getHourlyLocationReport,
+  getLocationReportOverview,
+  getRiderReportOverview
 }
