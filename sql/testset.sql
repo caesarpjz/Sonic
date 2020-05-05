@@ -8,6 +8,7 @@
 \i 'testset/restaurants.sql'
 \i 'testset/menus.sql'
 \i 'testset/restaurant_staff.sql'
+\i 'testset/food_item_categories.sql'
 \i 'testset/food_items.sql'
 \i 'testset/reports.sql'
 \i 'testset/managers_has_promotions.sql'
