@@ -419,6 +419,10 @@ app.get('/', (req, res) => {
     .route('/restaurant_staff/:username/restaurant/:rest_id/menus/:menu_id/foods/:fid/reviews')
     .get(restaurantsDb.retrieveReviews)
 
+    // Get Order For a specified restaurant
+    app
+    .route('restaurant_staff/:username/restaurant/:rest_id/orders')
+    .get(restaurantsDb.getRestaurantOrders)
 
     // Get Order Summary Based on Month order
     // app
