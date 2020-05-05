@@ -17,7 +17,7 @@ const restaurantStaffLogin = (request, response) => {
     if (isUser) {
       response.status(200).send(`Successfully logged in ${username}!`)
     } else {
-      response.status(400).send(`Cannot Login for user ${username}. No such username.`)
+      response.status(400).send(`Cannot Login for user ${username}. Wrong username or password.`)
     }
   })
   
@@ -28,7 +28,7 @@ const changePassword = (request, response) => {
   // const newPassword = bcrypt.hash(request.body.password, 10)
   const password = request.body.password
 
-  pool.query('SELECT updatePassword($1, $2)', [username, password], (erro, results) => {
+  pool.query('SELECT updatePassword($1, $2)', [username, password], (error, results) => {
     if (error) {
       response.status(400).send(`Unable to change password for user ${username}`)
       throw error
@@ -38,10 +38,9 @@ const changePassword = (request, response) => {
 }
 
 const getRestaurantInfoById = (request, response) => {
-  const { rsid } = request.params
-  //console.log(request.query)
-  pool.query('SELECT rs.rest_id, r.name, r.info, r.min_spending, r.category from Restaurants r, Restaurant_Staff rs WHERE rsid = $1 AND rs.rest_id = r.rest_id',
-    [rsid], (error, results) => {
+  const { username } = request.params
+  pool.query('SELECT rs.rest_id, r.name, r.info, r.min_spending, r.category from Restaurants r, Restaurant_Staff rs WHERE rs.username = $1 AND rs.rest_id = r.rest_id',
+    [username], (error, results) => {
       if (error) {
         response.status(400).send(`Unable to get restaurants`)
         throw error
@@ -64,7 +63,6 @@ const updateRestaurantById = (request, response) => {
     })
   }
   
-  const current_name = pool.query('SELECT name FROM Restaurants WHERE rest_id = $1', [rest_id])
 
   if (min_spending !== undefined) {
     pool.query('UPDATE Restaurants SET min_spending = $1 WHERE rest_id = $2', [min_spending, rest_id], (error, results) => {
@@ -96,10 +94,10 @@ const updateRestaurantById = (request, response) => {
     })
   }
 
-  response.status(201).send(`Restaurant ${current_name} has been updated`)
+  response.status(201).send(`Restaurant has been updated`)
 }
 
-// /restaurant_staff/:rsid/restauarant/:rest_id/menus
+// /restaurant_staff/:username/restauarant/:rest_id/menus
 const getMenuNameById = (request, response) => {
   const { rest_id } = request.params
 
@@ -113,7 +111,7 @@ const getMenuNameById = (request, response) => {
     })
 }
 
-// /restaurant_staff/:rsid/restaurant/:rest_id/menus/:menu_id/foods
+// /restaurant_staff/:username/restaurant/:rest_id/menus/:menu_id/foods
 const getFoodItemByMenuId = (request, response) => {
   const { menu_id } = request.params
 
@@ -126,7 +124,7 @@ const getFoodItemByMenuId = (request, response) => {
   })
 }
 
-// /restaurant_staff/:rsid/restaurant/:rest_id/:menu_id
+// /restaurant_staff/:username/restaurant/:rest_id/:menu_id
 const updateMenuNameByMenuId = (request, response) => {
   const { menu_id } = request.params
   const { new_name } = request.body
@@ -140,7 +138,7 @@ const updateMenuNameByMenuId = (request, response) => {
   })
 }
 
-// /restaurant_staff/:rsid/restaurant/:rest_id/addMenu
+// /restaurant_staff/:username/restaurant/:rest_id/addMenu
 const addMenu = (request, response) => {
   const { rest_id } = request.params
   const { menu_name } = request.body
@@ -154,7 +152,7 @@ const addMenu = (request, response) => {
   })
 }
 
-// /restaurant_staff/:rsid/restaurant/:rest_id/menus/:menu_id
+// /restaurant_staff/:username/restaurant/:rest_id/menus/:menu_id
 const addFoodItemIntoMenu = (request, response) => {
   const { menu_id } = request.params
   const { quantity, daily_limit, name, price } = request.body
@@ -168,7 +166,7 @@ const addFoodItemIntoMenu = (request, response) => {
   })
 }
 
-// /restaurant_staff/:rsid/restaurant/:rest_id/delete/:menu_name
+// /restaurant_staff/:username/restaurant/:rest_id/delete/:menu_name
 const removeMenuByName = (request, response) => {
   const { rest_id } = request.params
   const { menu_name } = request.body
@@ -182,7 +180,7 @@ const removeMenuByName = (request, response) => {
   })
 }
 
-// /restuarant_staff/:rsid/restaurant/:rest_id/delete/:menu_id
+// /restuarant_staff/:username/restaurant/:rest_id/delete/:menu_id
 const removeMenuByMenuId = (request, response) => {
   const { rest_id, menu_id } = request.params
 
@@ -195,76 +193,84 @@ const removeMenuByMenuId = (request, response) => {
   })
 }
 
-// /restaurant_staff/:rsid/restaurant/:rest_id/menus/:menu_id/:fid
+// /restaurant_staff/:username/restaurant/:rest_id/menus/:menu_id/:fid
 const updateFoodItemByMenuIdAndFid = (request, response) => {
   const { menu_id, fid } = request.params
   const { quantity, daily_limit, name, price, availability } = request.body
 
-  if (name !== undefined) {
-    pool.query('UPDATE Food_Items SET name = $1 WHERE fid = $2 AND menu_id = $3', [name, fid, menu_id], (error, results) => {
-      if (error) {
-        response.status(400).send(`Unable to update name to ${name}. Please try again`)
-        throw error
-      }
-      // response.status(201).send(`Food ${fid} successfully updated`)
-    })
-  }
+  pool.query('SELECT name FROM Food_Items WHERE fid = $1', [fid], (error, results) => {
+    if (error) {
+      response.status(400).send(`Unable to Food Item. Please try again`)
+      throw error
+    }
 
-  const food_name = pool.query('SELECT name FROM Food_Items WHERE fid = $1', [fid])
-
-  if (quantity !== undefined) {
-    pool.query('UPDATE Food_Items SET quantity = $1 WHERE fid = $2 AND menu_id = $3', [quantity, fid, menu_id], (error, results) => {
-      if (error) {
-        response.status(400).send(`Unable to update quantity for ${food_name}. Please try again`)
-        throw error
-      }
-      // response.status(201).send(`Food ${fid} successfully updated`)
-    })
-  }
-
-  if (daily_limit !== undefined) {
-    pool.query('UPDATE Food_Items SET daily_limit = $1 WHERE fid = $2 AND menu_id = $3', [daily_limit, fid, menu_id], (error, results) => {
-      if (error) {
-        response.status(400).send(`Unable to update daily limit for ${food_name}. Please try again`)
-        throw error
-      }
-      // response.status(201).send(`Food ${fid} successfully updated`)
-    })
-  }
-
- 
-
-  if (price !== undefined) {
-    pool.query('UPDATE Food_Items SET price = $1 WHERE fid = $2 AND menu_id = $3', [price, fid, menu_id], (error, results) => {
-      if (error) {
-        response.status(400).send(`Unable to update price for ${food_name}. Please try again.`)
-        throw error
-      }
-      // response.status(201).send(`Food ${fid} successfully updated`)
-    })
-  }
-
-  if (availability !== undefined) {
-    pool.query('UPDATE Food_Items SET availability = $1 WHERE fid = $2 AND menu_id = $3', [availability, fid, menu_id], (error, results) => {
-      if (error) {
-        response.status(400).send(`Unable to update availability ${food_name}. Please try again.`)
-        throw error
-      }
-      // response.status(201).send(`Food ${fid} successfully updated`)
-    })
-  }
-
-  response.status(200).send(`Food Item ${food_name} has been updated`)
+    const food_name = results.rows[0].name
+    if (name !== undefined) {
+      pool.query('UPDATE Food_Items SET name = $1 WHERE fid = $2 AND menu_id = $3', [name, fid, menu_id], (error, results) => {
+        if (error) {
+          response.status(400).send(`Unable to update name to ${name}. Please try again`)
+          throw error
+        }
+        // response.status(201).send(`Food ${fid} successfully updated`)
+      })
+    }
+  
+  
+    if (quantity !== undefined) {
+      pool.query('UPDATE Food_Items SET quantity = $1 WHERE fid = $2 AND menu_id = $3', [quantity, fid, menu_id], (error, results) => {
+        if (error) {
+          response.status(400).send(`Unable to update quantity for ${food_name}. Please try again`)
+          throw error
+        }
+        // response.status(201).send(`Food ${fid} successfully updated`)
+      })
+    }
+  
+    if (daily_limit !== undefined) {
+      pool.query('UPDATE Food_Items SET daily_limit = $1 WHERE fid = $2 AND menu_id = $3', [daily_limit, fid, menu_id], (error, results) => {
+        if (error) {
+          response.status(400).send(`Unable to update daily limit for ${food_name}. Please try again`)
+          throw error
+        }
+        // response.status(201).send(`Food ${fid} successfully updated`)
+      })
+    }
+  
+   
+  
+    if (price !== undefined) {
+      pool.query('UPDATE Food_Items SET price = $1 WHERE fid = $2 AND menu_id = $3', [price, fid, menu_id], (error, results) => {
+        if (error) {
+          response.status(400).send(`Unable to update price for ${food_name}. Please try again.`)
+          throw error
+        }
+        // response.status(201).send(`Food ${fid} successfully updated`)
+      })
+    }
+  
+    if (availability !== undefined) {
+      pool.query('UPDATE Food_Items SET availability = $1 WHERE fid = $2 AND menu_id = $3', [availability, fid, menu_id], (error, results) => {
+        if (error) {
+          response.status(400).send(`Unable to update availability ${food_name}. Please try again.`)
+          throw error
+        }
+        // response.status(201).send(`Food ${fid} successfully updated`)
+      })
+    }
+  
+    response.status(200).send(`Food Item ${food_name} has been updated`)
+  })
+  
 }
 
-// /restaurant_staff/:rsid/restaurant/:rest_id/promotions
+// /restaurant_staff/:username/restaurant/:rest_id/promotions
 const createPromotionsByRestId = (request, response) => {
   const { rest_id } = request.params
-  const { start_time, end_time, discount_desc, in_effect } = request.body
+  const { start_time, end_time, discount_desc, discount_percentage } = request.body
 
-  pool.query('SELECT addPromotion($1, $2, $3, $4, $5)', [start_time, end_time, discount_desc, rest_id, in_effect], (error, results) => {
+  pool.query('SELECT addRestaurantPromotion($1, $2, $3, $4, $5)', [start_time, end_time, discount_desc, discount_percentage, rest_id], (error, results) => {
     if (error) {
-      response.status(400).send(`Unable to create Promotion with start_time: ${start_time}, end_time: ${end_time} and discount_description: ${discount_desc}. Please try again.`)
+      response.status(400).send(`Unable to create Promotion with start_time: ${start_time}, end_time: ${end_time} and discount_percentage: ${discount_percentage}. Please try again.`)
       throw error
     }
     response.status(200).send('Promotion created successfullly')
@@ -273,11 +279,11 @@ const createPromotionsByRestId = (request, response) => {
 }
 
 
-// /restaurant_staff/:rsid/restaurant/:rest_id/promotionslist
+// /restaurant_staff/:username/restaurant/:rest_id/promotionslist
 const getPromotionsByRestId = (request, response) => {
   const { rest_id } = request.params
 
-  pool.query('SELECT * FROM Restaurants_Has_Promotions WHERE rest_id = $1', [rest_id], (error, results) => {
+  pool.query('SELECT p.pid, p.start_date, p.end_date, p.type, p.discount_percentage FROM Restaurants_Has_Promotions rp, Promotions p WHERE rest_id = $1 AND rp.pid = p.pid', [rest_id], (error, results) => {
     if (error) {
       response.status(400).send('Unable to get Promotions')
       throw error
@@ -286,24 +292,49 @@ const getPromotionsByRestId = (request, response) => {
   })
 }
 
-// /restaurant_staff/:rsid/restaurant/:rest_id/promotionslist/:pid
-const updateInEffectPromotionsByRestId = (request, response) => {
-  const { rest_id, pid } = request.params
-  const { in_effect } = request.body
+// /restaurant_staff/:username/restaurant/:rest_id/promotions/:pid/validity
+const checkIfRestaurantPromotionIsValidByPid = (request, response) => {
+  const { username, pid } = request.params
 
-  pool.query('UPDATE Restaurants_Has_Promotions SET in_effect = $1 WHERE rest_id = $2 AND pid = $3', [in_effect, rest_id, pid], (error, results) => {
+  pool.query('SELECT start_date, end_date FROM Promotions WHERE pid = $1', [pid], (error, results) => {
     if (error) {
-      response.status(400).send('Unable to update promotion')
-      throw error 
+      response.status(400).send(`Unable to get validity`)
+      throw error
     }
-    response.status(201).send(`Promotion is in effect!`)
+    const start_date = results.rows[0].start_date
+    const end_date = results.rows[0].end_date
+    if (start_date >= (new Date()) && end_date <= (new Date())) {
+      response.status(200).send(`Valid`)
+    } else {
+      response.status(400).send('Not Valid')
+    }
   })
+
 }
 
-// /restaurant_staff/:rsid/restaurant/:rest_id/promotions/:pid
+// /restaurant_staff/:username/restaurant/:rest_id/name/:name/validity
+// const checkIfPromotionIsValidByName = (request, response) => {
+//   const { name } = request.params
+
+//   pool.query('SELECT start_date, end_date FROM Promotions WHERE name = $1', [], (error, results) => {
+//     if (error) {
+//       response.status(400).send(`Unable to get validity`)
+//       throw error
+//     }
+//     const start_date = results.rows[0].start_date
+//     const end_date = results.rows[0].end_date
+//     if (start_date >= (new Date()) && end_date <= (new Date())) {
+//       response.status(200).send(`Valid`)
+//     } else {
+//       response.status(400).send('Not Valid')
+//     }
+//   })
+// }
+
+// /restaurant_staff/:username/restaurant/:rest_id/promotions/:pid
 const updatePromotionByPid = (request, response) => {
   const { pid } = request.params
-  const { start_time, end_time, discount_desc } = request.body
+  const { start_time, end_time, discount_percentage } = request.body
 
   if (start_time !== undefined) {
     pool.query('UPDATE Promotions SET start_time = $1 WHERE pid = $2', [start_time, pid], (error, results) => {
@@ -327,10 +358,10 @@ const updatePromotionByPid = (request, response) => {
     })
   }
 
-  if (discount_desc !== undefined) {
-    pool.query('UPDATE Promotions SET discount_description = $1 WHERE pid = $2', [discount_desc, pid], (error, results) => {
+  if (discount_percentage !== undefined) {
+    pool.query('UPDATE Promotions SET discount_description = $1 WHERE pid = $2', [discount_percentage, pid], (error, results) => {
       if (error) {
-        response.status(400).send(`Unable to update promotion discount description to ${discount_desc}`)
+        response.status(400).send(`Unable to update promotion discount description to ${discount_percentage}`)
         throw error
       }
       // response.status(201).send(`Promotion discount description updated to ${discount_desc}`)
@@ -340,7 +371,7 @@ const updatePromotionByPid = (request, response) => {
   response.status(200).send(`Promotion ${pid} has been updated`)
 }
 
-// /restaurant_staff/:rsid/restaurant/:rest_id/promotions/delete/:pid
+// /restaurant_staff/:username/restaurant/:rest_id/promotions/delete/:pid
 const deletePromotionByPid = (request, response) => {
   const { pid } = request.params
 
@@ -354,7 +385,7 @@ const deletePromotionByPid = (request, response) => {
   })
 }
 
-// /restaurant_staff/:rsid/restaurant/:rest_id/menus/:menu_id/foods/:fid/reviews
+// /restaurant_staff/:username/restaurant/:rest_id/menus/:menu_id/foods/:fid/reviews
 const retrieveReviews = (request, response) => {
   const { fid } = request.params
 
@@ -368,7 +399,30 @@ const retrieveReviews = (request, response) => {
 }
 
 /** SPACE FOR DIFFERENT GENERATING SUMMARY INFOOOOOOOOOOOOOOOOOOOOOO  BUT HOWWWWWWWWWW*/
+// /restaurant_staff/:username/summary
+// const getOrderSummaryBasedOnMonthNumber = (request, response) => {
+//   const { username } = request.params
+//   const { month } = request.query
 
+//   pool.query('SELECT rest_id FROM Restaurant_Staff WHERE username = $1', [username], (error, results) => {
+//     if (error) {
+//       response.status(400).send('Unable to get order summary')
+//       throw error
+
+//     }
+//     const rest_id = results.rows[0].rest_id
+
+//     pool.query('SELECT getOrderSummary($1)', [rest_id], (error, results) => {
+      
+//       console.log(results)
+//       if (error) {
+//         response.status(400).send('Unable to get order summary')
+//         throw error
+//       }
+//       response.status(200).json(results.rows)
+//     })
+//   })
+// }
 
 module.exports = {
     restaurantStaffLogin,
@@ -385,8 +439,9 @@ module.exports = {
     updateFoodItemByMenuIdAndFid,
     createPromotionsByRestId,
     getPromotionsByRestId,
-    updateInEffectPromotionsByRestId,
     updatePromotionByPid,
     deletePromotionByPid,
-    retrieveReviews
+    retrieveReviews,
+    checkIfRestaurantPromotionIsValidByPid,
+    // getOrderSummaryBasedOnMonthNumber
 }

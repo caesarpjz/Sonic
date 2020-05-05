@@ -108,7 +108,7 @@ const checkIfManagerPromotionIsValidByPid = (request, response) => {
 
 }
 
-// /managers/:username/promotions/name/:name
+// /managers/:username/promotions/name/:name/validity
 // const checkIfPromotionIsValidByName = (request, response) => {
 //   const { name } = request.params
 
@@ -308,10 +308,24 @@ const getRestaurantStaff = (request, response) => {
 }
 
 // /managers/:username/restaurant/:rest_id/restaurant_staff/:rsid/delete
-const deleteRestaurantStaff = (request, response) => {
+const deleteRestaurantStaffByRsid = (request, response) => {
   const { rest_id, rsid } = request.params
   
   pool.query('DELETE FROM Restaurant_Staff WHERE rsid = $1 AND rest_id = $2', [rsid, rest_id], (error, results) => {
+    if (error) {
+      response.status(400).send('Unable to delete staff')
+      throw error
+
+    }
+    response.status(201).send(`Restaurant Staff deleted`)
+  })
+}
+
+// /managers/:username/restaurant/:rest_id/restaurant_staff/:username/delete
+const deleteRestaurantStaffByUsername = (request, response) => {
+  const { rest_id, username } = request.params
+  
+  pool.query('DELETE FROM Restaurant_Staff WHERE username = $1 AND rest_id = $2', [username, rest_id], (error, results) => {
     if (error) {
       response.status(400).send('Unable to delete staff')
       throw error
@@ -378,8 +392,10 @@ module.exports = {
   deleteRestaurantByRestId,
   createRestaurantStaff,
   getRestaurantStaff,
-  deleteRestaurantStaff,
+  deleteRestaurantStaffByRsid,
+  deleteRestaurantStaffByUsername,
   getRiders,
-  getRiderShifts
+  getRiderShifts,
+  checkIfManagerPromotionIsValidByPid
   // updateShiftApproval
 }
