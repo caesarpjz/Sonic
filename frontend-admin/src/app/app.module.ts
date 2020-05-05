@@ -16,6 +16,8 @@ import {DialogModule} from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import {PanelModule} from 'primeng/panel';
 import { ViewAllMenusComponent } from './view-all-menus/view-all-menus.component';
+import { ViewAllPromotionsComponent } from './view-all-promotions/view-all-promotions.component';
+import { ViewAllReviewsComponent } from './view-all-reviews/view-all-reviews.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +27,9 @@ import { ViewAllMenusComponent } from './view-all-menus/view-all-menus.component
     HeaderComponent,
     FooterComponent,
     ViewAllFoodItemsComponent,
-    ViewAllMenusComponent
+    ViewAllMenusComponent,
+    ViewAllPromotionsComponent,
+    ViewAllReviewsComponent
   ],
   imports: [
     BrowserModule,
