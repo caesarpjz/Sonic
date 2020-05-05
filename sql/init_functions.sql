@@ -176,7 +176,7 @@ RETURNS TABLE(start_of_hour TIMESTAMP, location VARCHAR, total_number INTEGER) A
     GROUP BY date_trunc('hour', D.time_order_placed), O.location;
 $$ LANGUAGE SQL;
 
-CREATE OR REPLACE FUNCTION getRiderReport(
+CREATE OR REPLACE FUNCTION getIndivMonthlyRiderReport(
     IN rid INTEGER,
     IN estimated_start_month DATE,
     OUT rider_id INTEGER,
@@ -203,11 +203,49 @@ begin
     SELECT getAvgRatings($1, start_of_month, end_date) INTO avg_ratings;
 end
 $$ LANGUAGE PLPGSQL;
+
+CREATE OR REPLACE FUNCTION getRiderReport()
+RETURNS TABLE(
+    rider_id INTEGER, 
+    start_of_month DATE,
+    total_orders INTEGER,
+    total_salary FLOAT,
+    avg_delivery_time_in_min FLOAT,
+    ratings_received BIGINT,
+    avg_ratings FLOAT
+ ) AS $$
+declare 
+    T2 CURSOR FOR
+        SELECT R.rid, CAST(date_trunc('month', S.start_time) AS DATE) as start_of_month
+        FROM Riders R join Shifts S on R.rid = S.rid
+        group by R.rid, CAST(date_trunc('month', S.start_time) AS DATE);
+begin
+    DROP TABLE IF EXISTS T1;
+    CREATE TEMP TABLE T1 (
+        rider_id INTEGER, 
+        start_of_month DATE,
+        total_orders INTEGER,
+        total_salary FLOAT,
+        avg_delivery_time_in_min FLOAT,
+        ratings_received BIGINT,
+        avg_ratings FLOAT
+    );
+
+    FOR rec in T2 LOOP
+        INSERT INTO T1 
+        SELECT * 
+        FROM getIndivMonthlyRiderReport(rec.rid, rec.start_of_month);
+    END LOOP;
+
+    RETURN QUERY TABLE T1;
+end
+$$ LANGUAGE PLPGSQL;
+
 -----------------------------
 ------ STAFF FUNCTIONS ------
 -----------------------------
 
-CREATE OR REPLACE FUNCTION getOrders(rest_id INTEGER)
+CREATE OR REPLACE FUNCTION getRestOrders(rest_id INTEGER)
 RETURNS table(oid INTEGER, fid INTEGER, name VARCHAR, quantity INTEGER) AS $$
     SELECT of.oid, f.fid, f.name, of.quantity
     FROM Menus m, Food_Items f, Order_Contains_Food of
@@ -450,24 +488,6 @@ $$ LANGUAGE SQL;
 -----------------------------
 ------ RIDER FUNCTIONS ------
 -----------------------------
-
-CREATE OR REPLACE FUNCTION updateDelivery(rid INTEGER, did INTEGER)
-RETURNS void AS $$
-    UPDATE Deliveries
-    SET rid = $1,
-    time_depart_for_rest = NOW()
-    WHERE did = $2
-$$ LANGUAGE SQL;
-
-CREATE OR REPLACE FUNCTION assignOrders(did INTEGER)
-RETURNS void AS $$
-    UPDATE Orders 
-    SET status = 'ORDER ACCEPTED', 
-    did = $1 
-    WHERE status = 'ORDERED' 
-    ORDER BY oid desc
-    LIMIT 1;
-$$ LANGUAGE SQL;
 
 CREATE OR REPLACE FUNCTION getDeliveringOrder(rid INTEGER)
 RETURNS TABLE(oid INTEGER, did INTEGER, payment_method METHODS, location VARCHAR, food_name VARCHAR, quantity INTEGER) AS $$
