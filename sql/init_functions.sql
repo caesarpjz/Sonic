@@ -151,6 +151,32 @@ begin
 end
 $$ LANGUAGE PLPGSQL;
 
+CREATE OR REPLACE FUNCTION getAllMonthCustomerReport()
+RETURNS TABLE (start_of_month DATE, cid INTEGER, total_orders INTEGER, total_cost FLOAT) AS $$
+declare
+    T2 CURSOR FOR 
+        SELECT CAST(date_trunc('month', D.time_order_placed) AS DATE) as start_of_month
+        FROM Orders O join Deliveries D on O.did = D.did
+        group by CAST(date_trunc('month', D.time_order_placed) AS DATE);
+begin
+    DROP TABLE IF EXISTS T1;
+    CREATE TEMP TABLE T1(
+        start_of_month DATE,
+        cid INTEGER,
+        total_orders INTEGER,
+        total_costs FLOAT
+    );
+
+    FOR rec IN T2 LOOP
+        INSERT INTO T1
+        SELECT rec.start_of_month, T3.cid, T3.total_orders, T3.total_cost
+        FROM getMonthlyCustomerReport(rec.start_of_month) T3;
+    END LOOP;
+
+    RETURN QUERY TABLE T1;
+end
+$$ LANGUAGE PLPGSQL;
+
 CREATE OR REPLACE FUNCTION getHourlyLocationReport(estimated_time TIMESTAMP)
 RETURNS TABLE(location VARCHAR, total_number INTEGER) AS $$
 declare
@@ -330,29 +356,39 @@ $$ LANGUAGE PLPGSQL;
 -- FUNCTIONS FOR REPORTS
 CREATE OR REPLACE FUNCTION getOrderSummary(
     IN rest_id INTEGER, 
-    IN month INTEGER,
+    IN month DATE,
     OUT total_orders BIGINT,
     OUT total_costs FLOAT)
 AS $$
+declare
+    start_month DATE;
+    end_month DATE;
+begin
+    SELECT CAST(date_trunc('month', $2) AS DATE) INTO start_month;
+    SELECT CAST((start_month + interval '1 month') AS DATE) INTO end_month;
+
     SELECT count(*) as total_orders, sum(OCF.quantity * FI.price) as total_costs
     FROM Order_Contains_Food OCF join Food_Items FI on OCF.fid = FI.fid
     join Menus M on M.menu_id = FI.menu_id
     join Orders O on OCF.oid = O.oid
     join Deliveries D on O.did = D.did
     WHERE M.rest_id = $1
-    AND EXTRACT(MONTH FROM D.time_order_placed) = $2;
-$$ LANGUAGE SQL;
+    AND D.time_order_placed >= start_month
+    AND D.time_order_placed < end_month
+    INTO $3, $4;
+end
+$$ LANGUAGE PLPGSQL;
 
 CREATE OR REPLACE FUNCTION getCurrMonthOrderSummary(rest_id INTEGER)
 RETURNS record AS $$
-    SELECT getOrderSummary($1, CAST(EXTRACT(MONTH FROM NOW()) AS INTEGER));
+    SELECT getOrderSummary($1, CAST(NOW() AS DATE));
 $$ LANGUAGE SQL;
 
 CREATE OR REPLACE FUNCTION getAllMonthOrderSummary(rest_id INTEGER)
-RETURNS TABLE(restaurant_id INTEGER, month INTEGER, total_orders BIGINT, total_cost FLOAT) AS $$
+RETURNS TABLE(restaurant_id INTEGER, month DATE, total_orders BIGINT, total_cost FLOAT) AS $$
 declare
     T2 CURSOR FOR 
-        SELECT M.rest_id, CAST(EXTRACT(MONTH FROM CAST(date_trunc('month', D.time_order_placed) AS DATE)) AS INTEGER) as month
+        SELECT M.rest_id, CAST(date_trunc('month', D.time_order_placed) AS DATE) as month
         FROM Orders O join Deliveries D on O.did = D.did
         join Order_Contains_Food OCF on O.oid = OCF.oid
         join Food_Items FI on OCF.fid = FI.fid
@@ -363,12 +399,12 @@ begin
     DROP TABLE IF EXISTS T1;
     CREATE TEMP TABLE T1(
         rest_id INTEGER,
-        month INTEGER,
+        month DATE,
         total_orders BIGINT,
         total_cost FLOAT
     );
 
-    FOR rec in T2 LOOP
+    FOR rec IN T2 LOOP
         INSERT INTO T1
         SELECT rec.rest_id, rec.month, OS.total_orders, OS.total_costs
         FROM getOrderSummary(rec.rest_id, rec.month) OS;
