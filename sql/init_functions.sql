@@ -167,6 +167,12 @@ begin
 end
 $$ LANGUAGE PLPGSQL;
 
+CREATE OR REPLACE FUNCTION getLocationReportOverview()
+RETURNS TABLE(start_of_hour TIMESTAMP, location VARCHAR, total_number INTEGER) AS $$
+    SELECT date_trunc('hour', D.time_order_placed), O.location, CAST(count(*) AS INTEGER)
+    FROM Orders O join Deliveries D on O.did = D.did
+    GROUP BY date_trunc('hour', D.time_order_placed), O.location;
+$$ LANGUAGE SQL;
 -----------------------------
 ------ STAFF FUNCTIONS ------
 -----------------------------
