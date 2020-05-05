@@ -167,7 +167,15 @@ app.get('/', (req, res) => {
     .route('/restaurant/filter/location')
     .get(customersDb.filterRestaurantByLocation)
 
+    // Get Total Payable
+    app
+    .route('/customer/:username/orders/:oid/cost')
+    .get(customersDb.getTotalPayable)
+
     // Points offset Cost
+    app
+    .route('/customer/:username/usepoints')
+    .post(customersDb.offsetRewardPoints)
 
 /***** Riders *****/
     // Riders Login
@@ -241,10 +249,12 @@ app.get('/', (req, res) => {
     .route('/managers/:username/promotions')
     .get(managersDb.getPromotionsByMid)
 
-    // // Update in effect Promotions By Mid
-    // app
-    // .route('/managers/:username/promotions/:pid/ineffect')
-    // .post(managersDb.updateInEffectPromotionsByMid)
+    // Check if manager Promotion is valid by pid
+    app
+    .route('/managers/:username/promotions/:pid/validity')
+    .get(managersDb.checkIfManagerPromotionIsValidByPid)
+
+    // Check if manager promotion is valid by name
 
     // Update Promotion by Pid
     app
@@ -289,7 +299,12 @@ app.get('/', (req, res) => {
     // Delete Restaurant Staff
     app
     .route('/managers/:username/restaurant/:rest_id/restaurant_staff/:rsid/delete')
-    .delete(managersDb.deleteRestaurantStaff)
+    .delete(managersDb.deleteRestaurantStaffByRsid)
+
+    // Delete Restaurant Staff by username
+    app
+    .route('/managers/:username/restaurant/:rest_id/restaurant_staff/:username/delete')
+    .delete(managersDb.deleteRestaurantStaffByUsername)
 
     // Get Riders
     app
@@ -324,84 +339,92 @@ app.get('/', (req, res) => {
 
     // Get Restaurants that the Staff works at
     app
-    .route('/restaurant_staff/:rsid/restaurant')
+    .route('/restaurant_staff/:username/restaurant')
     .get(restaurantsDb.getRestaurantInfoById)
 
     // Update Name, Min_spending, Info, Category of Restaurant
     app
-    .route('/restaurant_staff/:rsid/restaurant/:rest_id')
+    .route('/restaurant_staff/:username/restaurant/:rest_id')
     .post(restaurantsDb.updateRestaurantById)
 
     // Get Menu By Restauarant Id
     app
-    .route('/restaurant_staff/:rsid/restaurant/:rest_id/menus')
+    .route('/restaurant_staff/:username/restaurant/:rest_id/menus')
     .get(restaurantsDb.getMenuNameById)
 
     // Get Food Item by Menu Id
     app
-    .route('/restaurant_staff/:rsid/restaurant/:rest_id/menus/:menu_id/foods')
+    .route('/restaurant_staff/:username/restaurant/:rest_id/menus/:menu_id/foods')
     .get(restaurantsDb.getFoodItemByMenuId)
 
     // Update Menu Name by Menu Id
     app
-    .route('/restaurant_staff/:rsid/restaurant/:rest_id/:menu_id')
+    .route('/restaurant_staff/:username/restaurant/:rest_id/:menu_id')
     .post(restaurantsDb.updateMenuNameByMenuId)
 
     // Add Menu
     app
-    .route('/restaurant_staff/:rsid/restaurant/:rest_id/addMenu')
+    .route('/restaurant_staff/:username/restaurant/:rest_id/addMenu')
     .post(restaurantsDb.addMenu)
 
     // Add Food Item into Menu
     app
-    .route('/restaurant_staff/:rsid/restaurant/:rest_id/menus/:menu_id/addfood')
+    .route('/restaurant_staff/:username/restaurant/:rest_id/menus/:menu_id/addfood')
     .post(restaurantsDb.addFoodItemIntoMenu)
 
     // Remove Menu by name
     app
-    .route('/restaurant_staff/:rsid/restaurant/:rest_id/delete/:menu_name')
+    .route('/restaurant_staff/:username/restaurant/:rest_id/delete/:menu_name')
     .post(restaurantsDb.removeMenuByName)
 
     // Remove Menu by Menu Id
     app
-    .route('/restaurant_staff/:rsid/restaurant/:rest_id/delete/:menu_id')
+    .route('/restaurant_staff/:username/restaurant/:rest_id/delete/:menu_id')
     .delete(restaurantsDb.removeMenuByMenuId)
 
     // Update Food Item by Menu Id and Fid
     app
-    .route('/restaurant_staff/:rsid/restaurant/:rest_id/menus/:menu_id/:fid')
+    .route('/restaurant_staff/:username/restaurant/:rest_id/menus/:menu_id/:fid')
     .post(restaurantsDb.updateFoodItemByMenuIdAndFid)
 
     // Create Promotions
     app
-    .route('/restaurant_staff/:rsid/restaurant/:rest_id/promotions')
+    .route('/restaurant_staff/:username/restaurant/:rest_id/promotions')
     .post(restaurantsDb.createPromotionsByRestId)
 
     // Get Promos
     app
-    .route('/restaurant_staff/:rsid/restaurant/:rest_id/promotionslist')
+    .route('/restaurant_staff/:username/restaurant/:rest_id/promotionslist')
     .get(restaurantsDb.getPromotionsByRestId)
+
+    // Check if restaurant Promotion is valid by pid
+    app
+    .route('/restaurant_staff/:username/restaurant/:rest_id/promotions/:pid/validity')
+    .get(restaurantsDb.checkIfRestaurantPromotionIsValidByPid)
+
+    // Check if restaurant promotion is valid by name
 
     // Update Promotions
     app
-    .route('restaurant_staff/:rsid/restaurant/:rest_id/promotions/:pid')
+    .route('/restaurant_staff/:username/restaurant/:rest_id/promotions/:pid')
     .post(restaurantsDb.updatePromotionByPid)
 
     // Delete Promos
     app
-    .route('/restaurant_staff/:rsid/restaurant/:rest_id/promotions/delete/:pid')
+    .route('/restaurant_staff/:username/restaurant/:rest_id/promotions/delete/:pid')
     .delete(restaurantsDb.deletePromotionByPid)
-
-    // Change In Effect Boolean
-    app
-    .route('/restaurant_staff/:rsid/restaurant/:rest_id/promotionslist/:pid')
-    .post(restaurantsDb.updateInEffectPromotionsByRestId)
 
     // Retrieve Reviews
     app
-    .route('/restaurant_staff/:rsid/restaurant/:rest_id/menus/:menu_id/foods/:fid/reviews')
+    .route('/restaurant_staff/:username/restaurant/:rest_id/menus/:menu_id/foods/:fid/reviews')
     .get(restaurantsDb.retrieveReviews)
 
+
+    // Get Order Summary Based on Month order
+    app
+    .route('/restaurant_staff/:username/summary')
+    .get(restaurantsDb.getOrderSummaryBasedOnMonthNumber)
+    
     // Generate Summary Info
 
 

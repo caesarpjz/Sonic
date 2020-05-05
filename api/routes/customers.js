@@ -231,6 +231,19 @@ const getOrdersByCid = (request, response) => {
 
 }
 
+// /customer/:username/orders/:oid/cost
+const getTotalPayable = (request, response) => {
+  const { username, oid } = request.params
+
+  pool.query('SELECT getTotalPayable($1)', [oid], (error, results) => {
+    if (error) {
+      response.status(400).send('Unable to get total payable')
+      throw error
+    }
+    response.status(200).json(results.rows)
+  })
+}
+
 // /customer/:username/orders/:did/review
 const rateDeliveriesByDid = (request, response) => {
   const { username, did } = request.params
@@ -453,9 +466,33 @@ const filterRestaurantByLocation = (request, response) => {
   })
 }
 
-// /restaurant
+// /customer/:username/usepoints
+const offsetRewardPoints = (request, response) => {
+  const { username } = request.params
+  const { points } = request.body
 
-/** POINTS TO OFFEST COST */
+  pool.query('SELECT points FROM Customers WHERE username =$1' [username], (error, results) => {
+    if (error) {
+      response.status(400).send('Unable to use points')
+      throw error
+    }
+    var original_points = results.rows[0].points
+
+    if (typeof(points) === 'string') {
+      points = parseInt(points)
+    }
+    var new_points = original_points - points
+
+    pool.query('UPDATE Customers SET points = $1 WHERE username = $2', [new_points, username], (error, results) => {
+      if (error) {
+        response.status(400).send('Unable to use points')
+        throw error
+      }
+      response.status(200).send(`Points deducted`)
+
+    })
+  })
+}
 
 
 
@@ -475,6 +512,7 @@ module.exports = {
   viewProfile,
   getPointsById,
   getOrdersByCid,
+  getTotalPayable,
   rateDeliveriesByDid,
   getFoodItemsBySpecifiedOrderId,
   reviewsFoodItems,
@@ -485,5 +523,6 @@ module.exports = {
   deleteReviewByFid,
   updateReviewByFid,
   filterRestaurantByCategory,
-  filterRestaurantByLocation
+  filterRestaurantByLocation,
+  offsetRewardPoints
 }
