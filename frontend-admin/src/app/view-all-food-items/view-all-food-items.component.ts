@@ -24,25 +24,17 @@ export class ViewAllFoodItemsComponent implements OnInit {
 
   ngOnInit() {
     let food1: Food;
-    food1 = new Food(1, "Hamburger", "Western", 25.00, 10);
+    food1 = new Food(1, "Hamburger", "Western", 25.00, 10, 1);
 
     let food2: Food;
-    food2 = new Food(2, "Cheese Fries", "Western", 5.00, 15);
+    food2 = new Food(2, "Cheese Fries", "Western", 5.00, 15, 1);
 
     let food3: Food;
-    food3 = new Food(3, "Potato Wedges", "Western", 8.00, 10);
+    food3 = new Food(3, "Potato Wedges", "Western", 8.00, 10, 2);
 
     this.foods.push(food1);
     this.foods.push(food2);
     this.foods.push(food3);
-
-    this.cols = [
-      { field: 'foodId', header: "Food Id" },
-      { field: 'name', header: "Name" },
-      { field: 'category', header: "Category" },
-      { field: 'price', header: "Price" },
-      { field: 'dailyLimit', header: "Daily Limit" },
-    ];
   }
 
   showDialog1(foodToView: Food) {
