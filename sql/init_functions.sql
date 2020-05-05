@@ -96,6 +96,113 @@ begin
 end
 $$ LANGUAGE PLPGSQL;
 
+-- FUNCTIONS FOR REPORTS
+CREATE OR REPLACE FUNCTION getOverviewReport(
+    OUT total_new_customers INTEGER,
+    OUT total_orders INTEGER,
+    OUT total_cost INTEGER
+) AS $$
+declare 
+    start_date DATE;
+    end_date DATE;
+begin
+    SELECT CAST(date_trunc('month', NOW()) as DATE) INTO start_date;
+    SELECT CAST((start_date + interval '1 month') as DATE) INTO end_date;
+
+    SELECT count(*)
+    FROM Users U join Customers C on U.id = C.id
+    WHERE U.created_at >= start_date
+    AND U.created_at < end_date
+    INTO total_new_customers;
+
+    SELECT count(*)
+    FROM Deliveries 
+    WHERE time_order_placed >= start_date
+    AND time_order_placed < end_date
+    INTO total_orders;
+
+    SELECT sum(OCF.quantity * FI.price)
+    FROM Deliveries D join Orders O on D.did = O.did
+    join Order_Contains_Food OCF on O.oid = OCF.oid
+    join Food_Items FI on OCF.fid = FI.fid
+    WHERE D.time_order_placed >= start_date
+    AND D.time_order_placed < end_date
+    INTO total_cost;
+end
+$$ LANGUAGE PLPGSQL;
+
+CREATE OR REPLACE FUNCTION getMonthlyCustomerReport(month DATE)
+RETURNS TABLE(cid INTEGER, total_orders INTEGER, total_cost FLOAT) AS $$
+declare
+    start_date DATE;
+    end_date DATE;
+begin
+    SELECT CAST(date_trunc('month', $1) as DATE) INTO start_date;
+    SELECT CAST((start_date + interval '1 month') as DATE) INTO end_date;
+
+    RETURN QUERY 
+        SELECT O.cid, CAST(count(*) AS INTEGER), CAST(sum(OCF.quantity * FI.price) AS FLOAT)
+        FROM Orders O join Deliveries D on O.did = D.did
+        join Order_Contains_Food OCF on O.oid = OCF.oid
+        join Food_Items FI on OCF.fid = FI.fid
+        WHERE D.time_order_placed >= start_date
+        AND D.time_order_placed < end_date
+        group by O.cid;
+end
+$$ LANGUAGE PLPGSQL;
+
+CREATE OR REPLACE FUNCTION getHourlyLocationReport(estimated_time TIMESTAMP)
+RETURNS TABLE(location VARCHAR, total_number INTEGER) AS $$
+declare
+    start_time TIMESTAMP;
+    end_time TIMESTAMP;
+begin
+    SELECT CAST(date_trunc('hour', $1) AS TIMESTAMP) INTO start_time;
+    SELECT CAST((start_time + interval '1 hour') as TIMESTAMP) INTO end_time;
+
+    RETURN QUERY 
+        SELECT O.location, CAST(count(*) AS INTEGER)
+        FROM Orders O join Deliveries D on O.did = D.did
+        WHERE D.time_order_placed >= start_time
+        AND D.time_order_placed < end_time
+        GROUP BY O.location;
+end
+$$ LANGUAGE PLPGSQL;
+
+CREATE OR REPLACE FUNCTION getLocationReportOverview()
+RETURNS TABLE(start_of_hour TIMESTAMP, location VARCHAR, total_number INTEGER) AS $$
+    SELECT date_trunc('hour', D.time_order_placed), O.location, CAST(count(*) AS INTEGER)
+    FROM Orders O join Deliveries D on O.did = D.did
+    GROUP BY date_trunc('hour', D.time_order_placed), O.location;
+$$ LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION getRiderReport(
+    IN rid INTEGER,
+    IN estimated_start_month DATE,
+    OUT rider_id INTEGER,
+    OUT start_of_month DATE,
+    OUT total_orders INTEGER,
+    OUT total_salary FLOAT,
+    OUT avg_delivery_time_in_min FLOAT,
+    OUT ratings_received BIGINT,
+    OUT avg_ratings FLOAT
+)
+AS $$
+declare 
+    end_date DATE;
+begin
+    SELECT $1 INTO rider_id;
+    SELECT CAST(date_trunc('month', $2) AS DATE) INTO start_of_month;
+
+    SELECT CAST((start_of_month + interval '1 month') AS DATE) INTO end_date;
+
+    SELECT getTotalOrders($1, start_of_month, end_date) INTO total_orders;
+    SELECT getTotalSalary($1, start_of_month, end_date) INTO total_salary;
+    SELECT getAvgDeliveryTime($1, start_of_month, end_date) INTO avg_delivery_time_in_min;
+    SELECT getTotalRatings($1, start_of_month, end_date) INTO ratings_received;
+    SELECT getAvgRatings($1, start_of_month, end_date) INTO avg_ratings;
+end
+$$ LANGUAGE PLPGSQL;
 -----------------------------
 ------ STAFF FUNCTIONS ------
 -----------------------------
@@ -484,6 +591,33 @@ begin
     RETURN total_hours * 8 + total_delivery_fee / 2;
 end    
 $$ LANGUAGE PLPGSQL;
+
+CREATE OR REPLACE FUNCTION getAvgDeliveryTime(rid INTEGER, start_date DATE, end_date DATE)
+RETURNS FLOAT AS $$
+    SELECT EXTRACT(EPOCH FROM (D.time_order_delivered - time_depart_from_rest) / 60)
+    FROM Deliveries D
+    WHERE D.rid = $1
+    AND time_depart_from_rest >= start_date
+    AND time_depart_from_rest < end_date
+$$ LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION getTotalRatings(rid INTEGER, start_date DATE, end_date DATE)
+RETURNS BIGINT AS $$
+    SELECT sum(CRD.rating)
+    FROM Customer_Rates_Delivery CRD join Deliveries D on CRD.did = D.did
+    WHERE D.rid = $1
+    AND D.time_order_delivered >= start_date
+    AND D.time_order_delivered < end_date;
+$$ LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION getAvgRatings(rid INTEGER, start_date DATE, end_date DATE)
+RETURNS FLOAT AS $$
+    SELECT CAST(sum(CRD.rating) AS FLOAT) / CAST(count(*) AS FLOAT)
+    FROM Customer_Rates_Delivery CRD join Deliveries D on CRD.did = D.did
+    WHERE D.rid = $1
+    AND D.time_order_delivered >= start_date
+    AND D.time_order_delivered < end_date;
+$$ LANGUAGE SQL;
 
 CREATE OR REPLACE FUNCTION getRiderSummary(
     IN rid INTEGER, 
