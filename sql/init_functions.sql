@@ -175,6 +175,34 @@ RETURNS TABLE(start_of_hour TIMESTAMP, location VARCHAR, total_number INTEGER) A
     FROM Orders O join Deliveries D on O.did = D.did
     GROUP BY date_trunc('hour', D.time_order_placed), O.location;
 $$ LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION getRiderReport(
+    IN rid INTEGER,
+    IN estimated_start_month DATE,
+    OUT rider_id INTEGER,
+    OUT start_of_month DATE,
+    OUT total_orders INTEGER,
+    OUT total_salary FLOAT,
+    OUT avg_delivery_time FLOAT,
+    OUT ratings_received BIGINT,
+    OUT avg_ratings FLOAT
+)
+AS $$
+declare 
+    end_date DATE;
+begin
+    SELECT $1 INTO rider_id;
+    SELECT CAST(date_trunc('month', $2) AS DATE) INTO start_of_month;
+
+    SELECT CAST((start_of_month + interval '1 month') AS DATE) INTO end_date;
+
+    SELECT getTotalOrders($1, start_of_month, end_date) INTO total_orders;
+    SELECT getTotalSalary($1, start_of_month, end_date) INTO total_salary;
+    SELECT getAvgDeliveryTime($1, start_of_month, end_date) INTO avg_delivery_time;
+    SELECT getTotalRatings($1, start_of_month, end_date) INTO ratings_received;
+    SELECT getAvgRatings($1, start_of_month, end_date) INTO avg_ratings;
+end
+$$ LANGUAGE PLPGSQL;
 -----------------------------
 ------ STAFF FUNCTIONS ------
 -----------------------------
@@ -536,6 +564,33 @@ begin
     RETURN total_hours * 8 + total_delivery_fee / 2;
 end    
 $$ LANGUAGE PLPGSQL;
+
+CREATE OR REPLACE FUNCTION getAvgDeliveryTime(rid INTEGER, start_date DATE, end_date DATE)
+RETURNS FLOAT AS $$
+    SELECT EXTRACT(EPOCH FROM (D.time_order_delivered - time_depart_from_rest) / 60)
+    FROM Deliveries D
+    WHERE D.rid = $1
+    AND time_depart_from_rest >= start_date
+    AND time_depart_from_rest < end_date
+$$ LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION getTotalRatings(rid INTEGER, start_date DATE, end_date DATE)
+RETURNS BIGINT AS $$
+    SELECT sum(CRD.rating)
+    FROM Customer_Rates_Delivery CRD join Deliveries D on CRD.did = D.did
+    WHERE D.rid = $1
+    AND D.time_order_delivered >= start_date
+    AND D.time_order_delivered < end_date;
+$$ LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION getAvgRatings(rid INTEGER, start_date DATE, end_date DATE)
+RETURNS FLOAT AS $$
+    SELECT CAST(sum(CRD.rating) AS FLOAT) / CAST(count(*) AS FLOAT)
+    FROM Customer_Rates_Delivery CRD join Deliveries D on CRD.did = D.did
+    WHERE D.rid = $1
+    AND D.time_order_delivered >= start_date
+    AND D.time_order_delivered < end_date;
+$$ LANGUAGE SQL;
 
 CREATE OR REPLACE FUNCTION getRiderSummary(
     IN rid INTEGER, 
