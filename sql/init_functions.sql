@@ -330,10 +330,16 @@ RETURNS void AS $$
     VALUES (DEFAULT, rest_id, name);
 $$ LANGUAGE SQL;
 
-CREATE OR REPLACE FUNCTION addFoodItem(quantity INTEGER, daily_limit INTEGER, name VARCHAR, price FLOAT, menu_id INTEGER)
+CREATE OR REPLACE FUNCTION addFoodItem(
+    quantity INTEGER, 
+    daily_limit INTEGER, 
+    name VARCHAR, 
+    price FLOAT, 
+    menu_id INTEGER,
+    category VARCHAR)
 RETURNS void AS $$
     INSERT INTO Food_Items
-    VALUES (DEFAULT, quantity, daily_limit, name, price, menu_id, TRUE);
+    VALUES (DEFAULT, quantity, daily_limit, name, price, menu_id, category, TRUE);
 $$ LANGUAGE SQL;
 
 CREATE OR REPLACE FUNCTION addRestaurantPromotion(start_date DATE, end_date DATE, discount_desc TEXT, 
