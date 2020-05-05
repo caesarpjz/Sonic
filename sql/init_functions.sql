@@ -378,6 +378,8 @@ begin
     );
 
     FOR rec in T2 LOOP
+        RAISE NOTICE 'rec: %, %', rec.rest_id, rec.month;
+
         INSERT INTO T1
         SELECT rec.rest_id, rec.month, OS.total_orders, OS.total_costs
         FROM getOrderSummary(rec.rest_id, rec.month) OS;
