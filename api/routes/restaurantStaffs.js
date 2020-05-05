@@ -15,7 +15,20 @@ const restaurantStaffLogin = (request, response) => {
     var isUser = results.rows[0].authuser
    
     if (isUser) {
-      response.status(200).send(`Successfully logged in ${username}!`)
+      pool.query('SELECT access_right FROM Users WHERE username = $1', [username], (error, results) => {
+        if (error) {
+          response.status(400).send(`Cannot Login for user ${username}. Please try again.`)
+          throw error
+        }
+        var access_right = results.rows[0].access_right
+        if (access_right == 'Restaurant_Staff') {
+          response.status(200).send(`${username}`)
+        } else {
+          response.status(400).send(`Cannot Login for user ${username}. Wrong username or password.`)
+        }
+        
+      })
+      
     } else {
       response.status(400).send(`Cannot Login for user ${username}. Wrong username or password.`)
     }
@@ -312,24 +325,24 @@ const checkIfRestaurantPromotionIsValidByPid = (request, response) => {
 
 }
 
-// /restaurant_staff/:username/restaurant/:rest_id/name/:name/validity
-// const checkIfPromotionIsValidByName = (request, response) => {
-//   const { name } = request.params
+// /restaurant_staff/promotions/name/:name/validity
+const checkIfRestaurantPromotionIsValidByName = (request, response) => {
+  const { name } = request.params
 
-//   pool.query('SELECT start_date, end_date FROM Promotions WHERE name = $1', [], (error, results) => {
-//     if (error) {
-//       response.status(400).send(`Unable to get validity`)
-//       throw error
-//     }
-//     const start_date = results.rows[0].start_date
-//     const end_date = results.rows[0].end_date
-//     if (start_date >= (new Date()) && end_date <= (new Date())) {
-//       response.status(200).send(`Valid`)
-//     } else {
-//       response.status(400).send('Not Valid')
-//     }
-//   })
-// }
+  pool.query('SELECT start_date, end_date FROM Promotions WHERE name = $1', [name], (error, results) => {
+    if (error) {
+      response.status(400).send(`Unable to get validity`)
+      throw error
+    }
+    const start_date = results.rows[0].start_date
+    const end_date = results.rows[0].end_date
+    if (start_date >= (new Date()) && end_date <= (new Date())) {
+      response.status(200).send(`Valid`)
+    } else {
+      response.status(400).send('Not Valid')
+    }
+  })
+}
 
 // /restaurant_staff/:username/restaurant/:rest_id/promotions/:pid
 const updatePromotionByPid = (request, response) => {
@@ -402,7 +415,7 @@ const retrieveReviews = (request, response) => {
 const getRestaurantOrders = (request, response) => {
   const { rest_id } = request.params
 
-  pool.query('SELECT getOrders($1)', [rest_id], (error, results) => {
+  pool.query('SELECT getRestOrders($1)', [rest_id], (error, results) => {
     if (error) {
       response.status(400).send('Unable to get orders')
       throw error
@@ -411,31 +424,89 @@ const getRestaurantOrders = (request, response) => {
   })
 }
 
-/** SPACE FOR DIFFERENT GENERATING SUMMARY INFOOOOOOOOOOOOOOOOOOOOOO  BUT HOWWWWWWWWWW*/
-// /restaurant_staff/:username/summary
-// const getOrderSummaryBasedOnMonthNumber = (request, response) => {
-//   const { username } = request.params
-//   const { month } = request.query
+// /restaurant_staff/:username/currentmonthsummary
+const getOrderSummaryBasedOnCurrentMonthNumber = (request, response) => {
+  const { username } = request.params
 
-//   pool.query('SELECT rest_id FROM Restaurant_Staff WHERE username = $1', [username], (error, results) => {
-//     if (error) {
-//       response.status(400).send('Unable to get order summary')
-//       throw error
+  pool.query('SELECT rest_id FROM Restaurant_Staff WHERE username = $1', [username], (error, results) => {
+    if (error) {
+      response.status(400).send('Unable to get current month order summary')
+      throw error
 
-//     }
-//     const rest_id = results.rows[0].rest_id
+    }
+    const rest_id = results.rows[0].rest_id
 
-//     pool.query('SELECT getOrderSummary($1)', [rest_id], (error, results) => {
+    pool.query('SELECT getCurrMonthOrderSummary($1)', [rest_id], (error, results) => {
       
-//       console.log(results)
-//       if (error) {
-//         response.status(400).send('Unable to get order summary')
-//         throw error
-//       }
-//       response.status(200).json(results.rows)
-//     })
-//   })
-// }
+      if (error) {
+        response.status(400).send('Unable to get  current month order summary')
+        throw error
+      }
+      response.status(200).json(results.rows)
+    })
+  })
+}
+
+// /restaurant_staff/:username/allsummary
+const getAllOrderSummary = (request, response) => {
+  const { username } = request.params
+
+  pool.query('SELECT rest_id FROM Restaurant_Staff WHERE username = $1', [username], (error, results) => {
+    if (error) {
+      response.status(400).send('Unable to get order summary for all months')
+      throw error
+
+    }
+    const rest_id = results.rows[0].rest_id
+
+    pool.query('SELECT getAllMonthOrderSummary($1)', [rest_id], (error, results) => {
+      
+      if (error) {
+        response.status(400).send('Unable to get order summary for all months')
+        throw error
+      }
+      response.status(200).json(results.rows)
+    })
+  })
+}
+
+// /restaurant_staff/:username/currentmonthtopfive
+const getTopFiveFoodSummaryBasedOnCurrentMonthNumber = (request, response) => {
+  const { username } = request.params
+
+  pool.query('SELECT rest_id FROM Restaurant_Staff WHERE username = $1', [username], (error, results) => {
+    if (error) {
+      response.status(400).send('Unable to get top five favourite food summary')
+      throw error
+
+    }
+    const rest_id = results.rows[0].rest_id
+
+    pool.query('SELECT getCurrMonthTopFive($1)', [rest_id], (error, results) => {
+      
+      if (error) {
+        response.status(400).send('Unable to get top five favourite food summary')
+        throw error
+      }
+      response.status(200).json(results.rows)
+    })
+  })
+}
+
+// /restaurant_staff/:username/:pid/promosummary
+const getPromoSummaryBasedOnPid = (request, response) => {
+  const { pid } = request.params
+
+  pool.query('SELECT getPromoSummary($1)', [pid], (error, results) => {
+    if (error) {
+      response.status(400).send('Unable to get top five favourite food summary')
+      throw error
+
+    }
+    response.status(200).json(results.rows)
+
+  })
+}
 
 module.exports = {
     restaurantStaffLogin,
@@ -456,6 +527,10 @@ module.exports = {
     deletePromotionByPid,
     retrieveReviews,
     checkIfRestaurantPromotionIsValidByPid,
-    getRestaurantOrders
-    // getOrderSummaryBasedOnMonthNumber
+    checkIfRestaurantPromotionIsValidByName,
+    getRestaurantOrders,
+    getOrderSummaryBasedOnCurrentMonthNumber,
+    getAllOrderSummary,
+    getTopFiveFoodSummaryBasedOnCurrentMonthNumber,
+    getPromoSummaryBasedOnPid
 }

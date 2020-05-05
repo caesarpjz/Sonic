@@ -40,6 +40,7 @@ CREATE TABLE Promotions (
     discount_description TEXT NOT NULL,
     discount_percentage FLOAT NOT NULL,
     count INTEGER NOT NULL DEFAULT 0,
+    name VARCHAR(50),
     PRIMARY KEY (pid)
 );
 
@@ -113,6 +114,11 @@ CREATE TABLE Restaurant_Staff (
     unique (username)
 );
 
+CREATE TABLE Food_Item_Categories (
+    category VARCHAR(50),
+    PRIMARY KEY (category)
+);
+
 CREATE TABLE Food_Items (
     fid SERIAL,
     quantity INTEGER NOT NULL,
@@ -120,9 +126,11 @@ CREATE TABLE Food_Items (
     name VARCHAR(50) NOT NULL,
     price FLOAT NOT NULL,
     menu_id INTEGER NOT NULL,
+    category VARCHAR(50),
     availability BOOLEAN NOT NULL,
     PRIMARY KEY (fid),
-    FOREIGN KEY (menu_id) REFERENCES Menus (menu_id)
+    FOREIGN KEY (menu_id) REFERENCES Menus (menu_id),
+    FOREIGN KEY (category) REFERENCES Food_Item_Categories (category)
 );
 
 CREATE TABLE Reports (
