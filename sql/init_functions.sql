@@ -100,6 +100,15 @@ $$ LANGUAGE PLPGSQL;
 ------ STAFF FUNCTIONS ------
 -----------------------------
 
+CREATE OR REPLACE FUNCTION getOrders(rest_id INTEGER)
+RETURNS table(oid INTEGER, fid INTEGER, name VARCHAR, quantity INTEGER) AS $$
+    SELECT of.oid, f.fid, f.name, of.quantity
+    FROM Menus m, Food_Items f, Order_Contains_Food of
+    WHERE m.rest_id = $1 
+    AND m.menu_id = f.menu_id
+    AND f.fid = of.fid
+$$ LANGUAGE SQL;
+
 CREATE OR REPLACE FUNCTION updatePassword(username VARCHAR, newpassword VARCHAR)
 RETURNS void AS $$
 begin

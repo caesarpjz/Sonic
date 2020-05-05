@@ -398,6 +398,19 @@ const retrieveReviews = (request, response) => {
   })
 }
 
+// /restaurant_staff/:username/restaurant/:rest_id/orders
+const getRestaurantOrders = (request, response) => {
+  const { rest_id } = request.params
+
+  pool.query('SELECT getOrders($1)', [rest_id], (error, results) => {
+    if (error) {
+      response.status(400).send('Unable to get orders')
+      throw error
+    }
+    response.status(200).json(results.rows)
+  })
+}
+
 /** SPACE FOR DIFFERENT GENERATING SUMMARY INFOOOOOOOOOOOOOOOOOOOOOO  BUT HOWWWWWWWWWW*/
 // /restaurant_staff/:username/summary
 // const getOrderSummaryBasedOnMonthNumber = (request, response) => {
@@ -443,5 +456,6 @@ module.exports = {
     deletePromotionByPid,
     retrieveReviews,
     checkIfRestaurantPromotionIsValidByPid,
+    getRestaurantOrders
     // getOrderSummaryBasedOnMonthNumber
 }
