@@ -19,7 +19,25 @@ export class ReviewsService {
   constructor(private httpClient: HttpClient,
     private sessionService: SessionService) { }
 
-  // getReviews(this.restId: any): Observable<any> {
-  //   return this.httpClient.get<any>(this.path + '/restaurant_staff/'+ this.sessionService.getUsername() + '/restaurant/'+ this.restId + '/menus/:menu_id/foods/:fid/reviews')
-  // }
+  getReviews(restId: any): Observable<any> {
+    return this.httpClient.get<any>(this.path + '/reviews/' + restId).pipe
+      (
+        catchError(this.handleError)
+      );
+  }
+  
+  private handleError(error: HttpErrorResponse) {
+    let errorMessage: string = "";
+
+    if (error.error instanceof ErrorEvent) {
+      errorMessage = error.error.message;
+    }
+    else {
+      errorMessage = error.error.message + " Please try again!";
+    }
+
+    console.error(errorMessage);
+
+    return throwError(errorMessage);
+  }
 }
