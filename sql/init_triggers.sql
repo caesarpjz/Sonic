@@ -11,7 +11,11 @@ begin
     SELECT NEW.quantity INTO my_quantity;
 
     IF (my_quantity > my_limit) THEN
-        RETURN NULL;
+        RAISE EXCEPTION 'Ordered quantity(%) exceeded limit(%) of food(id:%).',
+         my_quantity, 
+         my_limit, 
+         NEW.fid;
+        -- RETURN NULL;
     END IF;
 
     RETURN NEW;
@@ -43,7 +47,7 @@ begin
         RETURN NEW;
     END IF;
 
-    RETURN NULL;
+    RAISE EXCEPTION 'Promotion is not valid now.';
 end
 $$ LANGUAGE PLPGSQL;
 
@@ -72,7 +76,8 @@ begin
         WHERE OCF.oid = NEW.oid
         AND M.rest_id <> restaurant
     ) THEN
-        RETURN NULL;
+        RAISE EXCEPTION 'Food ordered should come from the same restaurant.';
+        -- RETURN NULL;
     END IF;
 
     RETURN NEW;
