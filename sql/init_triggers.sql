@@ -1,17 +1,3 @@
--- CREATE OR REPLACE FUNCTION trim_spaces() RETURNS TRIGGER AS $$
--- BEGIN
---     NEW.company = btrim(regexp_replace(NEW. company , '\s+' , ' ' , 'g'));
---     RETURN NEW;
--- END;
--- $$ LANGUAGE plpgsql;
-
--- DROP TRIGGER IF EXISTS trim_spaces_trigger ON Registrations;
--- CREATE TRIGGER trim_spaces_trigger
--- BEFORE UPDATE OR INSERT
--- ON Registrations
--- FOR EACH ROW
--- EXECUTE FUNCTION trim_spaces();
-
 CREATE OR REPLACE FUNCTION check_food_limit() RETURNS TRIGGER AS $$
 declare
     my_quantity INTEGER;
@@ -37,3 +23,32 @@ BEFORE INSERT
 ON Order_Contains_Food
 FOR EACH ROW
 EXECUTE FUNCTION check_food_limit();
+
+CREATE OR REPLACE FUNCTION check_promo_time() RETURNS TRIGGER AS $$
+declare
+    promo_id INTEGER;
+begin
+    SELECT NEW.pid INTO promo_id;
+    IF (promo_id IS NULL) THEN
+        RETURN NEW;
+    END IF;
+
+    IF EXISTS(
+        SELECT 1
+        FROM Promotions P
+        WHERE P.pid = promo_id
+        AND NOW() < P.end_date
+        AND NOW() > P.start_date
+    ) THEN
+        RETURN NEW;
+    END IF;
+
+    RETURN NULL;
+end
+$$ LANGUAGE PLPGSQL;
+
+CREATE TRIGGER promo_time_trigger
+BEFORE INSERT
+ON Orders
+FOR EACH ROW
+EXECUTE FUNCTIon check_promo_time();

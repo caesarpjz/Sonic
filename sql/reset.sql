@@ -102,3 +102,5 @@ DROP FUNCTION IF EXISTS getMonthlyRiderSummary(INTEGER) CASCADE;
 -- TRIGGERS
 DROP FUNCTION IF EXISTS check_food_limit() CASCADE;
 DROP TRIGGER IF EXISTS food_limit_trigger ON Order_Contains_Food;
+DROP FUNCTION IF EXISTS check_promo_time() CASCADE;
+DROP TRIGGER IF EXISTS promo_time_trigger ON Orders CASCADE;
