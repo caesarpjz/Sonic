@@ -417,10 +417,10 @@ app.get('/', (req, res) => {
     .route('/restaurant_staff/promotions/:pid/validity')
     .get(restaurantsDb.checkIfRestaurantPromotionIsValidByPid)
 
-    // Check if restaurant promotion is valid by name
-    app
-    .route('/restaurant_staff/promotions/name/:name/validity')
-    .get(restaurantsDb.checkIfRestaurantPromotionIsValidByName)
+    // // Check if restaurant promotion is valid by name
+    // app
+    // .route('/restaurant_staff/promotions/name/:name/validity')
+    // .get(restaurantsDb.checkIfRestaurantPromotionIsValidByName)
 
     // Update Promotions
     app
