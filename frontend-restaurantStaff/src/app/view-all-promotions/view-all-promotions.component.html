@@ -1,0 +1,142 @@
+<app-header></app-header>
+
+<p-button label="Add New Promotion" (onClick)="showDialog3()"></p-button>
+
+<p-table [value]="promotions">
+    <ng-template pTemplate="caption">
+        Promotion
+    </ng-template>
+    <ng-template pTemplate="header">
+        <tr>
+            <th>Promotion ID</th>
+            <th>Promotion Code</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Type</th>
+            <th>Discount Percentage</th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-promotion>
+        <tr>
+            <td>{{promotion.pid}}</td>
+            <td>{{promotion.name}}</td>
+            <td>{{promotion.start_date}}</td>
+            <td>{{promotion.end_date}}</td>
+            <td>{{promotion.type}}</td>
+            <td>{{promotion.discount_percentage}}</td>
+            <td>
+                <p-button label="Update" (onClick)="showDialog1(promotion)"></p-button>
+                &nbsp;
+                <p-button label="Delete" (onClick)="deletePromotion(promotion)"></p-button>
+            </td>
+            <td>
+                <p-button label="View summary" (onClick)="showDialog2(promotion)"></p-button>
+            </td>
+            <!-- <td><a routerLink="/view-all-food-items/{{menu.menu_id}}">View Food Items</a></td> -->
+        </tr>
+    </ng-template>
+</p-table>
+
+<p-dialog *ngIf="displayAdd" header="Add New Promotion" modal="true" [(visible)]="displayAdd" [style]="{width: '50vw'}"
+    [baseZIndex]="10000">
+    <form (ngSubmit)="addPromotion(addPromotionForm)">
+        <div class="ui-g">
+            <div class="ui-g-6" style="background-color: #f4f4f4;">Start Date</div>
+            <div class="ui-g-6" style="background-color: #f4f4f4;">
+                <input id="name" name="start_time" #name="ngModel" type="text" placeholder="DD-MM-YYYY" [(ngModel)]="newPromotion.start_time" required="true" />
+            </div>
+        </div>
+        <div class="ui-g">
+            <div class="ui-g-6" style="background-color: #f4f4f4;">End Date</div>
+            <div class="ui-g-6" style="background-color: #f4f4f4;">
+                <input id="name" name="end_time" #name="ngModel" type="text" placeholder="DD-MM-YYYY" [(ngModel)]="newPromotion.end_time" required="true" />
+            </div>
+        </div>
+        <div class="ui-g">
+            <div class="ui-g-6" style="background-color: #f4f4f4;">Discount Description</div>
+            <div class="ui-g-6" style="background-color: #f4f4f4;">
+                <input id="name" name="discount_desc" #name="ngModel" type="text" [(ngModel)]="newPromotion.discount_desc" required="true" />
+            </div>
+        </div>
+        <div class="ui-g">
+            <div class="ui-g-6" style="background-color: #f4f4f4;">Discount Percentage</div>
+            <div class="ui-g-6" style="background-color: #f4f4f4;">
+                <input id="name" name="discount_percentage" #name="ngModel" type="text" [(ngModel)]="newPromotion.discount_percentage" required="true" />
+            </div>
+        </div>
+        <div class="ui-g">
+            <div class="ui-g-6" style="background-color: #f4f4f4;">Promotion Name </div>
+            <div class="ui-g-6" style="background-color: #f4f4f4;">
+                <input id="name" name="name" #name="ngModel" type="text" [(ngModel)]="newPromotion.name" required="true" />
+            </div>
+        </div>
+        <br />
+        <div class="ui-g" style="float:right">
+            <button (click)="clear()">Clear</button>
+            &nbsp;
+            <input type="submit" value="Submit" />
+        </div>
+    </form>
+</p-dialog>
+
+<p-dialog class="dialog" *ngIf="displaySummary" header="Promotion Summary" modal="true" [(visible)]="displaySummary"
+    [style]="{width: '50vw'}">
+    <form>
+        <div class="ui-g">
+            <div class="ui-g-6" style="background-color: #f4f4f4;">Total duration</div>
+            <div class="ui-g-6">{{promotionSummary.total_days}}</div>
+        </div>
+        <div class="ui-g">
+            <div class="ui-g-6" style="background-color: #f4f4f4;">Average Orders</div>
+            <div class="ui-g-6">{{promotionSummary.avg_orders}}</div>
+        </div>
+    </form>
+</p-dialog>
+
+<p-dialog class="dialog" *ngIf="displayUpdate" header="Update Promotion" modal="true" [(visible)]="displayUpdate"
+    [style]="{width: '50vw'}">
+    <form (ngSubmit)="update(updatePromotionForm)">
+        <div class="ui-g">
+            <div class="ui-g-6" style="background-color: #f4f4f4;">Promotion Id</div>
+            <div class="ui-g-6">{{promotionToUpdate.pid}}</div>
+        </div>
+        <div class="ui-g">
+            <div class="ui-g-6" style="background-color: #f4f4f4;">Promotion Code</div>
+            <div class="ui-g-6">
+                <input id="name" name="name" #name="ngModel" type="text" [(ngModel)]="promotionToUpdate.name"
+                    required="true" />
+            </div>
+        </div>
+        <div class="ui-g">
+            <div class="ui-g-6" style="background-color: #f4f4f4;">Start Date</div>
+            <div class="ui-g-6">
+                <input id="name" name="start_date" #name="ngModel" type="text" placeholder="DD-MM-YYYY"
+                    [(ngModel)]="promotionToUpdate.start_date" required="true" />
+            </div>
+        </div>
+        <div class="ui-g">
+            <div class="ui-g-6" style="background-color: #f4f4f4;">End Date</div>
+            <div class="ui-g-6">
+                <input id="name" name="end_date" #name="ngModel" type="text" placeholder="DD-MM-YYYY"
+                    [(ngModel)]="promotionToUpdate.end_date" required="true" />
+            </div>
+        </div>
+        <div class="ui-g">
+            <div class="ui-g-6" style="background-color: #f4f4f4;">Type</div>
+            <div class="ui-g-6">{{promotionToUpdate.type}}</div>
+        </div>
+        <div class="ui-g">
+            <div class="ui-g-6" style="background-color: #f4f4f4;">Discount Percentage</div>
+            <div class="ui-g-6">
+                <input id="name" name="discount_percentage" #name="ngModel" type="text"
+                    [(ngModel)]="promotionToUpdate.discount_percentage" required="true" />
+            </div>
+        </div>
+        <br />
+        <div class="ui-g" style="float:right">
+            <button (click)="clear()">Clear</button>
+            &nbsp;
+            <input type="submit" value="Submit" />
+        </div>
+    </form>
+</p-dialog>
