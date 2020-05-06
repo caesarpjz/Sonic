@@ -1,4 +1,3 @@
-import { SharedService } from './../services/shared.service';
 import { Router } from '@angular/router';
 import { AlertService } from '../services/alert.service';
 import { AuthService } from './../services/auth.service';
@@ -18,8 +17,7 @@ export class LoginComponent implements OnInit {
     private formBuilder: FormBuilder,
     private authService: AuthService,
     private alertService: AlertService,
-    private router: Router,
-    private sharedService: SharedService
+    private router: Router
   ) {
     this.initLoginForm();
   }
@@ -43,9 +41,8 @@ export class LoginComponent implements OnInit {
   login() {
     this.authService.login(this.loginForm).subscribe((res) => {
       this.alertService.success('Login successful!');
-
-      this.sharedService.setUsername(this.loginForm.value.username);
-      this.sharedService.toggleLoggedIn();
+      sessionStorage.setItem('loggedIn', 'true');
+      sessionStorage.setItem('username', this.loginForm.value.username);
 
       this.router.navigate(['/']);
     }, (err) => {

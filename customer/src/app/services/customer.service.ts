@@ -1,4 +1,3 @@
-import { SharedService } from './shared.service';
 import { Injectable } from "@angular/core";
 import {
   HttpClient,
@@ -18,7 +17,7 @@ const httpOptions = {
 })
 export class CustomerService {
 
-  constructor(private httpClient: HttpClient, private sharedService: SharedService) { }
+  constructor(private httpClient: HttpClient) { }
 
   private handleError(error: HttpErrorResponse) {
     if (error.error instanceof ErrorEvent) {
@@ -36,7 +35,7 @@ export class CustomerService {
   // view customer profile: has cc info and points
   // localhost:3002/customer/mrpresident/profile
   getProfile(): Observable<any> {
-    const username = this.sharedService.getUsername();
+    const username = sessionStorage.getItem('username');
     return this.httpClient.get<any>('/api/customer/' + username + '/profile');
   }
 
@@ -49,7 +48,7 @@ export class CustomerService {
       'num': form.value.creditCardNumber
     };
 
-    const username = this.sharedService.getUsername();
+    const username = sessionStorage.getItem('username');
 
     return this.httpClient.post<any>(`/api/customer/${username}/profile/insertCC`, card,
       httpOptions).pipe(

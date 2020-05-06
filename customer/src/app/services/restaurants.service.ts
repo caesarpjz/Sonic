@@ -1,4 +1,3 @@
-import { SharedService } from './shared.service';
 import { Injectable } from "@angular/core";
 import {
   HttpClient,
@@ -17,7 +16,7 @@ const httpOptions = {
   providedIn: 'root'
 })
 export class RestaurantsService {
-  constructor(private httpClient: HttpClient, private sharedService: SharedService) { }
+  constructor(private httpClient: HttpClient) { }
 
   private handleError(error: HttpErrorResponse) {
     if (error.error instanceof ErrorEvent) {
@@ -54,7 +53,7 @@ export class RestaurantsService {
 
   // checkout order
   checkout(checkoutForm, order): Observable<any> {
-    const username = this.sharedService.getUsername();
+    const username = sessionStorage.getItem('username');
 
     let orderList = [];
 

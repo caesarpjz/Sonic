@@ -1,4 +1,3 @@
-import { SharedService } from './../services/shared.service';
 import { Component, OnInit } from '@angular/core';
 import { CartService } from '../services/cart.service';
 import { Router } from '@angular/router';
@@ -20,7 +19,6 @@ export class CartComponent implements OnInit {
     private cartService: CartService,
     private router: Router,
     private alertService: AlertService,
-    private sharedService: SharedService
   ) {
     this.cartService.initCart();
   }
@@ -50,8 +48,7 @@ export class CartComponent implements OnInit {
 
   submit() {
     // check for min spending whether cost (food cost + delivery) hits
-    const rest = this.sharedService.getRestaurant();
-    console.log(rest);
+    const rest = JSON.stringify(sessionStorage.getItem('restaurantLastOrdered'));
     const minSpending = rest.min_spending;
     if ((this.subtotal + this.deliveryFee) >= minSpending) {
       this.router.navigate(['/checkout']);
