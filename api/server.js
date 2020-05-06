@@ -397,6 +397,11 @@ app.get('/', (req, res) => {
     .route('/restaurant_staff/:username/restaurant/:rest_id/menus/:menu_id/addfood')
     .post(restaurantsDb.addFoodItemIntoMenu)
 
+    // Remove Food by fid
+    app
+    .route('/restaurant_staff/restaurant/:rest_id/:menu_id/food/:fid/deletefood')
+    .delete(restaurantsDb.removeFoodByFid)
+    
     // Remove Menu by Menu Id
     app
     .route('/restaurant_staff/:username/restaurant/:rest_id/deleteid/:menu_id')
