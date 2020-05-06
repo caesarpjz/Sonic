@@ -391,7 +391,7 @@ const getRiderShifts = (request, response) => {
 
 // /managers/monthCustomerReport
 const getOverviewOfNewCustomersAndOrdersForCurrMonth = (request, response) => {
-  pool.query('SELECT getOverviewReport()', (error, results) => {
+  pool.query('SELECT * from getOverviewReport()', (error, results) => {
     if (error) {
       response.status(400).send('Unable to get overview reports')
       throw error
@@ -402,7 +402,7 @@ const getOverviewOfNewCustomersAndOrdersForCurrMonth = (request, response) => {
 
 // /managers/eachCustomerReport
 const getEachCustomerReport = (request, response) => {
-  pool.query('SELECT getAllMonthCustomerReport()', (error, results) => {
+  pool.query('SELECT * from getAllMonthCustomerReport()', (error, results) => {
     if (error) {
       response.status(400).send('Unable to get customer overview reports')
       throw error
@@ -416,7 +416,7 @@ const getEachCustomerReport = (request, response) => {
 const getHourlyLocationReport = (request, response) => {
   const current_hour = new Date()
 
-  pool.query('SELECT getHourlyLocationReport($1)', [current_hour], (error, results) => {
+  pool.query('SELECT * from getHourlyLocationReport($1)', [current_hour], (error, results) => {
     if (error) {
       response.status(400).send('Unable to get hourly location overview reports')
       throw error
@@ -428,7 +428,7 @@ const getHourlyLocationReport = (request, response) => {
 
 // /managers/locationreportoverview
 const getLocationReportOverview = (request, response) => {
-  pool.query('SELECT getLocationReportOverview()', (error, results) => {
+  pool.query('SELECT * from getLocationReportOverview()', (error, results) => {
     if (error) {
       response.status(400).send('Unable to get location overview reports')
       throw error
@@ -440,7 +440,7 @@ const getLocationReportOverview = (request, response) => {
 
 // /managers/riderreportoverview
 const getRiderReportOverview = (request, response) => {
-  pool.query('SELECT getRiderReport()', (error, results) => {
+  pool.query('SELECT * from getRiderReport()', (error, results) => {
     if (error) {
       response.status(400).send('Unable to get location overview reports')
       throw error
