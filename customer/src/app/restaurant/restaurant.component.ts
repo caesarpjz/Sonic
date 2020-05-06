@@ -60,9 +60,6 @@ export class RestaurantComponent implements OnInit {
   }
 
   addToCart = (item) => {
-    console.log(typeof JSON.parse(localStorage.getItem('restaurantLastOrdered')).rest_id);
-    console.log(typeof this.restaurantId);
-
     if (localStorage.getItem('restaurantLastOrdered') &&
         JSON.parse(localStorage.getItem('restaurantLastOrdered')).rest_id !== Number(this.restaurantId)) {
       // alert that cart will be cleared if continue, otherwise cancel action

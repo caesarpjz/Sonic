@@ -19,6 +19,7 @@ export class CheckoutComponent implements OnInit {
   subtotal: number;
   deliveryFee: number = 5;
   total: 0;
+  card = null;
 
   availableLocations = [];
 
@@ -87,9 +88,9 @@ export class CheckoutComponent implements OnInit {
     if (this.checkoutForm.value.paymentOption === 'CREDIT CARD') {
       // check if card is selected
       let valid = true;
-      let card = this.sharedService.getCard();
+      this.card = this.sharedService.getCard();
 
-      if (card === null) {
+      if (this.card === null) {
         // check if values are valid
         const date = `${this.checkoutForm.value.expiryMonth}/${this.checkoutForm.value.expiryYear}`;
 
@@ -99,21 +100,21 @@ export class CheckoutComponent implements OnInit {
           valid = false;
         }
 
-        card = {
+        this.card = {
           'cc_name': this.checkoutForm.value.name,
           'expiryDate': date,
           'num': this.checkoutForm.value.creditCardNumber
         };
       } else {
-        card = {
-          'cc_name': card.name,
-          'expiryDate': card.expiry,
-          'num': card.number
+        this.card = {
+          'cc_name': this.card.name,
+          'expiryDate': this.card.expiry,
+          'num': this.card.number
         }
       }
 
       if (valid) {
-        this.customerService.addCard(card).subscribe((res) => {
+        this.customerService.addCard(this.card).subscribe((res) => {
           console.log(res);
 
           this.restaurantService.checkout(this.checkoutForm, this.cartItems).subscribe((res) => {
