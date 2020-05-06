@@ -512,7 +512,7 @@ begin
     select addDelivery(fee) into did;
 
     INSERT INTO Orders
-    VALUES (DEFAULT, did, cid, 0, 'ORDERED', payment_method, restaurant_location, location)
+    VALUES (DEFAULT, did, cid, fee, 'ORDERED', payment_method, restaurant_location, location)
     RETURNING oid into ret_oid;
 
     IF ($6 IS NOT NULL) THEN
