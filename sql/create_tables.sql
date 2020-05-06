@@ -13,8 +13,9 @@ CREATE TABLE Users (
     name VARCHAR(50) NOT NULL,
     created_at TIMESTAMP NOT NULL,
     access_right RIGHTS NOT NULL,
-    PRIMARY KEY (id),
-    unique (username)
+    PRIMARY KEY (id, username),
+    UNIQUE (id),
+    UNIQUE (username)
 );
 
 CREATE TABLE Restaurant_Categories (
@@ -27,9 +28,12 @@ CREATE TABLE FDS_Managers (
     id INTEGER NOT NULL,
     username VARCHAR(50) NOT NULL,
     name VARCHAR(50),
-    PRIMARY KEY (mid),
+    PRIMARY KEY (mid, id, username),
     FOREIGN KEY (id) REFERENCES Users (id),
-    unique (username)
+    FOREIGN KEY (username) REFERENCES Users (username),
+    UNIQUE (mid),
+    UNIQUE (id),
+    UNIQUE (username)
 );
 
 CREATE TABLE Promotions (
@@ -52,9 +56,12 @@ CREATE TABLE Customers (
     points INTEGER NOT NULL DEFAULT 0,
     username VARCHAR(50) NOT NULL,
     name VARCHAR(50),
-    PRIMARY KEY (cid),
+    PRIMARY KEY (cid, id, username),
     FOREIGN KEY (id) REFERENCES Users (id),
-    unique (username)
+    FOREIGN KEY (username) REFERENCES Users (username),
+    UNIQUE (cid),
+    UNIQUE (id),
+    UNIQUE (username)
 );
 
 CREATE TABLE Riders (
@@ -64,9 +71,12 @@ CREATE TABLE Riders (
     status RIDER_STATUSES NOT NULL,
     username VARCHAR(50) NOT NULL,
     name VARCHAR(50),
-    PRIMARY KEY (rid),
+    PRIMARY KEY (rid, id, username),
     FOREIGN KEY (id) REFERENCES Users (id),
-    unique (username)
+    FOREIGN KEY (username) REFERENCES Users (username),
+    UNIQUE (rid),
+    UNIQUE (id),
+    UNIQUE (username)
 );
 
 CREATE TABLE Deliveries (
@@ -99,7 +109,7 @@ CREATE TABLE Menus (
     name VARCHAR(50),
     PRIMARY KEY (menu_id),
     FOREIGN KEY (rest_id) REFERENCES Restaurants (rest_id),
-    unique(rest_id, name)
+    UNIQUE (rest_id, name)
 );
 
 CREATE TABLE Restaurant_Staff (
@@ -108,10 +118,13 @@ CREATE TABLE Restaurant_Staff (
     id INTEGER NOT NULL,
     username VARCHAR(50) NOT NULL,
     name VARCHAR(50),
-    PRIMARY KEY (rsid),
+    PRIMARY KEY (rsid, id, username),
     FOREIGN KEY (rest_id) REFERENCES Restaurants (rest_id),
     FOREIGN KEY (id) REFERENCES Users (id) ON DELETE CASCADE,
-    unique (username)
+    FOREIGN KEY (username) REFERENCES Users (username),
+    UNIQUE (rsid),
+    UNIQUE (id),
+    UNIQUE (username)
 );
 
 CREATE TABLE Food_Item_Categories (
@@ -130,13 +143,6 @@ CREATE TABLE Food_Items (
     PRIMARY KEY (fid),
     FOREIGN KEY (menu_id) REFERENCES Menus (menu_id),
     FOREIGN KEY (category) REFERENCES Food_Item_Categories (category)
-);
-
-CREATE TABLE Reports (
-    mid INTEGER,
-    report_TEXT TEXT,
-    date DATE,
-    FOREIGN KEY (mid) REFERENCES FDS_Managers (mid)
 );
 
 CREATE TABLE Managers_Has_Promotions (
@@ -166,7 +172,7 @@ CREATE TABLE Reviews (
 
 CREATE TABLE Orders (
     oid SERIAL,
-    did INTEGER,
+    did INTEGER NOT NULL,
     cid INTEGER NOT NULL,
     cost FLOAT NOT NULL,
     status ORDER_STATUSES NOT NULL,
@@ -174,10 +180,12 @@ CREATE TABLE Orders (
     restaurant_location VARCHAR(100) NOT NULL,
     location VARCHAR(100) NOT NULL,
     pid INTEGER,
-    PRIMARY KEY (oid),
+    PRIMARY KEY (oid, did),
     FOREIGN KEY (cid) REFERENCES Customers (cid),
     FOREIGN KEY (did) REFERENCES Deliveries (did),
-    FOREIGN KEY (pid) REFERENCES Promotions (pid)
+    FOREIGN KEY (pid) REFERENCES Promotions (pid),
+    UNIQUE (oid),
+    UNIQUE (did)
 );
 
 CREATE TABLE Order_Contains_Food (
