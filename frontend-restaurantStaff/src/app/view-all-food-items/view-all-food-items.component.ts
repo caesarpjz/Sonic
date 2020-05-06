@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NgForm } from '@angular/forms';
 import { Food } from '../classes/food';
+import { FoodItemsService } from '../services/food-items.service';
+import { RestaurantService } from '../services/restaurant.service';
+
 
 @Component({
   selector: 'app-view-all-food-items',
@@ -13,28 +17,41 @@ export class ViewAllFoodItemsComponent implements OnInit {
   newFood: Food;
   displayUpdate: boolean = false;
   displayAdd: boolean = false;
-  foods: Food[] = [];
+  foods: any;
   cols: any[];
-  foodToView: Food;
+  foodToView: any;
+  menuId: any;
+  restId: any;
 
-  constructor() {
+  constructor(private router: Router,
+    private activatedRoute: ActivatedRoute,
+    private foodItemsService: FoodItemsService,
+    private restaurantService: RestaurantService) {
     this.submitted = false;
     this.newFood = new Food();
   }
 
   ngOnInit() {
-    let food1: Food;
-    food1 = new Food(1, "Hamburger", "Western", 25.00, 10, 1);
+    this.menuId = this.activatedRoute.snapshot.paramMap.get('menuId');
+    console.log(typeof this.menuId);
 
-    let food2: Food;
-    food2 = new Food(2, "Cheese Fries", "Western", 5.00, 15, 1);
-
-    let food3: Food;
-    food3 = new Food(3, "Potato Wedges", "Western", 8.00, 10, 2);
-
-    this.foods.push(food1);
-    this.foods.push(food2);
-    this.foods.push(food3);
+    this.restaurantService.getRestaurant().subscribe(
+      response => {
+        console.log(response.rest_id);
+        this.restId = response.rest_id;
+        this.foodItemsService.getFoodItems(this.restId, this.menuId).subscribe(
+          response => {
+            this.foods = response;
+          },
+          error => {
+            console.log('********** GetRestaurantComponent.ts: ' + error);
+          }
+        )
+      },
+      error => {
+        console.log('********** GetRestaurantComponent.ts: ' + error);
+      }
+    )
   }
 
   showDialog1(foodToView: Food) {
@@ -43,6 +60,27 @@ export class ViewAllFoodItemsComponent implements OnInit {
   }
 
   update(updateFoodForm: NgForm) {
+    // let foodToUpdate:any = {
+    //   "quantity" = foodToView
+    // }
+
+    this.foodItemsService.updateFood(this.restId, this.menuId, this.foodToView["fid"]).subscribe(
+      response => {
+        this.displayUpdate = false;
+        this.foodItemsService.getFoodItems(this.restId, this.menuId).subscribe(
+          response => {
+            this.foods = response;
+          },
+          error => {
+            console.log('********** GetRestaurantComponent.ts: ' + error);
+          }
+        )
+      },
+      error => {
+        console.log('********** GetRestaurantComponent.ts: ' + error);
+      }
+      }
+    )
   }
 
   deleteFood(foodToDelete: Food) {

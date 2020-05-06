@@ -21,7 +21,7 @@
 				&nbsp;
 				<p-button label="Delete" (onClick)="deleteMenu(menu)"></p-button>
 			</td>
-			<td><a routerLink="/view-all-food-items/{{menu.menuId}}">View Food Items</a></td>
+			<td><a routerLink="/view-all-food-items/{{menu.menu_id}}">View Food Items</a></td>
 		</tr>
 	</ng-template>
 </p-table>
@@ -47,13 +47,6 @@
 <p-dialog *ngIf="displayAdd" header="Add New Menu" modal="true" [(visible)]="displayAdd" [style]="{width: '50vw'}"
 	[baseZIndex]="10000">
 	<form (ngSubmit)="addMenu(addMenuForm)">
-		<div class="ui-g">
-			<div class="ui-g-6" style="background-color: #f4f4f4;">Menu Id</div>
-			<div class="ui-g-6">
-				<input id="menuId" name="menuId" #name="ngModel" type="text" [(ngModel)]="newMenu.menuId"
-					required="true" />
-			</div>
-		</div>
 		<div class="ui-g">
 			<div class="ui-g-6" style="background-color: #f4f4f4;">Name</div>
 			<div class="ui-g-6" style="background-color: #f4f4f4;">

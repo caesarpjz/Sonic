@@ -21,7 +21,7 @@ export class ViewAllMenusComponent implements OnInit {
   displayAdd: boolean = false;
   menuToView: any;
   submitted: boolean;
-  newMenu: Menu;
+  newMenu: any;
 
 
   constructor(private router: Router,
@@ -37,8 +37,8 @@ export class ViewAllMenusComponent implements OnInit {
 
     this.restaurantService.getRestaurant().subscribe(
       response => {
-        console.log(response);
-        this.restId = response[0]["rest_id"];
+        console.log(response.rest_id);
+        this.restId = response.rest_id;
         this.menuService.getMenus(this.restId).subscribe(
           response => {
             console.log(response.length)
@@ -79,7 +79,7 @@ export class ViewAllMenusComponent implements OnInit {
             console.log('********** GetAllMenusComponent.ts: ' + error);
           }
         )
-      }
+      },
     )
   }
 
@@ -112,7 +112,12 @@ export class ViewAllMenusComponent implements OnInit {
   }
 
   addMenu(addFoodForm: NgForm) {
-    this.menus.push(this.newMenu);
-    this.displayAdd = false;
+    let menuName: string = this.newMenu["name"];
+    console.log(menuName);
+      this.menuService.createMenu(this.restId, menuName).subscribe(
+        response => {
+          this.displayAdd = false;
+        }
+      );
   }
 }

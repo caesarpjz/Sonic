@@ -141,12 +141,14 @@ const getFoodItemByMenuId = (request, response) => {
 const updateMenuNameByMenuId = (request, response) => {
   const { menu_id } = request.params
   const { new_name } = request.body
+  console.log(new_name)
 
   pool.query('UPDATE Menus SET name = $1 WHERE menu_id = $2', [new_name, menu_id], (error, results) => {
     if (error) {
       response.status(400).send(`Unable to update menu name to ${new_name}`)
       throw error
     }
+    
     response.status(200).send(`Menu name change to ${new_name} successfully`)
   })
 }
@@ -156,6 +158,7 @@ const addMenu = (request, response) => {
   const { rest_id } = request.params
   const { menu_name } = request.body
 
+  console.log(menu_name);
   pool.query('SELECT addMenu($1, $2)', [rest_id, menu_name], (error, results) => {
     if (error) {
       response.status(400).send(`Unable to add menu ${menu_name}`)

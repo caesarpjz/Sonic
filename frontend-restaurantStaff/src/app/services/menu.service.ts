@@ -29,10 +29,27 @@ export class MenuService {
       );
   }
 
+  createMenu(restId: any, menuName: String): Observable<any> {
+    console.log(menuName);
+    let newMenuName = {
+      "menu_name": menuName
+    }
+    return this.httpClient.post<any>(this.path + "/restaurant_staff/" + this.sessionService.getUsername() + "/restaurant/" + restId +"/add/menu", newMenuName).pipe 
+    (
+      retry(1),
+
+      catchError(this.handleError)
+    );
+  }
+
   updateMenu(menuId: String, menuName: String, restId: any): Observable<any> {
     console.log(restId);
     console.log(menuId);
-    return this.httpClient.post<any>(this.path + "/restaurant_staff/" + this.sessionService.getUsername() + "/restaurant/ " + restId + "/" + menuId, menuName).pipe
+    console.log(menuName);
+    let updatedMenuName = {
+      "new_name": menuName
+    }
+    return this.httpClient.post<any>(this.path + "/restaurant_staff/" + this.sessionService.getUsername() + "/restaurant/ " + restId + "/" + menuId, updatedMenuName).pipe
       (
         retry(1),
 
@@ -41,7 +58,7 @@ export class MenuService {
   }
 
   deleteMenu(menuId: String, restId: any): Observable<any> {
-    return this.httpClient.post<any>(this.path + "/restaurant_staff/" + this.sessionService.getUsername() + "/restaurant/" + restId + "/ " + menuId, "").pipe
+    return this.httpClient.delete<any>(this.path + "/restaurant_staff/"+ this.sessionService.getUsername() +"/restaurant/"+ restId + "/deleteid/" + menuId).pipe
       (
         retry(1),
 
