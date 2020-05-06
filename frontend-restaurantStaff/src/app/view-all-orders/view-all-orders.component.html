@@ -1,32 +1,30 @@
 <app-header></app-header>
 
+<p-button label="View Summary Orders" (onClick)="goToSummaryPage()"></p-button>
+
 <p-table [value]="orders">
     <ng-template pTemplate="caption">
         Orders
     </ng-template>
     <ng-template pTemplate="header">
         <tr>
-            <th>Promotion ID</th>
-            <th>Promotion Code</th>
-            <th>Start Date</th>
-            <th>End Date</th>
-            <th>Type</th>
-            <th>Discount Percentage</th>
+            <th>Order ID</th>
+            <th>Order Name</th>
+            <th>Quantity</th>
+            <th>Status</th>
         </tr>
     </ng-template>
     <ng-template pTemplate="body" let-order>
         <tr>
-            <td>{{promotion.pid}}</td>
-            <td>{{promotion.name}}</td>
-            <td>{{promotion.start_date}}</td>
-            <td>{{promotion.end_date}}</td>
-            <td>{{promotion.type}}</td>
-            <td>{{promotion.discount_percentage}}</td>
-            <td>
+            <td>{{order.oid}}</td>
+            <td>{{order.name}}</td>
+            <td>{{order.quantity}}</td>
+            <td>{{order.status}}</td>
+            <!-- <td>
                 <p-button label="Update" (onClick)="showDialog1(promotion)"></p-button>
                 &nbsp;
                 <p-button label="Delete" (onClick)="deletePromotion(promotion)"></p-button>
-            </td>
+            </td> -->
             <!-- <td><a routerLink="/view-all-food-items/{{menu.menu_id}}">View Food Items</a></td> -->
         </tr>
     </ng-template>

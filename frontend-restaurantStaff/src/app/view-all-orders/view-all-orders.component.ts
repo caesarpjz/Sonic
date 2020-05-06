@@ -15,6 +15,7 @@ export class ViewAllOrdersComponent implements OnInit {
 
   orders: any;
   restId: any;
+  orderArray = [];
 
   constructor(private router: Router,
     private activatedRoute: ActivatedRoute,
@@ -30,7 +31,6 @@ export class ViewAllOrdersComponent implements OnInit {
         this.restId = response.rest_id;
         this.ordersService.getOrders(this.restId).subscribe(
           response => {
-            console.log(response.length)
             this.orders = response;
           },
           error => {
@@ -42,6 +42,10 @@ export class ViewAllOrdersComponent implements OnInit {
         console.log('********** GetRestaurantComponent.ts: ' + error);
       }
     )
+  }
+
+  goToSummaryPage() {
+    this.router.navigate(['/view-order-summary']);
   }
 
 }

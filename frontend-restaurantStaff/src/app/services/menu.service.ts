@@ -60,15 +60,17 @@ export class MenuService {
 
   private handleError(error: HttpErrorResponse) {
     let errorMessage: string = "";
-
+    console.log(error);
     if (error.error instanceof ErrorEvent) {
-      errorMessage = error.error.message;
+      // errorMessage = error.error.message;
+      console.log(error.error.message)
     }
     else {
-      errorMessage = error.error.message + " Please try again!";
+      console.log(error.error.message, " Please try again!");
+      // errorMessage = error.error.message + " Please try again!";
     }
 
-    console.error(errorMessage);
+    // console.error(errorMessage);
 
     return throwError(errorMessage);
   }

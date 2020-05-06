@@ -20,7 +20,16 @@ export class OrdersService {
     private sessionService: SessionService) { }
 
   getOrders(restId: any): Observable<any> {
-    return this.httpClient.get<any>(this.path + 'restaurant_staff/' + this.sessionService.getUsername() + '/restaurant/' + restId + '/orders').pipe
+    console.log("test")
+    return this.httpClient.get<any>(this.path + '/restaurant_staff/' + this.sessionService.getUsername() + '/restaurant/' + restId + '/orders').pipe
+      (
+        catchError(this.handleError)
+      );
+  }
+
+  getSummaryOrders(): Observable<any> {
+    console.log("test")
+    return this.httpClient.get<any>(this.path + '/restaurant_staff/'+ this.sessionService.getUsername() + '/allsummary').pipe
       (
         catchError(this.handleError)
       );
@@ -33,7 +42,7 @@ export class OrdersService {
       errorMessage = error.error.message;
     }
     else {
-      errorMessage = error.error.message + " Please try again!";
+      errorMessage = error.error.message, " Please try again!";
     }
 
     console.error(errorMessage);

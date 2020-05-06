@@ -456,7 +456,7 @@ const retrieveReviews = (request, response) => {
 const getRestaurantOrders = (request, response) => {
   const { rest_id } = request.params
 
-  pool.query('SELECT getRestOrders($1)', [rest_id], (error, results) => {
+  pool.query('SELECT * from getRestOrders($1)', [rest_id], (error, results) => {
     if (error) {
       response.status(400).send('Unable to get orders')
       throw error
@@ -477,7 +477,7 @@ const getOrderSummaryBasedOnCurrentMonthNumber = (request, response) => {
     }
     const rest_id = results.rows[0].rest_id
 
-    pool.query('SELECT getCurrMonthOrderSummary($1)', [rest_id], (error, results) => {
+    pool.query('SELECT * FROM getCurrMonthOrderSummary($1)', [rest_id], (error, results) => {
       
       if (error) {
         response.status(400).send('Unable to get  current month order summary')
@@ -500,7 +500,7 @@ const getAllOrderSummary = (request, response) => {
     }
     const rest_id = results.rows[0].rest_id
 
-    pool.query('SELECT getAllMonthOrderSummary($1)', [rest_id], (error, results) => {
+    pool.query('SELECT * from getAllMonthOrderSummary($1)', [rest_id], (error, results) => {
       
       if (error) {
         response.status(400).send('Unable to get order summary for all months')
@@ -523,7 +523,7 @@ const getTopFiveFoodSummaryBasedOnCurrentMonthNumber = (request, response) => {
     }
     const rest_id = results.rows[0].rest_id
 
-    pool.query('SELECT getCurrMonthTopFive($1)', [rest_id], (error, results) => {
+    pool.query('SELECT * from getCurrMonthTopFive($1)', [rest_id], (error, results) => {
       
       if (error) {
         response.status(400).send('Unable to get top five favourite food summary')
@@ -538,7 +538,7 @@ const getTopFiveFoodSummaryBasedOnCurrentMonthNumber = (request, response) => {
 const getPromoSummaryBasedOnPid = (request, response) => {
   const { pid } = request.params
 
-  pool.query('SELECT getPromoSummary($1)', [pid], (error, results) => {
+  pool.query('SELECT * from getPromoSummary($1)', [pid], (error, results) => {
     if (error) {
       response.status(400).send('Unable to get top five favourite food summary')
       throw error

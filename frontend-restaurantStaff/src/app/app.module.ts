@@ -23,6 +23,7 @@ import { ViewAllReviewsComponent } from './view-all-reviews/view-all-reviews.com
 import { AlertService } from './services/alert.service';
 import { AlertComponent } from './alert/alert.component';
 import { ViewAllOrdersComponent } from './view-all-orders/view-all-orders.component';
+import { OrderSummaryComponent } from './order-summary/order-summary.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,8 @@ import { ViewAllOrdersComponent } from './view-all-orders/view-all-orders.compon
     ViewAllPromotionsComponent,
     ViewAllReviewsComponent,
     AlertComponent,
-    ViewAllOrdersComponent
+    ViewAllOrdersComponent,
+    OrderSummaryComponent
   ],
   imports: [
     BrowserModule,
