@@ -20,6 +20,7 @@ export class CheckoutComponent implements OnInit {
   deliveryFee: number = 5;
   total: 0;
   card = null;
+  validCard = true;
 
   availableLocations = [];
 
@@ -49,6 +50,7 @@ export class CheckoutComponent implements OnInit {
       this.cartItems = cart;
     });
     this.getRecentLocations();
+    this.retrieveCreditCardInfo();
   }
 
   initCheckoutForm() {
@@ -84,11 +86,23 @@ export class CheckoutComponent implements OnInit {
     return this.checkoutForm.get('paymentOption').value;
   }
 
+  retrieveCreditCardInfo() {
+    this.customerService.getProfile().subscribe((res) => {
+      this.card = {
+        'name': res[0].cc_name,
+        'expiry': res[0].cc_expiry,
+        'number': res[0].cc_num
+      };
+    }, (err) => {
+      console.error(err);
+    })
+  }
+
   submit() {
     if (this.checkoutForm.value.paymentOption === 'CREDIT CARD') {
       // check if card is selected
       let valid = true;
-      this.card = this.sharedService.getCard();
+      // this.card =
 
       if (this.card === null) {
         // check if values are valid
@@ -98,6 +112,7 @@ export class CheckoutComponent implements OnInit {
             isNaN(this.checkoutForm.value.creditCardNumber) ||
             (Number(this.checkoutForm.value.expiryYear) === 2020 && Number(this.checkoutForm.value.expiryMonth) < 6)) {
           valid = false;
+          this.validCard = false;
         }
 
         this.card = {
