@@ -16,7 +16,9 @@ export class ViewAllPromotionsComponent implements OnInit {
   promotions: any;
   restId : any;
   displayUpdate: boolean = false;
+  displayDelete: boolean = false;
   promotionToUpdate: any;
+  promotionToDelete: any;
 
   constructor(private router: Router,
     private activatedRoute: ActivatedRoute,
@@ -45,8 +47,17 @@ export class ViewAllPromotionsComponent implements OnInit {
     this.promotionToUpdate = promotionToUpdate;
   }
 
+  deletePromotion(promotionToDelete: any) {
+    this.promotionsService.deletePromotion(this.restId, promotionToDelete.pid).subscribe(
+      response => {
+
+      }
+    )
+  }
+  
   update(updatePromotionForm: NgForm) {
-    this.promotionsService.updatePromotion(this.restId, promotionToUpdate.pid, this.promotionToUpdate).subscribe(
+    console.log(this.promotionToUpdate);
+    this.promotionsService.updatePromotion(this.restId, this.promotionToUpdate.pid, this.promotionToUpdate).subscribe(
       response => {
       }
     )

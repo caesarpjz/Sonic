@@ -26,8 +26,15 @@ export class PromotionsService {
       );
   }
 
-  updatePromotions(restId: any, pid: any, promotionToUpdate: any): Observable<any> {
+  updatePromotion(restId: any, pid: any, promotionToUpdate: any): Observable<any> {
     return this.httpClient.post<any>(this.path + '/restaurant_staff/' + this.sessionService.getUsername() + '/restaurant/' + restId + '/promotions/' + pid, promotionToUpdate).pipe
+      (
+        catchError(this.handleError)
+      );
+  }
+
+  deletePromotion(restId: any, pid: any): Observable<any> {
+    return this.httpClient.delete<any>(this.path + '/restaurant_staff/' + this.sessionService.getUsername() + '/restaurant/' + restId + '/promotions/delete/' + pid).pipe
       (
         catchError(this.handleError)
       );

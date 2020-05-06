@@ -9,6 +9,7 @@
     <ng-template pTemplate="header">
         <tr>
             <th>Promotion ID</th>
+            <th>Promotion Code</th>
             <th>Start Date</th>
             <th>End Date</th>
             <th>Type</th>
@@ -18,6 +19,7 @@
     <ng-template pTemplate="body" let-promotion>
         <tr>
             <td>{{promotion.pid}}</td>
+            <td>{{promotion.name}}</td>
             <td>{{promotion.start_date}}</td>
             <td>{{promotion.end_date}}</td>
             <td>{{promotion.type}}</td>
@@ -25,7 +27,7 @@
             <td>
                 <p-button label="Update" (onClick)="showDialog1(promotion)"></p-button>
                 &nbsp;
-                <p-button label="Delete" (onClick)="deleteMenu(menu)"></p-button>
+                <p-button label="Delete" (onClick)="deletePromotion(promotion)"></p-button>
             </td>
             <!-- <td><a routerLink="/view-all-food-items/{{menu.menu_id}}">View Food Items</a></td> -->
         </tr>
@@ -40,31 +42,35 @@
             <div class="ui-g-6">{{promotionToUpdate.pid}}</div>
         </div>
         <div class="ui-g">
+            <div class="ui-g-6" style="background-color: #f4f4f4;">Promotion Code</div>
+            <div class="ui-g-6">
+                <input id="name" name="name" #name="ngModel" type="text" [(ngModel)]="promotionToUpdate.name"
+                    required="true" />
+            </div>
+        </div>
+        <div class="ui-g">
             <div class="ui-g-6" style="background-color: #f4f4f4;">Start Date</div>
             <div class="ui-g-6">
-                <input id="name" name="start_date" #name="ngModel" type="text" [(ngModel)]="menuToView.start_date"
+                <input id="name" name="start_date" #name="ngModel" type="text" placeholder="DD-MM-YYYY" [(ngModel)]="promotionToUpdate.start_date"
                     required="true" />
             </div>
         </div>
         <div class="ui-g">
             <div class="ui-g-6" style="background-color: #f4f4f4;">End Date</div>
             <div class="ui-g-6">
-                <input id="name" name="end_date" #name="ngModel" type="text" [(ngModel)]="menuToView.end_date"
+                <input id="name" name="end_date" #name="ngModel" type="text" placeholder="DD-MM-YYYY" [(ngModel)]="promotionToUpdate.end_date"
                     required="true" />
             </div>
         </div>
         <div class="ui-g">
             <div class="ui-g-6" style="background-color: #f4f4f4;">Type</div>
-            <div class="ui-g-6">
-                <input id="name" name="type" #name="ngModel" type="text" [(ngModel)]="menuToView.type"
-                    required="true" />
-            </div>
+            <div class="ui-g-6">{{promotionToUpdate.type}}</div>
         </div>
         <div class="ui-g">
             <div class="ui-g-6" style="background-color: #f4f4f4;">Discount Percentage</div>
             <div class="ui-g-6">
-                <input id="name" name="discount_percentage" #name="ngModel" type="text" [(ngModel)]="menuToView.discount_percentage"
-                    required="true" />
+                <input id="name" name="discount_percentage" #name="ngModel" type="text"
+                    [(ngModel)]="promotionToUpdate.discount_percentage" required="true" />
             </div>
         </div>
         <br />
