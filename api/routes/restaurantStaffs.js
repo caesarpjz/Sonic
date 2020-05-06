@@ -137,6 +137,7 @@ const getFoodItemByMenuId = (request, response) => {
   })
 }
 
+// /resturant
 // /restaurant_staff/:username/restaurant/:rest_id/:menu_id
 const updateMenuNameByMenuId = (request, response) => {
   const { menu_id } = request.params
