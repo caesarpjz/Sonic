@@ -14,6 +14,7 @@
 			<th>Category</th>
 			<th>Price</th>
 			<th>Daily Limit</th>
+			<th>Availability</th>
 		</tr>
 	</ng-template>
 	<ng-template pTemplate="body" let-food>
@@ -22,7 +23,8 @@
 			<td>{{food.name}}</td>
 			<td>{{food.category}}</td>
 			<td>{{food.price}}</td>
-			<td>{{food.dailyLimit}}</td>
+			<td>{{food.daily_limit}}</td>
+			<td>{{food.availability}}</td>
 			<td>
 				<p-button label="Update" (onClick)="showDialog1(food)"></p-button>
 				&nbsp;
@@ -37,7 +39,7 @@
 	<form (ngSubmit)="update(updateFoodForm)">
 		<div class="ui-g">
 			<div class="ui-g-6" style="background-color: #f4f4f4;">Food Id</div>
-			<div class="ui-g-6">{{foodToView.foodId}}</div>
+			<div class="ui-g-6">{{foodToView.fid}}</div>
 		</div>
 		<div class="ui-g">
 			<div class="ui-g-6" style="background-color: #f4f4f4;">Name</div>
@@ -63,10 +65,18 @@
 		<div class="ui-g">
 			<div class="ui-g-6" style="background-color: #f4f4f4;">Daily Limit</div>
 			<div class="ui-g-6">
-				<input id="name" name="dailyLimit" #name="ngModel" type="text" [(ngModel)]="foodToView.dailyLimit"
+				<input id="name" name="dailyLimit" #name="ngModel" type="text" [(ngModel)]="foodToView.daily_limit"
 					required="true" />
 			</div>
 		</div>
+		<div class="ui-g">
+			<div class="ui-g-6" style="background-color: #f4f4f4;">Availability</div>
+			<div class="ui-g-6">
+				<input id="name" name="availability" #name="ngModel" type="text" [(ngModel)]="foodToView.availability"
+					required="true" />
+			</div>
+		</div>
+		<input type="submit" value="Submit" style="float: right;"/>
 	</form>
 </p-dialog>
 

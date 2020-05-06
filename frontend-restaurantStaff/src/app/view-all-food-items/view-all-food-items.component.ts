@@ -64,7 +64,17 @@ export class ViewAllFoodItemsComponent implements OnInit {
     //   "quantity" = foodToView
     // }
 
-    this.foodItemsService.updateFood(this.restId, this.menuId, this.foodToView["fid"]).subscribe(
+    console.log(this.foodToView);
+
+    let foodToUpdate: any = {
+      "quantity" : this.foodToView.quantity,
+      "daily_limit" : this.foodToView.daily_limit,
+      "name" : this.foodToView.name,
+      "price" : this.foodToView.price,
+      "availability" : this.foodToView.availability
+    }
+
+    this.foodItemsService.updateFoodItems(this.restId, this.menuId, this.foodToView["fid"], foodToUpdate).subscribe(
       response => {
         this.displayUpdate = false;
         this.foodItemsService.getFoodItems(this.restId, this.menuId).subscribe(
@@ -78,7 +88,6 @@ export class ViewAllFoodItemsComponent implements OnInit {
       },
       error => {
         console.log('********** GetRestaurantComponent.ts: ' + error);
-      }
       }
     )
   }
