@@ -127,7 +127,6 @@ CREATE TABLE Food_Items (
     price FLOAT NOT NULL,
     menu_id INTEGER NOT NULL,
     category VARCHAR(50),
-    availability BOOLEAN NOT NULL,
     PRIMARY KEY (fid),
     FOREIGN KEY (menu_id) REFERENCES Menus (menu_id),
     FOREIGN KEY (category) REFERENCES Food_Item_Categories (category)
