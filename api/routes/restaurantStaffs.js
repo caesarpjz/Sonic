@@ -128,7 +128,7 @@ const getMenuNameById = (request, response) => {
 const getFoodItemByMenuId = (request, response) => {
   const { menu_id } = request.params
 
-  pool.query('SELECT m.name, f.fid, f.quantity, f.daily_limit, f.name, f.price, f.category, f.availability FROM Food_Items f, Menus m WHERE m.menu_id = $1 AND f.menu_id = m.menu_id', [menu_id], (error, results) => {
+  pool.query('SELECT m.name, f.fid, f.quantity, f.daily_limit, f.name, f.price, f.category FROM Food_Items f, Menus m WHERE m.menu_id = $1 AND f.menu_id = m.menu_id', [menu_id], (error, results) => {
     if (error) {
       response.status(400).send(`Unable to get food items`)
       throw error
@@ -216,7 +216,7 @@ const removeFoodByFid = (request, response) => {
 // /restaurant_staff/:username/restaurant/:rest_id/menus/:menu_id/:fid
 const updateFoodItemByMenuIdAndFid = (request, response) => {
   const { menu_id, fid } = request.params
-  const { quantity, daily_limit, name, price, availability } = request.body
+  const { quantity, daily_limit, name, price, category } = request.body
 
   pool.query('SELECT name FROM Food_Items WHERE fid = $1', [fid], (error, results) => {
     if (error) {
@@ -268,10 +268,10 @@ const updateFoodItemByMenuIdAndFid = (request, response) => {
       })
     }
   
-    if (availability !== undefined) {
-      pool.query('UPDATE Food_Items SET availability = $1 WHERE fid = $2 AND menu_id = $3', [availability, fid, menu_id], (error, results) => {
+    if (category !== undefined) {
+      pool.query('UPDATE Food_Items SET category = $1 WHERE fid = $2 AND menu_id = $3', [category, fid, menu_id], (error, results) => {
         if (error) {
-          response.status(400).send(`Unable to update availability. Please try again.`)
+          response.status(400).send(`Unable to update category. Please try again.`)
           throw error
         }
         // response.status(201).send(`Food ${fid} successfully updated`)

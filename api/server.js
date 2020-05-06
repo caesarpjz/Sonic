@@ -87,16 +87,6 @@ app.get('/', (req, res) => {
     .route('/restaurant/:rest_id/menus/:menu_id')
     .get(customersDb.getFoodItemsByMenuId)
 
-    // Get Food Avail By Fid
-    app
-    .route('/customer/:username/restaurant/:rest_id/menus/:menu_id/:fid')
-    .get(customersDb.getFoodAvailabilityByFid)
-
-    // Get Food Avail By Name
-    app
-    .route('/customer/:username/restaurant/:rest_id/menus/:menu_id/:name')
-    .get(customersDb.getFoodAvailabilityByName)
-
     // View Profile
     app
     .route('/customer/:username/profile')
@@ -401,7 +391,7 @@ app.get('/', (req, res) => {
     app
     .route('/restaurant_staff/restaurant/:rest_id/:menu_id/food/:fid/deletefood')
     .delete(restaurantsDb.removeFoodByFid)
-    
+
     // Remove Menu by Menu Id
     app
     .route('/restaurant_staff/:username/restaurant/:rest_id/deleteid/:menu_id')
