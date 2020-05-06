@@ -1,4 +1,4 @@
-<div class="credit-card" *ngIf="card">
+<div class="credit-card" (click)="onClick()" [ngClass]="{'selected': this.selected}" *ngIf="card">
   <div class="credit-card-lower">
     <div class="credit-card-number credit-card-display">{{card.number | slice:0:4}} •••• •••• ••••</div>
     <div class="credit-card-name credit-card-display">{{card.name}}</div>

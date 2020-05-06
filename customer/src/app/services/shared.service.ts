@@ -7,8 +7,21 @@ export class SharedService {
   private loggedIn = false;
   private username = '';
   private restaurant: any;
+  private card = null;
 
   constructor() { }
+
+  toggleCard(card) {
+    if (this.card === null) {
+      this.card = card;
+    } else {
+      this.card = null;
+    }
+  }
+
+  getCard() {
+    return this.card;
+  }
 
   toggleLoggedIn() {
     if (!this.loggedIn) {

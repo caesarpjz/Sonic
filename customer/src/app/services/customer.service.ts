@@ -41,13 +41,7 @@ export class CustomerService {
 
   // insert cc info
   // localhost:3002/customer/mrpresident/profile/insertCC
-  addCard(form): Observable<any> {
-    let card = {
-      'cc_name': form.value.name,
-      'expiryDate': form.value.date,
-      'num': form.value.creditCardNumber
-    };
-
+  addCard(card): Observable<any> {
     const username = sessionStorage.getItem('username');
 
     return this.httpClient.post<any>(`/api/customer/${username}/profile/insertCC`, card,
