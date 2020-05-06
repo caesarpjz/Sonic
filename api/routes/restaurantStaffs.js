@@ -155,7 +155,7 @@ const updateMenuNameByMenuId = (request, response) => {
 const addMenu = (request, response) => {
   const { rest_id } = request.params
   const { menu_name } = request.body
-
+  console.log(menu_name)
   pool.query('SELECT addMenu($1, $2)', [rest_id, menu_name], (error, results) => {
     if (error) {
       response.status(400).send(`Unable to add menu ${menu_name}`)

@@ -99,7 +99,8 @@ CREATE TABLE Menus (
     rest_id INTEGER,
     name VARCHAR(50),
     PRIMARY KEY (menu_id),
-    FOREIGN KEY (rest_id) REFERENCES Restaurants (rest_id)
+    FOREIGN KEY (rest_id) REFERENCES Restaurants (rest_id),
+    unique(rest_id, name)
 );
 
 CREATE TABLE Restaurant_Staff (

@@ -389,7 +389,7 @@ app.get('/', (req, res) => {
 
     // Add Menu
     app
-    .route('/restaurant_staff/:username/restaurant/:rest_id/addMenu')
+    .route('/restaurant_staff/:username/restaurant/:rest_id/add/menu')
     .post(restaurantsDb.addMenu)
 
     // Add Food Item into Menu
