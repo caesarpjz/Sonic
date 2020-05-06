@@ -1,3 +1,4 @@
+import { UpdateCcComponent } from './update-cc/update-cc.component';
 import { ProfileComponent } from './profile/profile.component';
 import { CheckoutComponent } from './checkout/checkout.component';
 import { SignupComponent } from './signup/signup.component';
@@ -13,13 +14,15 @@ import { CommonModule } from '@angular/common';
 
 const routes: Routes = [
   { path: '', component: HomeComponent, pathMatch: 'full' },
+  { path: 'home', component: HomeComponent },
   { path: 'restaurants', component: RestaurantsComponent },
   { path: 'restaurants/:restaurantId', component: RestaurantComponent },
   { path: 'cart', component: CartComponent },
   { path: 'login', component: LoginComponent },
   { path: 'signup', component: SignupComponent },
   { path: 'checkout', component: CheckoutComponent },
-  { path: 'profile', component: ProfileComponent }
+  { path: 'profile', component: ProfileComponent },
+  { path: 'update-card', component: UpdateCcComponent }
 ];
 
 @NgModule({

@@ -1,9 +1,8 @@
-import { Observable } from 'rxjs';
 import { CartService } from '../services/cart.service';
-import { Product } from '../models/product';
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { RestaurantsService } from '../services/restaurants.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-restaurant',
@@ -20,7 +19,8 @@ export class RestaurantComponent implements OnInit {
   constructor(
     private cartService: CartService,
     private restaurantService: RestaurantsService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
   ) {
     this.cartService.initCart();
   }
@@ -60,7 +60,43 @@ export class RestaurantComponent implements OnInit {
   }
 
   addToCart = (item) => {
-    this.cartService.addToCart(item);
+    console.log(typeof JSON.parse(localStorage.getItem('restaurantLastOrdered')).rest_id);
+    console.log(typeof this.restaurantId);
+
+    if (localStorage.getItem('restaurantLastOrdered') &&
+        JSON.parse(localStorage.getItem('restaurantLastOrdered')).rest_id !== Number(this.restaurantId)) {
+      // alert that cart will be cleared if continue, otherwise cancel action
+      Swal.fire({
+        title: 'There are already items in your cart from another restaurant!',
+        text: 'Do you want to continue? If so, your items from the other restaurant will be cleared',
+        icon: 'error',
+        confirmButtonText: 'Continue',
+        cancelButtonText: 'Cancel',
+        showCancelButton: true,
+      }).then((result) => {
+        if (result.value) {
+          localStorage.setItem('restaurantLastOrdered', JSON.stringify(this.restaurant));
+          localStorage.removeItem('cart');
+          this.cartService.initCart();
+          this.cartService.addToCart(item);
+        }
+      })
+    } else {
+      this.cartService.addToCart(item);
+      localStorage.setItem('restaurantLastOrdered', JSON.stringify(this.restaurant));
+
+      Swal.fire({
+        title: item.name + ' added to cart!',
+        icon: 'success',
+        confirmButtonText: 'Go to cart',
+        cancelButtonText: 'Cancel',
+        showCancelButton: true,
+      }).then((result) => {
+        if (result.value) {
+          this.router.navigate(['/cart']);
+        }
+      });
+    }
   }
 
   addQuantity(item) {

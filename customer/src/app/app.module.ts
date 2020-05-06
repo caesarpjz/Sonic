@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
@@ -20,6 +20,11 @@ import { ProfileComponent } from './profile/profile.component';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { AlertService } from './services/alert.service';
 import { AlertComponent } from './alert/alert.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { RadioButtonModule } from 'primeng/radiobutton';
+import { CreditcardComponent } from './creditcard/creditcard.component';
+import { DropdownModule } from 'primeng/dropdown';
+import { UpdateCcComponent } from './update-cc/update-cc.component';
 
 
 @NgModule({
@@ -38,13 +43,19 @@ import { AlertComponent } from './alert/alert.component';
     SignupComponent,
     CheckoutComponent,
     ProfileComponent,
-    AlertComponent
+    AlertComponent,
+    CreditcardComponent,
+    UpdateCcComponent
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
     AppRoutingModule,
-    ReactiveFormsModule
+    FormsModule,
+    ReactiveFormsModule,
+    BrowserAnimationsModule,
+    RadioButtonModule,
+    DropdownModule
   ],
   providers: [
     AlertService

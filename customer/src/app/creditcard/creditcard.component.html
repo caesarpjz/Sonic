@@ -1,0 +1,9 @@
+<div class="credit-card" (click)="onClick()" [ngClass]="{'selected': this.selected}" *ngIf="card">
+  <div class="credit-card-lower">
+    <div class="credit-card-number credit-card-display">CC Number <b>{{card.number | slice:0:4}} •••• •••• ••••</b>
+    </div>
+    <div class="credit-card-name credit-card-display">Name <b>{{card.name}}</b></div>
+    <div class="credit-card-expiry credit-card-display" data-before="month/year" data-after="valid
+  thru">Expiry Date <b>{{card.expiry}}</b></div>
+  </div>
+</div>
