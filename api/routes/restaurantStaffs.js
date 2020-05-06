@@ -200,6 +200,19 @@ const removeMenuByMenuId = (request, response) => {
   
 }
 
+// /restaurant_staff/restaurant/:rest_id/:menu_id/food/:fid/deletefood
+const removeFoodByFid = (request, response) => {
+  const { menu_id, fid } = request.params
+
+  pool.query('DELETE FROM Food_Items WHERE menu_id = $1 AND fid = $2', [menu_id, fid], (error, results) => {
+    if (error) {
+      response.status(400).send(`Unable to delete food item ${fid}`)
+      throw error
+    }
+    response.status(200).send(`Food Item ${fid} deleted!`)
+  })
+}
+
 // /restaurant_staff/:username/restaurant/:rest_id/menus/:menu_id/:fid
 const updateFoodItemByMenuIdAndFid = (request, response) => {
   const { menu_id, fid } = request.params
@@ -512,6 +525,7 @@ module.exports = {
     updateMenuNameByMenuId,
     addMenu,
     addFoodItemIntoMenu,
+    removeFoodByFid,
     removeMenuByMenuId,
     updateFoodItemByMenuIdAndFid,
     createPromotionsByRestId,
