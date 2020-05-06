@@ -14,7 +14,7 @@ import { RestaurantService } from '../services/restaurant.service';
 export class ViewAllFoodItemsComponent implements OnInit {
 
   submitted: boolean;
-  newFood: Food;
+  newFood: any;
   displayUpdate: boolean = false;
   displayAdd: boolean = false;
   foods: any;
@@ -88,14 +88,14 @@ export class ViewAllFoodItemsComponent implements OnInit {
     );
   }
 
-  deleteFood(foodToDelete: Food) {
-    // this.foodItemsService.deleteFood().subscribe(
-    //   response => {
-    //   },
-    //   error => {
-    //     console.log('********** GetRestaurantComponent.ts: ' + error);
-    //   }
-    // );
+  deleteFood(foodToDelete: any) {
+    this.foodItemsService.deleteFood(this.restId, this.menuId, foodToDelete.fid).subscribe(
+      response => {
+      },
+      error => {
+        console.log('********** GetRestaurantComponent.ts: ' + error);
+      }
+    );
   }
 
   showDialog2() {
@@ -108,8 +108,18 @@ export class ViewAllFoodItemsComponent implements OnInit {
   }
 
   addFood(addFoodForm: NgForm) {
-    this.foodItemsService.createFood().subscribe(
-      response => {}
+    
+    let foodToCreate: any = {
+      "quantity": this.newFood.quantity,
+      "daily_limit": this.newFood.daily_limit,
+      "name": this.newFood.name,
+      "price": this.newFood.price,
+      "category": this.newFood.category,
+    }
+    this.foodItemsService.createFood(this.restId, this.menuId, foodToCreate).subscribe(
+      response => {
+        this.displayAdd = false;
+      }
     )
   }
 }
