@@ -89,3 +89,20 @@ BEFORE INSERT
 ON Order_Contains_Food
 FOR EACH ROW
 EXECUTE FUNCTION check_order_restaurant();
+
+CREATE OR REPLACE FUNCTION check_promo_startend_time() RETURNS TRIGGER AS $$
+declare
+begin
+    IF (NEW.start_date > NEW.end_date) THEN
+        RAISE EXCEPTION 'End date of promotion is before its start date.';
+    END IF;
+
+    RETURN NEW;
+end
+$$ LANGUAGE PLPGSQL;
+
+CREATE TRIGGER promo_startend_time_trigger
+BEFORE INSERT 
+ON Promotions
+FOR EACH ROW
+EXECUTE FUNCTION check_promo_startend_time();
