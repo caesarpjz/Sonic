@@ -11,37 +11,31 @@ $$ LANGUAGE SQL;
 
 CREATE OR REPLACE FUNCTION addFdsManager(username VARCHAR, password VARCHAR, name VARCHAR)
 RETURNS void AS $$
-declare 
-    userId integer;
 begin
-    select addUser(username, password, name, 'FDS_Manager') into userId;
+    PERFORM addUser(username, password, name, 'FDS_Manager');
 
     INSERT INTO FDS_Managers
-    VALUES (DEFAULT, userId, username, name);
+    VALUES (DEFAULT, username);
 end
 $$ LANGUAGE PLPGSQL;
 
 CREATE OR REPLACE FUNCTION addCustomer(username VARCHAR, password VARCHAR, name VARCHAR)
 RETURNS void AS $$
-declare 
-    userId integer;
 begin
-    select addUser(username, password, name, 'Customer') into userId;
+    PERFORM addUser(username, password, name, 'Customer');
 
     INSERT INTO Customers
-    VALUES (DEFAULT, userId, null, null, DEFAULT, username, name);
+    VALUES (DEFAULT, null, null, DEFAULT, username);
 end
 $$ LANGUAGE PLPGSQL;
 
 CREATE OR REPLACE FUNCTION addRider(username VARCHAR, password VARCHAR, name VARCHAR, is_full_time BOOLEAN, status RIDER_STATUSES DEFAULT 'NOT WORKING')
 RETURNS void AS $$
-declare 
-    userId integer;
 begin
-    select addUser(username, password, name, 'Rider') into userId;
+    PERFORM addUser(username, password, name, 'Rider');
 
     INSERT INTO Riders
-    VALUES (DEFAULT, userId, is_full_time, status, username, name);
+    VALUES (DEFAULT, is_full_time, status, username);
 end
 $$ LANGUAGE PLPGSQL;
 
@@ -69,13 +63,11 @@ $$ LANGUAGE SQL;
 
 CREATE OR REPLACE FUNCTION addRestaurantStaff(username VARCHAR, password VARCHAR, name VARCHAR, rest_id INTEGER)
 RETURNS void AS $$
-declare 
-    userId integer;
 begin
-    select addUser(username, password, name, 'Restaurant_Staff') into userId;
+    PERFORM addUser(username, password, name, 'Restaurant_Staff');
 
     INSERT INTO Restaurant_Staff
-    VALUES (DEFAULT, rest_id, userId, username, name);
+    VALUES (DEFAULT, rest_id, username);
 end
 $$ LANGUAGE PLPGSQL;
 

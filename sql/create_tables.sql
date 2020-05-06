@@ -25,14 +25,10 @@ CREATE TABLE Restaurant_Categories (
 
 CREATE TABLE FDS_Managers (
     mid SERIAL,
-    -- id INTEGER NOT NULL,
     username VARCHAR(50) NOT NULL,
-    name VARCHAR(50),
-    PRIMARY KEY (mid, id, username),
-    FOREIGN KEY (id) REFERENCES Users (id),
+    PRIMARY KEY (mid, username),
     FOREIGN KEY (username) REFERENCES Users (username),
     UNIQUE (mid),
-    UNIQUE (id),
     UNIQUE (username)
 );
 
@@ -50,34 +46,24 @@ CREATE TABLE Promotions (
 
 CREATE TABLE Customers (
     cid SERIAL,
-    -- id INTEGER NOT NULL,
     cc_name VARCHAR(50), -- credit card name for credit card usage
     cc_expiry VARCHAR(50), -- credit card expiry for credit card usage
     points INTEGER NOT NULL DEFAULT 0, -- points for delivery fee offset
     username VARCHAR(50) NOT NULL,
-    -- name VARCHAR(50),
-    -- PRIMARY KEY (cid, id, username),
     PRIMARY KEY (cid, username),
-    -- FOREIGN KEY (id) REFERENCES Users (id),
     FOREIGN KEY (username) REFERENCES Users (username),
     UNIQUE (cid),
-    -- UNIQUE (id),
     UNIQUE (username)
 );
 
 CREATE TABLE Riders (
     rid SERIAL,
-    -- id INTEGER NOT NULL,
     is_full_time BOOLEAN NOT NULL, -- whether rider is full-time or part-time
     status RIDER_STATUSES NOT NULL, -- whether rider is free to deliver or not
     username VARCHAR(50) NOT NULL,
-    -- name VARCHAR(50),
-    -- PRIMARY KEY (rid, id, username),
     PRIMARY KEY (rid, username),
-    -- FOREIGN KEY (id) REFERENCES Users (id),
     FOREIGN KEY (username) REFERENCES Users (username),
     UNIQUE (rid),
-    -- UNIQUE (id),
     UNIQUE (username)
 );
 
@@ -117,16 +103,11 @@ CREATE TABLE Menus (
 CREATE TABLE Restaurant_Staff (
     rsid SERIAL,
     rest_id INTEGER,
-    -- id INTEGER NOT NULL,
     username VARCHAR(50) NOT NULL,
-    -- name VARCHAR(50),
-    -- PRIMARY KEY (rsid, id, username),
     PRIMARY KEY (rsid, username),
     FOREIGN KEY (rest_id) REFERENCES Restaurants (rest_id),
-    -- FOREIGN KEY (id) REFERENCES Users (id) ON DELETE CASCADE,
     FOREIGN KEY (username) REFERENCES Users (username),
     UNIQUE (rsid),
-    -- UNIQUE (id),
     UNIQUE (username)
 );
 
