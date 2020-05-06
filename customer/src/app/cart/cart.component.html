@@ -5,6 +5,8 @@
     <h1>Cart</h1>
   </div>
 
+  <app-alert></app-alert>
+
   <div class="cart__container">
     <div class="cart__items">
       <div *ngFor="let item of cartItems">
@@ -33,7 +35,7 @@
       </p>
 
       <div class="row justify-content-center">
-        <button class="btn btn-lg btn-primary" [routerLink]="['/checkout']">
+        <button class="btn btn-lg btn-primary" (click)="submit()">
           Checkout
         </button>
       </div>

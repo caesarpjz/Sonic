@@ -1,3 +1,4 @@
+import { SharedService } from './../services/shared.service';
 import { Router } from '@angular/router';
 import { AlertService } from '../services/alert.service';
 import { AuthService } from './../services/auth.service';
@@ -17,7 +18,8 @@ export class LoginComponent implements OnInit {
     private formBuilder: FormBuilder,
     private authService: AuthService,
     private alertService: AlertService,
-    private router: Router
+    private router: Router,
+    private sharedService: SharedService
   ) {
     this.initLoginForm();
   }
@@ -39,14 +41,12 @@ export class LoginComponent implements OnInit {
   }
 
   login() {
-    // @todos: call auth service
-    console.log(this.loginForm);
     this.authService.login(this.loginForm).subscribe((res) => {
       this.alertService.success('Login successful!');
-      sessionStorage.setItem('loggedIn', 'true');
-      // save username from res as well to display the name?
-      sessionStorage.setItem('username', this.loginForm.value.username);
-      // route to login page?
+
+      this.sharedService.setUsername(this.loginForm.value.username);
+      this.sharedService.toggleLoggedIn();
+
       this.router.navigate(['/']);
     }, (err) => {
       this.alertService.error('Invalid login credentials, please try again')

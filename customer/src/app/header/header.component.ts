@@ -1,3 +1,4 @@
+import { SharedService } from './../services/shared.service';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
@@ -8,10 +9,10 @@ import { Component, OnInit } from '@angular/core';
 export class HeaderComponent implements OnInit {
   username: string;
 
-  constructor() { }
+  constructor(private sharedService: SharedService) { }
 
   ngOnInit() {
-    this.username = sessionStorage.getItem('username');
+    this.username = this.sharedService.getUsername();
   }
 
 }

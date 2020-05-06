@@ -39,7 +39,10 @@ export class AuthService {
     };
 
     return this.httpClient.post<any>('/api/customers', customer,
-           httpOptions);
+           httpOptions).pipe(
+             retry(1),
+             catchError(this.handleError)
+           );
   }
 
   login(form): Observable<any> {

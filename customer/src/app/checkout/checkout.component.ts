@@ -55,12 +55,10 @@ export class CheckoutComponent implements OnInit {
   }
 
   submit() {
-    // user {}, cart {}
-    console.log(this.checkoutForm);
-
-
     this.restaurantService.checkout(this.checkoutForm, this.cartItems).subscribe((res) => {
       console.log(res);
+
+      // route to order summary page when complete, show delivery status blah
     });
 
     // if option credit, also need to set credit card num?

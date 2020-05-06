@@ -1,3 +1,4 @@
+import { SharedService } from './../services/shared.service';
 import { Observable } from 'rxjs';
 import { CartService } from '../services/cart.service';
 import { Product } from '../models/product';
@@ -20,7 +21,8 @@ export class RestaurantComponent implements OnInit {
   constructor(
     private cartService: CartService,
     private restaurantService: RestaurantsService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private sharedService: SharedService
   ) {
     this.cartService.initCart();
   }
@@ -61,7 +63,7 @@ export class RestaurantComponent implements OnInit {
 
   addToCart = (item) => {
     this.cartService.addToCart(item);
-    sessionStorage.setItem('restaurantLastOrdered', JSON.stringify(this.restaurant));
+    this.sharedService.setRestaurant(this.restaurant);
   }
 
   addQuantity(item) {
