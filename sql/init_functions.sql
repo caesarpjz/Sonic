@@ -29,7 +29,7 @@ begin
     select addUser(username, password, name, 'Customer') into userId;
 
     INSERT INTO Customers
-    VALUES (DEFAULT, userId, null, null, null, DEFAULT, username, name);
+    VALUES (DEFAULT, userId, null, null, DEFAULT, username, name);
 end
 $$ LANGUAGE PLPGSQL;
 
@@ -273,11 +273,12 @@ $$ LANGUAGE PLPGSQL;
 
 CREATE OR REPLACE FUNCTION getRestOrders(rest_id INTEGER)
 RETURNS table(oid INTEGER, fid INTEGER, name VARCHAR, quantity INTEGER) AS $$
-    SELECT of.oid, f.fid, f.name, of.quantity
-    FROM Menus m, Food_Items f, Order_Contains_Food of
+    SELECT of.oid, f.fid, f.name, of.quantity, o.status
+    FROM Menus m, Food_Items f, Order_Contains_Food of, Orders o
     WHERE m.rest_id = $1 
     AND m.menu_id = f.menu_id
     AND f.fid = of.fid
+    AND o.status <> 'Delivered'
 $$ LANGUAGE SQL;
 
 CREATE OR REPLACE FUNCTION updatePassword(username VARCHAR, newpassword VARCHAR)
@@ -315,8 +316,8 @@ RETURNS table(name VARCHAR) AS $$
 $$ LANGUAGE SQL;
 
 CREATE OR REPLACE FUNCTION getFoodItems(rest_name VARCHAR, menu_name VARCHAR) 
-RETURNS table(name VARCHAR, availability BOOLEAN, price FLOAT, quantity INTEGER, daily_limit INTEGER) AS $$
-    SELECT F.name, F.availability, F.price, F.quantity, F.daily_limit
+RETURNS table(name VARCHAR, price FLOAT, quantity INTEGER, daily_limit INTEGER) AS $$
+    SELECT F.name, F.price, F.quantity, F.daily_limit
     FROM restaurants R join menus M on R.rest_id = M.rest_id 
     join food_items F on M.menu_id = F.menu_id
     where R.name = rest_name
@@ -338,9 +339,16 @@ CREATE OR REPLACE FUNCTION addFoodItem(
     menu_id INTEGER,
     category VARCHAR)
 RETURNS void AS $$
+begin
+    IF (category NOT IN Food_Item_Categories) THEN 
+        INSERT INTO Food_Item_Categories
+        VALUES (category);
+    END IF;
+    
     INSERT INTO Food_Items
-    VALUES (DEFAULT, quantity, daily_limit, name, price, menu_id, category, TRUE);
-$$ LANGUAGE SQL;
+    VALUES (DEFAULT, quantity, daily_limit, name, price, menu_id, category);
+end
+$$ LANGUAGE PLPGSQL;
 
 CREATE OR REPLACE FUNCTION addRestaurantPromotion(start_date DATE, end_date DATE, discount_desc TEXT, 
     discount_percentage FLOAT, name VARCHAR, rest_id INTEGER)
@@ -483,6 +491,10 @@ begin
     UPDATE Customers
     SET points = points + FLOOR(total_price)
     WHERE Customers.cid = cust_id;
+
+    UPDATE Food_Items
+    SET daily_limit = daily_limit - 1
+    WHERE Food_Items.fid = $2;
 end
 $$ LANGUAGE PLPGSQL;
 
@@ -535,12 +547,11 @@ RETURNS record AS $$
     WHERE Customers.cid = $1;
 $$ LANGUAGE SQL;
 
-CREATE OR REPLACE FUNCTION updateCC(cid INTEGER, cc_name VARCHAR, cc_expiry VARCHAR, cc_num VARCHAR) 
+CREATE OR REPLACE FUNCTION updateCC(cid INTEGER, cc_name VARCHAR, cc_expiry VARCHAR) 
 RETURNS void as $$
     UPDATE Customers
     SET cc_name = $2,
-    cc_expiry = $3,
-    cc_num = $4
+    cc_expiry = $3
     WHERE cid = $1;
 $$ LANGUAGE SQL;
 

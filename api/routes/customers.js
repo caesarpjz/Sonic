@@ -160,35 +160,6 @@ const getFoodItemsByMenuId = (request, response) => {
 }
 
 
-// /customer/:username/restaurant/:rest_id/menus/:menu_id/:fid
-const getFoodAvailabilityByFid = (request, response) => {
-  const { menu_id, fid } = request.params
-
-  pool.query('SELECT f.name, f.availability FROM Food_Items f WHERE f.menu_id = $1 AND f.fid = $2', [menu_id, fid], (error, results) => {
-    if (error) {
-      response.status(400).send(`Unable to get food availability with fid ${fid}`)
-      throw error
-    }
-    response.status(200).json(results.rows)
-  })
-}
-
-// /customer/:username/restaurant/:rest_id/menus/:menu_id/:name
-const getFoodAvailabilityByName = (request, response) => {
-  const { menu_id } = request.params
-  var { name } = request.params
-
-  name = name.charAt(0).toUpperCase() + name.substring(1)
-
-  pool.query('SELECT f.name, f.availability FROM Food_Items f WHERE f.menu_id = $1 AND f.name = $2', [menu_id, name], (error, results) => {
-    if (error) {
-      response.status(400).send(`Unable to get food availability with name ${name}`)
-      throw error
-    }
-    response.status(200).json(results.rows)
-  })
-}
-
 
 // /customer/:username/profile
 const viewProfile = (request, response) => {
@@ -334,7 +305,6 @@ const insertCCInfo = (request, response) => {
   const { username } = request.params
   const cc_name = request.body.cc_name
   const expiryDate = request.body.expiryDate
-  const num = request.body.num
 
   pool.query('SELECT cid FROM Customers where username = $1', [username], (error, results) => {
     if (error) {
@@ -343,7 +313,7 @@ const insertCCInfo = (request, response) => {
     }
     const cid = results.rows[0].cid
 
-    pool.query('SELECT updateCC($1, $2, $3, $4)', [cid, cc_name, expiryDate, num], (error, results) => {
+    pool.query('SELECT updateCC($1, $2, $3)', [cid, cc_name, expiryDate], (error, results) => {
       if (error) {
         response.status(400).send(`Unable to add credit card info`)
         throw error
@@ -487,24 +457,40 @@ const filterRestaurantByLocation = (request, response) => {
   })
 }
 
+// /reviews/:rest_id
+const getAllReviews = (request, response) => {
+  const { rest_id } = request.params
+
+  pool.query('SELECT distinct rt.name, r.cid, c.username, f.name, f.fid, r.review_desc FROM Reviews r, Customers c, Food_Items f, Menus m, Restaurants rt WHERE r.fid = f.fid AND r.cid = c.cid AND rt.rest_id = $1', [rest_id], (error, results) => {
+    if (error) {
+      response.status(400).send('Unable to get reviews')
+    }
+    response.status(200).json(results.rows)
+  })
+}
+
 // /customer/:username/usepoints
 const offsetRewardPoints = (request, response) => {
   const { username } = request.params
   const { points } = request.body
-
-  pool.query('SELECT points FROM Customers WHERE username =$1' [username], (error, results) => {
+  // console.log('abcdeas')
+  // console.log(points)
+  pool.query('SELECT points FROM Customers WHERE username = $1', [username], (error, results) => {
+    // console.log('qweqweqwewqe')
     if (error) {
+      // console.log('hello')
       response.status(400).send('Unable to use points')
       throw error
     }
     var original_points = results.rows[0].points
-
-    if (typeof(points) === 'string') {
-      points = parseInt(points)
-    }
+    // console.log('1212312312s')
+    // if (typeof(points) === 'string') {
+    //   points = parseInt(points)
+    // }
     var new_points = original_points - points
 
     pool.query('UPDATE Customers SET points = $1 WHERE username = $2', [new_points, username], (error, results) => {
+      // console.log('000000000')
       if (error) {
         response.status(400).send('Unable to use points')
         throw error
@@ -528,8 +514,6 @@ module.exports = {
   getRestaurantByCategory,
   getMenusByRestId,
   getFoodItemsByMenuId,
-  getFoodAvailabilityByFid,
-  getFoodAvailabilityByName,
   viewProfile,
   getPointsById,
   getOrdersByCid,
@@ -545,5 +529,6 @@ module.exports = {
   updateReviewByFid,
   filterRestaurantByCategory,
   filterRestaurantByLocation,
-  offsetRewardPoints
+  offsetRewardPoints,
+  getAllReviews
 }

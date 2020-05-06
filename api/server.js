@@ -87,16 +87,6 @@ app.get('/', (req, res) => {
     .route('/restaurant/:rest_id/menus/:menu_id')
     .get(customersDb.getFoodItemsByMenuId)
 
-    // Get Food Avail By Fid
-    app
-    .route('/customer/:username/restaurant/:rest_id/menus/:menu_id/:fid')
-    .get(customersDb.getFoodAvailabilityByFid)
-
-    // Get Food Avail By Name
-    app
-    .route('/customer/:username/restaurant/:rest_id/menus/:menu_id/:name')
-    .get(customersDb.getFoodAvailabilityByName)
-
     // View Profile
     app
     .route('/customer/:username/profile')
@@ -177,6 +167,10 @@ app.get('/', (req, res) => {
     .route('/customer/:username/usepoints')
     .post(customersDb.offsetRewardPoints)
 
+    // Get reviews of a restaurant
+    app
+    .route('/reviews/:rest_id')
+    .get(customersDb.getAllReviews)
 /***** Riders *****/
     // Riders Login
     app
@@ -389,7 +383,7 @@ app.get('/', (req, res) => {
 
     // Add Menu
     app
-    .route('/restaurant_staff/:username/restaurant/:rest_id/addMenu')
+    .route('/restaurant_staff/:username/restaurant/:rest_id/add/menu')
     .post(restaurantsDb.addMenu)
 
     // Add Food Item into Menu
@@ -397,14 +391,14 @@ app.get('/', (req, res) => {
     .route('/restaurant_staff/:username/restaurant/:rest_id/menus/:menu_id/addfood')
     .post(restaurantsDb.addFoodItemIntoMenu)
 
-    // Remove Menu by name
+    // Remove Food by fid
     app
-    .route('/restaurant_staff/:username/restaurant/:rest_id/delete/:menu_name')
-    .post(restaurantsDb.removeMenuByName)
+    .route('/restaurant_staff/restaurant/:rest_id/:menu_id/food/:fid/deletefood')
+    .delete(restaurantsDb.removeFoodByFid)
 
     // Remove Menu by Menu Id
     app
-    .route('/restaurant_staff/:username/restaurant/:rest_id/delete/:menu_id')
+    .route('/restaurant_staff/:username/restaurant/:rest_id/deleteid/:menu_id')
     .delete(restaurantsDb.removeMenuByMenuId)
 
     // Update Food Item by Menu Id and Fid
@@ -427,10 +421,10 @@ app.get('/', (req, res) => {
     .route('/restaurant_staff/promotions/:pid/validity')
     .get(restaurantsDb.checkIfRestaurantPromotionIsValidByPid)
 
-    // Check if restaurant promotion is valid by name
-    app
-    .route('/restaurant_staff/promotions/name/:name/validity')
-    .get(restaurantsDb.checkIfRestaurantPromotionIsValidByName)
+    // // Check if restaurant promotion is valid by name
+    // app
+    // .route('/restaurant_staff/promotions/name/:name/validity')
+    // .get(restaurantsDb.checkIfRestaurantPromotionIsValidByName)
 
     // Update Promotions
     app
@@ -469,7 +463,7 @@ app.get('/', (req, res) => {
 
     // Get Promo Summary 
     app
-    .route('/restaurant_staff/:username/:pid/promosummary')
+    .route('/restaurant_staff/:pid/promosummary')
     .get(restaurantsDb.getPromoSummaryBasedOnPid)
        
 

@@ -49,7 +49,6 @@ CREATE TABLE Customers (
     id INTEGER NOT NULL,
     cc_name VARCHAR(50),
     cc_expiry VARCHAR(50),
-    cc_num VARCHAR(50),
     points INTEGER NOT NULL DEFAULT 0,
     username VARCHAR(50) NOT NULL,
     name VARCHAR(50),
@@ -99,7 +98,8 @@ CREATE TABLE Menus (
     rest_id INTEGER,
     name VARCHAR(50),
     PRIMARY KEY (menu_id),
-    FOREIGN KEY (rest_id) REFERENCES Restaurants (rest_id)
+    FOREIGN KEY (rest_id) REFERENCES Restaurants (rest_id),
+    unique(rest_id, name)
 );
 
 CREATE TABLE Restaurant_Staff (
@@ -127,7 +127,6 @@ CREATE TABLE Food_Items (
     price FLOAT NOT NULL,
     menu_id INTEGER NOT NULL,
     category VARCHAR(50),
-    availability BOOLEAN NOT NULL,
     PRIMARY KEY (fid),
     FOREIGN KEY (menu_id) REFERENCES Menus (menu_id),
     FOREIGN KEY (category) REFERENCES Food_Item_Categories (category)
