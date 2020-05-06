@@ -493,8 +493,12 @@ begin
     WHERE Customers.cid = cust_id;
 
     UPDATE Food_Items
-    SET daily_limit = daily_limit - 1
+    SET daily_limit = daily_limit - $3
     WHERE Food_Items.fid = $2;
+
+    UPDATE Food_Items FI
+    SET quantity = FI.quantity - $3
+    WHERE FI.fid = $2;
 end
 $$ LANGUAGE PLPGSQL;
 
@@ -511,7 +515,7 @@ CREATE OR REPLACE FUNCTION addOrder(
     payment_method METHODS, 
     restaurant_location VARCHAR, 
     location VARCHAR, 
-    pid INTEGER)
+    pid INTEGER DEFAULT NULL)
 RETURNS INTEGER AS $$
 declare 
     did integer;
@@ -520,7 +524,7 @@ begin
     select addDelivery(fee) into did;
 
     INSERT INTO Orders
-    VALUES (DEFAULT, did, cid, 0, 'ORDERED', payment_method, restaurant_location, location)
+    VALUES (DEFAULT, did, cid, fee, 'ORDERED', payment_method, restaurant_location, location, pid)
     RETURNING oid into ret_oid;
 
     IF ($6 IS NOT NULL) THEN
@@ -566,10 +570,21 @@ $$ LANGUAGE SQL;
 
 CREATE OR REPLACE FUNCTION getTotalPayable(oid INTEGER) 
 RETURNS FLOAT AS $$
-    SELECT sum(OCF.quantity * FI.price)
-    FROM Orders O join Order_Contains_Food OCF on O.oid = OCF.oid
-    join Food_Items FI on OCF.fid = FI.fid
+    SELECT O.cost
+    FROM Orders O
     WHERE O.oid = $1;
+$$ LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION postReviewFor(cid INTEGER, fid INTEGER, review TEXT) 
+RETURNS void AS $$
+    INSERT INTO Reviews
+    VALUES (cid, fid, review);
+$$ LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION postRatingFor(cid INTEGER, did INTEGER, rating INTEGER) 
+RETURNS void AS $$
+    INSERT INTO Customer_Rates_Delivery
+    VALUES (cid, did, rating);
 $$ LANGUAGE SQL;
 
 -----------------------------
