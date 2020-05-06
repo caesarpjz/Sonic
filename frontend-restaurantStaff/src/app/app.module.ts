@@ -16,6 +16,7 @@ import { TableModule } from 'primeng/table';
 import {DialogModule} from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import {PanelModule} from 'primeng/panel';
+import {CheckboxModule} from 'primeng/checkbox';
 import { ViewAllMenusComponent } from './view-all-menus/view-all-menus.component';
 import { ViewAllPromotionsComponent } from './view-all-promotions/view-all-promotions.component';
 import { ViewAllReviewsComponent } from './view-all-reviews/view-all-reviews.component';
@@ -45,6 +46,7 @@ import { AlertComponent } from './alert/alert.component';
     PanelModule,
     FormsModule,
     HttpClientModule,
+    CheckboxModule
   ],
   providers: [
     AlertService,

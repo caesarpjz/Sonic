@@ -1,8 +1,8 @@
 <head>
-    <link rel="stylesheet"/>
+	<link rel="stylesheet" />
 </head>
 <app-header></app-header>
-<p-button label="Add New Product" (onClick)="showDialog2()"></p-button>
+<p-button label="Add New Food Item" (onClick)="showDialog2()"></p-button>
 <p-table [value]="foods">
 	<ng-template pTemplate="caption">
 		Food Items
@@ -13,6 +13,7 @@
 			<th>Name</th>
 			<th>Category</th>
 			<th>Price</th>
+			<th>Quantity</th>
 			<th>Daily Limit</th>
 			<th>Availability</th>
 		</tr>
@@ -23,6 +24,7 @@
 			<td>{{food.name}}</td>
 			<td>{{food.category}}</td>
 			<td>{{food.price}}</td>
+			<td>{{food.quantity}}</td>
 			<td>{{food.daily_limit}}</td>
 			<td>{{food.availability}}</td>
 			<td>
@@ -36,7 +38,7 @@
 
 <p-dialog class="dialog" *ngIf="displayUpdate" header="Update Food Item" modal="true" [(visible)]="displayUpdate"
 	[style]="{width: '50vw'}">
-	<form (ngSubmit)="update(updateFoodForm)">
+	<form (ngSubmit)="updateFood(updateFoodForm)">
 		<div class="ui-g">
 			<div class="ui-g-6" style="background-color: #f4f4f4;">Food Id</div>
 			<div class="ui-g-6">{{foodToView.fid}}</div>
@@ -63,6 +65,13 @@
 			</div>
 		</div>
 		<div class="ui-g">
+			<div class="ui-g-6" style="background-color: #f4f4f4;">Quantity</div>
+			<div class="ui-g-6">
+				<input id="name" name="quantity" #name="ngModel" type="text" [(ngModel)]="foodToView.quantity"
+					required="true" />
+			</div>
+		</div>
+		<div class="ui-g">
 			<div class="ui-g-6" style="background-color: #f4f4f4;">Daily Limit</div>
 			<div class="ui-g-6">
 				<input id="name" name="dailyLimit" #name="ngModel" type="text" [(ngModel)]="foodToView.daily_limit"
@@ -72,11 +81,17 @@
 		<div class="ui-g">
 			<div class="ui-g-6" style="background-color: #f4f4f4;">Availability</div>
 			<div class="ui-g-6">
-				<input id="name" name="availability" #name="ngModel" type="text" [(ngModel)]="foodToView.availability"
-					required="true" />
+				<!-- <input id="name" name="availability" #name="ngModel" type="text" [(ngModel)]="foodToView.availability"
+					required="true" /> -->
+				<p-checkbox name="availability" #name="ngModel" [(ngModel)]="isAvailable" binary="true"></p-checkbox>
 			</div>
 		</div>
-		<input type="submit" value="Submit" style="float: right;"/>
+		<br />
+		<div class="ui-g" style="float:right">
+			<button (click)="clear()">Clear</button>
+			&nbsp;
+			<input type="submit" value="Submit" />
+		</div>
 	</form>
 </p-dialog>
 

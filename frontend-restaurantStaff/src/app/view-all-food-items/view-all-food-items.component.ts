@@ -22,6 +22,7 @@ export class ViewAllFoodItemsComponent implements OnInit {
   foodToView: any;
   menuId: any;
   restId: any;
+  isAvailable: boolean = false;
 
   constructor(private router: Router,
     private activatedRoute: ActivatedRoute,
@@ -59,7 +60,7 @@ export class ViewAllFoodItemsComponent implements OnInit {
     this.foodToView = foodToView;
   }
 
-  update(updateFoodForm: NgForm) {
+  updateFood(updateFoodForm: NgForm) {
     // let foodToUpdate:any = {
     //   "quantity" = foodToView
     // }
@@ -71,31 +72,30 @@ export class ViewAllFoodItemsComponent implements OnInit {
       "daily_limit" : this.foodToView.daily_limit,
       "name" : this.foodToView.name,
       "price" : this.foodToView.price,
-      "availability" : this.foodToView.availability
+      "availability" : this.isAvailable
     }
 
-    this.foodItemsService.updateFoodItems(this.restId, this.menuId, this.foodToView["fid"], foodToUpdate).subscribe(
+    console.log(foodToUpdate);
+    let fid: any = this.foodToView.fid;
+
+    this.foodItemsService.updateFood(this.restId, this.menuId, fid, foodToUpdate).subscribe(
       response => {
         this.displayUpdate = false;
-        this.foodItemsService.getFoodItems(this.restId, this.menuId).subscribe(
-          response => {
-            this.foods = response;
-          },
-          error => {
-            console.log('********** GetRestaurantComponent.ts: ' + error);
-          }
-        )
       },
       error => {
         console.log('********** GetRestaurantComponent.ts: ' + error);
       }
-    )
+    );
   }
 
   deleteFood(foodToDelete: Food) {
-    const index: number = this.foods.indexOf(foodToDelete);
-    this.foods.splice(index, 1);
-    console.log(this.foods);
+    // this.foodItemsService.deleteFood().subscribe(
+    //   response => {
+    //   },
+    //   error => {
+    //     console.log('********** GetRestaurantComponent.ts: ' + error);
+    //   }
+    // );
   }
 
   showDialog2() {
@@ -108,7 +108,8 @@ export class ViewAllFoodItemsComponent implements OnInit {
   }
 
   addFood(addFoodForm: NgForm) {
-    this.foods.push(this.newFood);
-    this.displayAdd = false;
+    this.foodItemsService.createFood().subscribe(
+      response => {}
+    )
   }
 }

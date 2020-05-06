@@ -28,7 +28,7 @@ export class FoodItemsService {
       );
   }
 
-  updateFoodItems(restId: any, menuId: any, foodId: any, foodToUpdate: any): Observable<any> {
+  updateFood(restId: any, menuId: any, foodId: any, foodToUpdate: any): Observable<any> {
     return this.httpClient.post<any>(this.path + '/restaurant_staff/' + this.sessionService.getUsername() + '/restaurant/' + restId + '/menus/' + menuId + '/' + foodId, foodToUpdate).pipe
       (
         retry(1),
@@ -36,6 +36,19 @@ export class FoodItemsService {
         catchError(this.handleError)
       );
   }
+
+  createFood(restId: any, menuId: any, foodToCreate: any): Observable<any> {
+    return this.httpClient.post<any>(this.path + '/restaurant_staff/' + this.sessionService.getUsername() + '/restaurant/ '+ restId + '/menus/'+ menuId +'/addfood', foodToCreate).pipe
+    (
+      retry(1),
+
+      catchError(this.handleError)
+    );
+  }
+
+  // deleteFood(): Observable<any> {
+  //   return this.httpClient.post<any>(this.path + '')
+  // }
 
   private handleError(error: HttpErrorResponse) {
     let errorMessage: string = "";
