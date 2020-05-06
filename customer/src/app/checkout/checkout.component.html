@@ -7,22 +7,40 @@
 
   <div class="cart__container">
     <div class="cart__items">
-      <form class="form-checkout" [formGroup]="checkoutForm" (ngSubmit)="submit()">
-        <div class="form-group">
+      <div class="form-group mb-5">
+        <label for="addressOption text-left">Address Option</label>
+        <div class="ui-g-12">
+          <p-radioButton name="addressOption" label="Custom address" value="customAddress" [(ngModel)]="customAddress">
+          </p-radioButton>
+        </div>
+        <div class="ui-g-12">
+          <p-radioButton name="addressOption" label="Recent address" value="recentAddress" [(ngModel)]="customAddress">
+          </p-radioButton>
+        </div>
+      </div>
+
+      <form class="form-checkout mt-5 mb-5" [formGroup]="checkoutForm" (ngSubmit)="submit()">
+        <div class="form-group" *ngIf="customAddress === 'customAddress'">
           <label for="address text-left">Address</label>
           <input type="text" class="form-control" id="address" aria-describedby="address" placeholder="Enter address"
             formControlName="address">
         </div>
 
+        <div class="form-group" *ngIf="customAddress === 'recentAddress'">
+          <label for="address text-left">Address</label>
+          <br>
+          <p-dropdown [options]="availableLocations" formControlName="address" placeholder="Select location"></p-dropdown>
+        </div>
+
         <div class="form-group">
           <label for="paymentOption text-left">Payment Option</label>
-            <div class="ui-g-12">
-              <p-radioButton name="paymentOption" label="Cash" value="CASH" formControlName="paymentOption"></p-radioButton>
-            </div>
-            <div class="ui-g-12">
-              <p-radioButton name="paymentOption" label="Credit Card" value="CREDIT CARD" formControlName="paymentOption">
-              </p-radioButton>
-            </div>
+          <div class="ui-g-12">
+            <p-radioButton name="paymentOption" label="Cash" value="CASH" formControlName="paymentOption"></p-radioButton>
+          </div>
+          <div class="ui-g-12">
+            <p-radioButton name="paymentOption" label="Credit Card" value="CREDIT CARD" formControlName="paymentOption">
+            </p-radioButton>
+          </div>
         </div>
 
         <div class="form-group" *ngIf="paymentOption === 'CREDIT CARD'">

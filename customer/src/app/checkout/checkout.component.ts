@@ -20,6 +20,10 @@ export class CheckoutComponent implements OnInit {
   deliveryFee: number = 5;
   total: 0;
 
+  availableLocations = [];
+
+  customAddress = 'customAddress';
+
   constructor(
     private formBuilder: FormBuilder,
     private cartService: CartService,
@@ -43,6 +47,7 @@ export class CheckoutComponent implements OnInit {
     this.cartService.cartChanged.subscribe(cart => {
       this.cartItems = cart;
     });
+    this.getRecentLocations();
   }
 
   initCheckoutForm() {
@@ -54,6 +59,14 @@ export class CheckoutComponent implements OnInit {
       expiryMonth: [''],
       expiryYear: [''],
       cvv: ['']
+    });
+  }
+
+  getRecentLocations() {
+    this.customerService.getLocations().subscribe((res) => {
+      for (var i = 0; i < res.length; i++) {
+        this.availableLocations.push({ 'label': res[i].getrecentlocations, 'value': res[i].getrecentlocations });
+      }
     });
   }
 
@@ -113,6 +126,12 @@ export class CheckoutComponent implements OnInit {
         this.alertService.error('Invalid credit card information, please try again.');
       }
 
+    } else {
+      this.restaurantService.checkout(this.checkoutForm, this.cartItems).subscribe((res) => {
+        console.log(res);
+
+        // route to order summary page when complete, show delivery status blah
+      });
     }
   }
 }

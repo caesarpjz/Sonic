@@ -68,7 +68,7 @@ export class RestaurantsService {
       orderList.push(food);
     }
 
-    const restaurant = JSON.parse(sessionStorage.getItem('restaurantLastOrdered'));
+    const restaurant = JSON.parse(localStorage.getItem('restaurantLastOrdered'));
 
     let completeOrder = {
       'orderList': orderList,
