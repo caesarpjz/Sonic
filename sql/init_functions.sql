@@ -483,6 +483,10 @@ begin
     UPDATE Customers
     SET points = points + FLOOR(total_price)
     WHERE Customers.cid = cust_id;
+
+    UPDATE Food_Items
+    SET daily_limit = daily_limit - 1
+    WHERE Food_Items.fid = $2
 end
 $$ LANGUAGE PLPGSQL;
 
