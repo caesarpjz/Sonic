@@ -457,24 +457,40 @@ const filterRestaurantByLocation = (request, response) => {
   })
 }
 
+// /reviews/:rest_id
+const getAllReviews = (request, response) => {
+  const { rest_id } = request.params
+
+  pool.query('SELECT distinct rt.name, r.cid, c.username, f.name, f.fid, r.review_desc FROM Reviews r, Customers c, Food_Items f, Menus m, Restaurants rt WHERE r.fid = f.fid AND r.cid = c.cid AND rt.rest_id = $1', [rest_id], (error, results) => {
+    if (error) {
+      response.status(400).send('Unable to get reviews')
+    }
+    response.status(200).json(results.rows)
+  })
+}
+
 // /customer/:username/usepoints
 const offsetRewardPoints = (request, response) => {
   const { username } = request.params
   const { points } = request.body
-
-  pool.query('SELECT points FROM Customers WHERE username =$1' [username], (error, results) => {
+  // console.log('abcdeas')
+  // console.log(points)
+  pool.query('SELECT points FROM Customers WHERE username = $1', [username], (error, results) => {
+    // console.log('qweqweqwewqe')
     if (error) {
+      // console.log('hello')
       response.status(400).send('Unable to use points')
       throw error
     }
     var original_points = results.rows[0].points
-
-    if (typeof(points) === 'string') {
-      points = parseInt(points)
-    }
+    // console.log('1212312312s')
+    // if (typeof(points) === 'string') {
+    //   points = parseInt(points)
+    // }
     var new_points = original_points - points
 
     pool.query('UPDATE Customers SET points = $1 WHERE username = $2', [new_points, username], (error, results) => {
+      // console.log('000000000')
       if (error) {
         response.status(400).send('Unable to use points')
         throw error
@@ -513,5 +529,6 @@ module.exports = {
   updateReviewByFid,
   filterRestaurantByCategory,
   filterRestaurantByLocation,
-  offsetRewardPoints
+  offsetRewardPoints,
+  getAllReviews
 }

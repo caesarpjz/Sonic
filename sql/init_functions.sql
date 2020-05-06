@@ -273,11 +273,12 @@ $$ LANGUAGE PLPGSQL;
 
 CREATE OR REPLACE FUNCTION getRestOrders(rest_id INTEGER)
 RETURNS table(oid INTEGER, fid INTEGER, name VARCHAR, quantity INTEGER) AS $$
-    SELECT of.oid, f.fid, f.name, of.quantity
-    FROM Menus m, Food_Items f, Order_Contains_Food of
+    SELECT of.oid, f.fid, f.name, of.quantity, o.status
+    FROM Menus m, Food_Items f, Order_Contains_Food of, Orders o
     WHERE m.rest_id = $1 
     AND m.menu_id = f.menu_id
     AND f.fid = of.fid
+    AND o.status <> 'Delivered'
 $$ LANGUAGE SQL;
 
 CREATE OR REPLACE FUNCTION updatePassword(username VARCHAR, newpassword VARCHAR)
@@ -338,9 +339,16 @@ CREATE OR REPLACE FUNCTION addFoodItem(
     menu_id INTEGER,
     category VARCHAR)
 RETURNS void AS $$
+begin
+    IF (category NOT IN Food_Item_Categories) THEN 
+        INSERT INTO Food_Item_Categories
+        VALUES (category);
+    END IF;
+    
     INSERT INTO Food_Items
     VALUES (DEFAULT, quantity, daily_limit, name, price, menu_id, category);
-$$ LANGUAGE SQL;
+end
+$$ LANGUAGE PLPGSQL;
 
 CREATE OR REPLACE FUNCTION addRestaurantPromotion(start_date DATE, end_date DATE, discount_desc TEXT, 
     discount_percentage FLOAT, name VARCHAR, rest_id INTEGER)

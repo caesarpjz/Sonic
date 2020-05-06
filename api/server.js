@@ -167,6 +167,10 @@ app.get('/', (req, res) => {
     .route('/customer/:username/usepoints')
     .post(customersDb.offsetRewardPoints)
 
+    // Get reviews of a restaurant
+    app
+    .route('/reviews/:rest_id')
+    .get(customersDb.getAllReviews)
 /***** Riders *****/
     // Riders Login
     app
