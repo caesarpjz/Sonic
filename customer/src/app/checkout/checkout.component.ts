@@ -4,7 +4,6 @@ import { CustomerService } from './../services/customer.service';
 import { Component, OnInit } from '@angular/core';
 import { Validators, FormBuilder, FormGroup, ValidatorFn, AbstractControl } from '@angular/forms';
 import { CartService } from '../services/cart.service';
-import { RadioButtonModule } from 'primeng/radiobutton';
 import { RestaurantsService } from '../services/restaurants.service';
 import { AlertService } from '../services/alert.service';
 

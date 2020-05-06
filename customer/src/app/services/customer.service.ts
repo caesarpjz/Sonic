@@ -51,4 +51,15 @@ export class CustomerService {
       );
   }
 
+  // get recent locations of orders
+  getLocations(): Observable<any> {
+    const username = sessionStorage.getItem('username');
+    return this.httpClient.get<any>('/api/customer/' + username + '/locations');
+  }
+
+  // get all orders
+  getOrders(): Observable<any> {
+    const username = sessionStorage.getItem('username');
+    return this.httpClient.get<any>('/api/customer/' + username + '/orders');
+  }
 }

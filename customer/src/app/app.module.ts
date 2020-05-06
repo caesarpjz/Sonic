@@ -23,6 +23,7 @@ import { AlertComponent } from './alert/alert.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { CreditcardComponent } from './creditcard/creditcard.component';
+import { DropdownModule } from 'primeng/dropdown';
 
 
 @NgModule({
@@ -51,7 +52,8 @@ import { CreditcardComponent } from './creditcard/creditcard.component';
     FormsModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,
-    RadioButtonModule
+    RadioButtonModule,
+    DropdownModule
   ],
   providers: [
     AlertService
