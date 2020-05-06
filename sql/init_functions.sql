@@ -507,7 +507,7 @@ CREATE OR REPLACE FUNCTION addOrder(
     payment_method METHODS, 
     restaurant_location VARCHAR, 
     location VARCHAR, 
-    pid INTEGER)
+    pid INTEGER DEFAULT NULL)
 RETURNS INTEGER AS $$
 declare 
     did integer;
@@ -516,7 +516,7 @@ begin
     select addDelivery(fee) into did;
 
     INSERT INTO Orders
-    VALUES (DEFAULT, did, cid, fee, 'ORDERED', payment_method, restaurant_location, location)
+    VALUES (DEFAULT, did, cid, fee, 'ORDERED', payment_method, restaurant_location, location, pid)
     RETURNING oid into ret_oid;
 
     IF ($6 IS NOT NULL) THEN
