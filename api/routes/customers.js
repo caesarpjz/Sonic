@@ -160,35 +160,6 @@ const getFoodItemsByMenuId = (request, response) => {
 }
 
 
-// /customer/:username/restaurant/:rest_id/menus/:menu_id/:fid
-const getFoodAvailabilityByFid = (request, response) => {
-  const { menu_id, fid } = request.params
-
-  pool.query('SELECT f.name, f.availability FROM Food_Items f WHERE f.menu_id = $1 AND f.fid = $2', [menu_id, fid], (error, results) => {
-    if (error) {
-      response.status(400).send(`Unable to get food availability with fid ${fid}`)
-      throw error
-    }
-    response.status(200).json(results.rows)
-  })
-}
-
-// /customer/:username/restaurant/:rest_id/menus/:menu_id/:name
-const getFoodAvailabilityByName = (request, response) => {
-  const { menu_id } = request.params
-  var { name } = request.params
-
-  name = name.charAt(0).toUpperCase() + name.substring(1)
-
-  pool.query('SELECT f.name, f.availability FROM Food_Items f WHERE f.menu_id = $1 AND f.name = $2', [menu_id, name], (error, results) => {
-    if (error) {
-      response.status(400).send(`Unable to get food availability with name ${name}`)
-      throw error
-    }
-    response.status(200).json(results.rows)
-  })
-}
-
 
 // /customer/:username/profile
 const viewProfile = (request, response) => {
@@ -527,8 +498,6 @@ module.exports = {
   getRestaurantByCategory,
   getMenusByRestId,
   getFoodItemsByMenuId,
-  getFoodAvailabilityByFid,
-  getFoodAvailabilityByName,
   viewProfile,
   getPointsById,
   getOrdersByCid,

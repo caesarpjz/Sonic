@@ -315,8 +315,8 @@ RETURNS table(name VARCHAR) AS $$
 $$ LANGUAGE SQL;
 
 CREATE OR REPLACE FUNCTION getFoodItems(rest_name VARCHAR, menu_name VARCHAR) 
-RETURNS table(name VARCHAR, availability BOOLEAN, price FLOAT, quantity INTEGER, daily_limit INTEGER) AS $$
-    SELECT F.name, F.availability, F.price, F.quantity, F.daily_limit
+RETURNS table(name VARCHAR, price FLOAT, quantity INTEGER, daily_limit INTEGER) AS $$
+    SELECT F.name, F.price, F.quantity, F.daily_limit
     FROM restaurants R join menus M on R.rest_id = M.rest_id 
     join food_items F on M.menu_id = F.menu_id
     where R.name = rest_name
@@ -339,7 +339,7 @@ CREATE OR REPLACE FUNCTION addFoodItem(
     category VARCHAR)
 RETURNS void AS $$
     INSERT INTO Food_Items
-    VALUES (DEFAULT, quantity, daily_limit, name, price, menu_id, category, TRUE);
+    VALUES (DEFAULT, quantity, daily_limit, name, price, menu_id, category);
 $$ LANGUAGE SQL;
 
 CREATE OR REPLACE FUNCTION addRestaurantPromotion(start_date DATE, end_date DATE, discount_desc TEXT, 
