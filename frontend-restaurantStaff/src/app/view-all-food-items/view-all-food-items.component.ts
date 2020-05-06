@@ -72,7 +72,7 @@ export class ViewAllFoodItemsComponent implements OnInit {
       "daily_limit" : this.foodToView.daily_limit,
       "name" : this.foodToView.name,
       "price" : this.foodToView.price,
-      "availability" : this.isAvailable
+      "availability" : true
     }
 
     console.log(foodToUpdate);

@@ -78,14 +78,6 @@
 					required="true" />
 			</div>
 		</div>
-		<div class="ui-g">
-			<div class="ui-g-6" style="background-color: #f4f4f4;">Availability</div>
-			<div class="ui-g-6">
-				<!-- <input id="name" name="availability" #name="ngModel" type="text" [(ngModel)]="foodToView.availability"
-					required="true" /> -->
-				<p-checkbox name="availability" #name="ngModel" [(ngModel)]="isAvailable" binary="true"></p-checkbox>
-			</div>
-		</div>
 		<br />
 		<div class="ui-g" style="float:right">
 			<button (click)="clear()">Clear</button>
@@ -98,13 +90,6 @@
 <p-dialog *ngIf="displayAdd" header="Add New Food Item" modal="true" [(visible)]="displayAdd" [style]="{width: '50vw'}"
 	[baseZIndex]="10000">
 	<form (ngSubmit)="addFood(addFoodForm)">
-		<div class="ui-g">
-			<div class="ui-g-6" style="background-color: #f4f4f4;">Food Id</div>
-			<div class="ui-g-6">
-				<input id="name" name="foodId" #name="ngModel" type="text" [(ngModel)]="newFood.foodId"
-					required="true" />
-			</div>
-		</div>
 		<div class="ui-g">
 			<div class="ui-g-6" style="background-color: #f4f4f4;">Name</div>
 			<div class="ui-g-6" style="background-color: #f4f4f4;">
@@ -125,9 +110,15 @@
 			</div>
 		</div>
 		<div class="ui-g">
+			<div class="ui-g-6" style="background-color: #f4f4f4;">Quantity</div>
+			<div class="ui-g-6" style="background-color: #f4f4f4;">
+				<input id="name" name="quantity" #name="ngModel" type="text" [(ngModel)]="newFood.quantity" required="true" />
+			</div>
+		</div>
+		<div class="ui-g">
 			<div class="ui-g-6" style="background-color: #f4f4f4;">Daily Limit</div>
 			<div class="ui-g-6" style="background-color: #f4f4f4;">
-				<input id="name" name="dailyLimit" #name="ngModel" type="text" [(ngModel)]="newFood.dailyLimit"
+				<input id="name" name="dailyLimit" #name="ngModel" type="text" [(ngModel)]="newFood.daily_limit"
 					required="true" />
 			</div>
 		</div>
