@@ -128,7 +128,7 @@ const getMenuNameById = (request, response) => {
 const getFoodItemByMenuId = (request, response) => {
   const { menu_id } = request.params
 
-  pool.query('SELECT f.fid, f.name FROM Food_Items f, Menus m WHERE m.menu_id = $1 AND f.menu_id = m.menu_id', [menu_id], (error, results) => {
+  pool.query('SELECT m.name, f.fid, f.quantity, f.daily_limit, f.name, f.price, f.category FROM Food_Items f, Menus m WHERE m.menu_id = $1 AND f.menu_id = m.menu_id', [menu_id], (error, results) => {
     if (error) {
       response.status(400).send(`Unable to get food items`)
       throw error
@@ -157,8 +157,6 @@ const updateMenuNameByMenuId = (request, response) => {
 const addMenu = (request, response) => {
   const { rest_id } = request.params
   const { menu_name } = request.body
-
-  console.log(menu_name);
   pool.query('SELECT addMenu($1, $2)', [rest_id, menu_name], (error, results) => {
     if (error) {
       response.status(400).send(`Unable to add menu ${menu_name}`)
@@ -182,31 +180,24 @@ const addFoodItemIntoMenu = (request, response) => {
   })
 }
 
-// /restaurant_staff/:username/restaurant/:rest_id/delete/:menu_name
-const removeMenuByName = (request, response) => {
-  const { rest_id } = request.params
-  const { menu_name } = request.params
-
-  pool.query('DELETE FROM Menus WHERE rest_id = $1 AND name = $2', [rest_id, menu_name], (error, results) => {
-    if (error) {
-      response.status(400).send(`Unable to delete menu ${menu_name}`)
-      throw error
-    }
-    response.status(200).send(`Menu ${menu_name} successfully deleted`)
-  })
-}
-
 // /restuarant_staff/:username/restaurant/:rest_id/delete/:menu_id
 const removeMenuByMenuId = (request, response) => {
   const { rest_id, menu_id } = request.params
 
-  pool.query('DELETE FROM Menus WHERE rest_id = $1 AND menu_id = $2', [rest_id, menu_id], (error, results) => {
+  pool.query('DELETE From Food_Items WHERE menu_id = $1', [menu_id], (error, results) => {
     if (error) {
       response.status(400).send(`Unable to delete menu with id ${menu_id}`)
       throw error
     }
-    response.status(200).send(`Menu successfully deleted`)
+    pool.query('DELETE FROM Menus WHERE rest_id = $1 AND menu_id = $2', [rest_id, menu_id], (error, results) => {
+      if (error) {
+        response.status(400).send(`Unable to delete menu with id ${menu_id}`)
+        throw error
+      }
+      response.status(200).send(`Menu successfully deleted`)
+    })
   })
+  
 }
 
 // /restaurant_staff/:username/restaurant/:rest_id/menus/:menu_id/:fid
@@ -522,7 +513,6 @@ module.exports = {
     addMenu,
     addFoodItemIntoMenu,
     removeMenuByMenuId,
-    removeMenuByName,
     updateFoodItemByMenuIdAndFid,
     createPromotionsByRestId,
     getPromotionsByRestId,
