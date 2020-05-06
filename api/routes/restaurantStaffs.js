@@ -69,7 +69,7 @@ const updateRestaurantById = (request, response) => {
   if (name !== undefined) {
     pool.query('UPDATE Restaurants SET name = $1 WHERE rest_id = $2', [name, rest_id], (error, results) => {
       if (error) {
-        response.status(400).send(`Unable to update restaurant name to ${name}`)
+        response.status(400).send(`Unable to update restaurant name`)
         throw error
       }
       // response.status(201).json(`Restaurant ${rest_id}'s name has been updated to ${name}`)
@@ -80,7 +80,7 @@ const updateRestaurantById = (request, response) => {
   if (min_spending !== undefined) {
     pool.query('UPDATE Restaurants SET min_spending = $1 WHERE rest_id = $2', [min_spending, rest_id], (error, results) => {
       if (error) {
-        response.status(400).send(`Unable to update restuarant minimum spending to ${min_spending}`)
+        response.status(400).send(`Unable to update restuarant minimum spending`)
         throw error
       }
       // response.status(201).json(`Restaurant ${rest_id}'s minimum spending has been updated to ${min_spending}`)
@@ -90,7 +90,7 @@ const updateRestaurantById = (request, response) => {
   if (info !== undefined) {
     pool.query('UPDATE Restaurants SET info = $1 WHERE rest_id = $2', [info, rest_id], (error, results) => {
       if (error) {
-        response.status(400).send(`Unable to update restaurant info to ${info}`)
+        response.status(400).send(`Unable to update restaurant info`)
         throw error
       }
       // response.status(201).json(`Restaurant ${rest_id}'s name has been updated to ${info}`)
@@ -100,7 +100,7 @@ const updateRestaurantById = (request, response) => {
   if (category !== undefined) {
     pool.query('UPDATE Restaurants SET category = $1 WHERE rest_id = $2', [category, rest_id], (error, results) => {
       if (error) {
-        response.status(400).send(`Unable to update restaurant category to ${category}`)
+        response.status(400).send(`Unable to update restaurant category`)
         throw error
       }
       // response.status(201).json(`Restaurant ${rest_id}'s category has been updated to ${category}`)
@@ -146,11 +146,10 @@ const updateMenuNameByMenuId = (request, response) => {
 
   pool.query('UPDATE Menus SET name = $1 WHERE menu_id = $2', [new_name, menu_id], (error, results) => {
     if (error) {
-      response.status(400).send(`Unable to update menu name to ${new_name}`)
+      response.status(400).send(`Unable to update menu name`)
       throw error
     }
-    
-    response.status(200).send(`Menu name change to ${new_name} successfully`)
+    response.status(200).send(`Menu name changed successfully`)
   })
 }
 
@@ -160,10 +159,10 @@ const addMenu = (request, response) => {
   const { menu_name } = request.body
   pool.query('SELECT addMenu($1, $2)', [rest_id, menu_name], (error, results) => {
     if (error) {
-      response.status(400).send(`Unable to add menu ${menu_name}`)
+      response.status(400).send(`Unable to add menu`)
       throw error
     }
-    response.status(200).send(`Menu ${menu_name} added!`)
+    response.status(200).send(`Menu added!`)
   })
 }
 
@@ -174,10 +173,10 @@ const addFoodItemIntoMenu = (request, response) => {
 
   pool.query('SELECT addFoodItem($1, $2, $3, $4, $5, $6)', [quantity, daily_limit, name, price, menu_id, category], (error, results) => {
     if (error) {
-      response.status(400).send(`Unable to add food item ${name} into menu`)
+      response.status(400).send(`Unable to add food item into menu`)
       throw error
     }
-    response.status(201).send(`Food Item ${name} added`)
+    response.status(201).send(`Food Item  added`)
   })
 }
 
@@ -187,12 +186,12 @@ const removeMenuByMenuId = (request, response) => {
 
   pool.query('DELETE From Food_Items WHERE menu_id = $1', [menu_id], (error, results) => {
     if (error) {
-      response.status(400).send(`Unable to delete menu with id ${menu_id}`)
+      response.status(400).send(`Unable to delete menu`)
       throw error
     }
     pool.query('DELETE FROM Menus WHERE rest_id = $1 AND menu_id = $2', [rest_id, menu_id], (error, results) => {
       if (error) {
-        response.status(400).send(`Unable to delete menu with id ${menu_id}`)
+        response.status(400).send(`Unable to delete menu`)
         throw error
       }
       response.status(200).send(`Menu successfully deleted`)
@@ -207,10 +206,10 @@ const removeFoodByFid = (request, response) => {
 
   pool.query('DELETE FROM Food_Items WHERE menu_id = $1 AND fid = $2', [menu_id, fid], (error, results) => {
     if (error) {
-      response.status(400).send(`Unable to delete food item ${fid}`)
+      response.status(400).send(`Unable to delete food item`)
       throw error
     }
-    response.status(200).send(`Food Item ${fid} deleted!`)
+    response.status(200).send(`Food Item deleted!`)
   })
 }
 
@@ -229,7 +228,7 @@ const updateFoodItemByMenuIdAndFid = (request, response) => {
     if (name !== undefined) {
       pool.query('UPDATE Food_Items SET name = $1 WHERE fid = $2 AND menu_id = $3', [name, fid, menu_id], (error, results) => {
         if (error) {
-          response.status(400).send(`Unable to update name to ${name}. Please try again`)
+          response.status(400).send(`Unable to update name. Please try again`)
           throw error
         }
         // response.status(201).send(`Food ${fid} successfully updated`)
@@ -240,7 +239,7 @@ const updateFoodItemByMenuIdAndFid = (request, response) => {
     if (quantity !== undefined) {
       pool.query('UPDATE Food_Items SET quantity = $1 WHERE fid = $2 AND menu_id = $3', [quantity, fid, menu_id], (error, results) => {
         if (error) {
-          response.status(400).send(`Unable to update quantity for ${food_name}. Please try again`)
+          response.status(400).send(`Unable to update quantity. Please try again`)
           throw error
         }
         // response.status(201).send(`Food ${fid} successfully updated`)
@@ -250,7 +249,7 @@ const updateFoodItemByMenuIdAndFid = (request, response) => {
     if (daily_limit !== undefined) {
       pool.query('UPDATE Food_Items SET daily_limit = $1 WHERE fid = $2 AND menu_id = $3', [daily_limit, fid, menu_id], (error, results) => {
         if (error) {
-          response.status(400).send(`Unable to update daily limit for ${food_name}. Please try again`)
+          response.status(400).send(`Unable to update daily limit. Please try again`)
           throw error
         }
         // response.status(201).send(`Food ${fid} successfully updated`)
@@ -262,7 +261,7 @@ const updateFoodItemByMenuIdAndFid = (request, response) => {
     if (price !== undefined) {
       pool.query('UPDATE Food_Items SET price = $1 WHERE fid = $2 AND menu_id = $3', [price, fid, menu_id], (error, results) => {
         if (error) {
-          response.status(400).send(`Unable to update price for ${food_name}. Please try again.`)
+          response.status(400).send(`Unable to update price. Please try again.`)
           throw error
         }
         // response.status(201).send(`Food ${fid} successfully updated`)
@@ -272,14 +271,14 @@ const updateFoodItemByMenuIdAndFid = (request, response) => {
     if (availability !== undefined) {
       pool.query('UPDATE Food_Items SET availability = $1 WHERE fid = $2 AND menu_id = $3', [availability, fid, menu_id], (error, results) => {
         if (error) {
-          response.status(400).send(`Unable to update availability ${food_name}. Please try again.`)
+          response.status(400).send(`Unable to update availability. Please try again.`)
           throw error
         }
         // response.status(201).send(`Food ${fid} successfully updated`)
       })
     }
   
-    response.status(200).send(`Food Item ${food_name} has been updated`)
+    response.status(200).send(`Food Item has been updated`)
   })
   
 }
@@ -291,7 +290,7 @@ const createPromotionsByRestId = (request, response) => {
 
   pool.query('SELECT addRestaurantPromotion($1, $2, $3, $4, $5)', [start_time, end_time, discount_desc, discount_percentage, rest_id], (error, results) => {
     if (error) {
-      response.status(400).send(`Unable to create Promotion with start_time: ${start_time}, end_time: ${end_time} and discount_percentage: ${discount_percentage}. Please try again.`)
+      response.status(400).send(`Unable to create Promotion. Please try again.`)
       throw error
     }
     response.status(200).send('Promotion created successfullly')
@@ -360,7 +359,7 @@ const updatePromotionByPid = (request, response) => {
   if (start_time !== undefined) {
     pool.query('UPDATE Promotions SET start_time = $1 WHERE pid = $2', [start_time, pid], (error, results) => {
       if (error) {
-        response.status(400).send(`Unable to update promotion start time to ${start_time}`)
+        response.status(400).send(`Unable to update promotion start time`)
         throw error
 
       }
@@ -371,7 +370,7 @@ const updatePromotionByPid = (request, response) => {
   if (end_time !== undefined) {
     pool.query('UPDATE Promotions SET end_time = $1 WHERE pid = $2', [end_time, pid], (error, results) => {
       if (error) {
-        response.status(400).send(`Unable to update promotion end time to ${end_time}`)
+        response.status(400).send(`Unable to update promotion end time`)
         throw error
   
       }
@@ -382,14 +381,14 @@ const updatePromotionByPid = (request, response) => {
   if (discount_percentage !== undefined) {
     pool.query('UPDATE Promotions SET discount_description = $1 WHERE pid = $2', [discount_percentage, pid], (error, results) => {
       if (error) {
-        response.status(400).send(`Unable to update promotion discount description to ${discount_percentage}`)
+        response.status(400).send(`Unable to update promotion discount description`)
         throw error
       }
       // response.status(201).send(`Promotion discount description updated to ${discount_desc}`)
     })
   }
 
-  response.status(200).send(`Promotion ${pid} has been updated`)
+  response.status(200).send(`Promotion has been updated`)
 }
 
 // /restaurant_staff/:username/restaurant/:rest_id/promotions/delete/:pid
