@@ -399,12 +399,12 @@ app.get('/', (req, res) => {
 
     // Remove Menu by name
     app
-    .route('/restaurant_staff/:username/restaurant/:rest_id/delete/:menu_name')
+    .route('/restaurant_staff/:username/restaurant/:rest_id/deletename/:menu_name')
     .post(restaurantsDb.removeMenuByName)
 
     // Remove Menu by Menu Id
     app
-    .route('/restaurant_staff/:username/restaurant/:rest_id/delete/:menu_id')
+    .route('/restaurant_staff/:username/restaurant/:rest_id/deleteid/:menu_id')
     .delete(restaurantsDb.removeMenuByMenuId)
 
     // Update Food Item by Menu Id and Fid
@@ -469,7 +469,7 @@ app.get('/', (req, res) => {
 
     // Get Promo Summary 
     app
-    .route('/restaurant_staff/:username/:pid/promosummary')
+    .route('/restaurant_staff/:pid/promosummary')
     .get(restaurantsDb.getPromoSummaryBasedOnPid)
        
 

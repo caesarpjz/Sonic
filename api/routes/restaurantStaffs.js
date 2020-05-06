@@ -182,7 +182,7 @@ const addFoodItemIntoMenu = (request, response) => {
 // /restaurant_staff/:username/restaurant/:rest_id/delete/:menu_name
 const removeMenuByName = (request, response) => {
   const { rest_id } = request.params
-  const { menu_name } = request.body
+  const { menu_name } = request.params
 
   pool.query('DELETE FROM Menus WHERE rest_id = $1 AND name = $2', [rest_id, menu_name], (error, results) => {
     if (error) {
@@ -202,7 +202,7 @@ const removeMenuByMenuId = (request, response) => {
       response.status(400).send(`Unable to delete menu with id ${menu_id}`)
       throw error
     }
-    response.status(200).send(`Menu ${menu_name} successfully deleted`)
+    response.status(200).send(`Menu successfully deleted`)
   })
 }
 
