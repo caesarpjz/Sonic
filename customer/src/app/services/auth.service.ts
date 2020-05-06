@@ -57,4 +57,9 @@ export class AuthService {
         catchError(this.handleError)
       );
   }
+
+  logout() {
+    sessionStorage.removeItem('loggedIn');
+    sessionStorage.removeItem('username');
+  }
 }

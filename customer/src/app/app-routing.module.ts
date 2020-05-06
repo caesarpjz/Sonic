@@ -13,6 +13,7 @@ import { CommonModule } from '@angular/common';
 
 const routes: Routes = [
   { path: '', component: HomeComponent, pathMatch: 'full' },
+  { path: 'home', component: HomeComponent },
   { path: 'restaurants', component: RestaurantsComponent },
   { path: 'restaurants/:restaurantId', component: RestaurantComponent },
   { path: 'cart', component: CartComponent },
