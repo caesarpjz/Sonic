@@ -1,3 +1,4 @@
+import { Router } from '@angular/router';
 import { AlertService } from '../services/alert.service';
 import { AuthService } from './../services/auth.service';
 import { Component, OnInit } from '@angular/core';
@@ -15,7 +16,8 @@ export class LoginComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private authService: AuthService,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private router: Router
   ) {
     this.initLoginForm();
   }
@@ -45,6 +47,7 @@ export class LoginComponent implements OnInit {
       // save username from res as well to display the name?
       sessionStorage.setItem('username', this.loginForm.value.username);
       // route to login page?
+      this.router.navigate(['/']);
     }, (err) => {
       this.alertService.error('Invalid login credentials, please try again')
     });

@@ -46,6 +46,8 @@ export class CheckoutComponent implements OnInit {
 
   submit() {
     // user {}, cart {}
+    console.log(this.checkoutForm);
+    console.log(this.cartItems);
   }
 
 }
