@@ -51,4 +51,36 @@ CREATE TRIGGER promo_time_trigger
 BEFORE INSERT
 ON Orders
 FOR EACH ROW
-EXECUTE FUNCTIon check_promo_time();
+EXECUTE FUNCTION check_promo_time();
+
+CREATE OR REPLACE FUNCTION check_order_restaurant() RETURNS TRIGGER AS $$
+declare
+    restaurant INTEGER;
+begin
+    SELECT M.rest_id
+    FROM Food_Items FI join Menus M on FI.menu_id = M.menu_id
+    WHERE FI.fid = NEW.fid
+    INTO restaurant;
+
+    -- RAISE NOTICE 'NEW: % | % | %', NEW.oid, NEW.fid, NEW.quantity;
+    -- RAISE NOTICE 'restaurant: %', restaurant;
+
+    IF EXISTS(
+        SELECT 1
+        FROM Order_Contains_Food OCF join Food_Items FI on OCF.fid = FI.fid
+        join Menus M on FI.menu_id = M.menu_id
+        WHERE OCF.oid = NEW.oid
+        AND M.rest_id <> restaurant
+    ) THEN
+        RETURN NULL;
+    END IF;
+
+    RETURN NEW;
+end
+$$ LANGUAGE PLPGSQL;
+
+CREATE TRIGGER order_restaurant_trigger
+BEFORE INSERT
+ON Order_Contains_Food
+FOR EACH ROW
+EXECUTE FUNCTION check_order_restaurant();
