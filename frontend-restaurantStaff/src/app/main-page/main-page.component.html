@@ -1,0 +1,84 @@
+<app-header></app-header>
+<section class="cid-qwUtKjk2oY mbr-fullscreen mbr-parallax-background" id="header2-0" data-rv-view="921"
+    data-jarallax-original-styles="null"
+    style="z-index: 0; position: relative; background-image: none; background-attachment: scroll; background-size: auto;">
+
+
+
+    <div class="mbr-overlay" style="opacity: 0.7; background-color: rgb(7, 59, 76);"></div>
+
+    <div class="container align-center">
+        <div class="row justify-content-md-center">
+            <div class="mbr-white col-md-10">
+                <img src="../../assets/Restaurant.jpeg" alt="" width="1000" height="400">
+                <h1 class="mbr-section-title mbr-bold pb-3 mbr-fonts-style display-1">{{restaurant.name}}</h1>
+
+                <p class="mbr-text pb-3 mbr-fonts-style display-5">
+                    Information: {{restaurant.info}}</p>
+                <p class="mbr-text pb-3 mbr-fonts-style display-5">
+                    Category: {{restaurant.category}}</p>
+                    <p class="mbr-text pb-3 mbr-fonts-style display-5">
+                        Min Spending: {{restaurant.min_spending}}</p>
+                <p-button label="Update Restaurant Information" (onClick)="showDialog()"></p-button>
+                <!-- <div class="mbr-section-btn"><a class="btn btn-md btn-secondary display-4" href="#">Create a
+                        promotion</a>
+                    &nbsp;
+                    <a class="btn btn-md btn-secondary display-4"
+                        href="https://mobirise.com/bootstrap-template/">Generate a summary</a></div> -->
+            </div>
+        </div>
+    </div>
+
+    <div id="jarallax-container-0"
+        style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -100;">
+        <div
+            style="background-position: 50% 50%; background-size: 100%; background-repeat: no-repeat; position: fixed; top: 0px; left: 0px; width: 1111.5px; height: 741px; overflow: hidden; pointer-events: none; margin-left: -197.75px; margin-top: 0px; visibility: visible; transform: translate3d(0px, -202.2px, 0px);">
+        </div>
+    </div>
+
+    <p-dialog class="dialog" *ngIf="displayUpdate" header="Update Food Item" modal="true" [(visible)]="displayUpdate"
+        [style]="{width: '50vw'}">
+        <form (ngSubmit)="updateInfo(updateRestaurantForm)">
+            <div class="ui-g">
+                <div class="ui-g-6" style="background-color: #f4f4f4;">Restaurant Id</div>
+                <div class="ui-g-6">{{restaurantToUpdate.fid}}</div>
+            </div>
+            <div class="ui-g">
+                <div class="ui-g-6" style="background-color: #f4f4f4;">Name</div>
+                <div class="ui-g-6">
+                    <input id="name" name="name" #name="ngModel" type="text" [(ngModel)]="restaurantToUpdate.name"
+                        required="true" />
+                </div>
+            </div>
+            <div class="ui-g">
+                <div class="ui-g-6" style="background-color: #f4f4f4;">Information</div>
+                <div class="ui-g-6">
+                    <input id="name" name="category" #name="ngModel" type="text" [(ngModel)]="restaurantToUpdate.info"
+                        required="true" />
+                </div>
+            </div>
+            <div class="ui-g">
+                <div class="ui-g-6" style="background-color: #f4f4f4;">Minimum Spending</div>
+                <div class="ui-g-6">
+                    <input id="name" name="price" #name="ngModel" type="text" [(ngModel)]="restaurantToUpdate.min_spending"
+                        required="true" />
+                </div>
+            </div>
+            <div class="ui-g">
+                <div class="ui-g-6" style="background-color: #f4f4f4;">Category</div>
+                <div class="ui-g-6">
+                    <input id="name" name="quantity" #name="ngModel" type="text" [(ngModel)]="restaurantToUpdate.category"
+                        required="true" />
+                </div>
+            </div>
+            <br />
+            <div class="ui-g" style="float:right">
+                <button (click)="clear()">Clear</button>
+                &nbsp;
+                <input type="submit" value="Submit" />
+            </div>
+        </form>
+    </p-dialog>
+</section>
+
+<app-footer></app-footer>

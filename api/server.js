@@ -408,7 +408,7 @@ app.get('/', (req, res) => {
 
     // Create Promotions
     app
-    .route('/restaurant_staff/:username/restaurant/:rest_id/promotions')
+    .route('/restaurant_staff/:username/restaurant/:rest_id/create/promotions')
     .post(restaurantsDb.createPromotionsByRestId)
 
     // Get Promos
