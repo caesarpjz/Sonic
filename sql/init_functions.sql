@@ -562,10 +562,21 @@ $$ LANGUAGE SQL;
 
 CREATE OR REPLACE FUNCTION getTotalPayable(oid INTEGER) 
 RETURNS FLOAT AS $$
-    SELECT sum(OCF.quantity * FI.price)
-    FROM Orders O join Order_Contains_Food OCF on O.oid = OCF.oid
-    join Food_Items FI on OCF.fid = FI.fid
+    SELECT O.cost
+    FROM Orders O
     WHERE O.oid = $1;
+$$ LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION postReviewFor(cid INTEGER, fid INTEGER, review TEXT) 
+RETURNS void AS $$
+    INSERT INTO Reviews
+    VALUES (cid, fid, review);
+$$ LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION postRatingFor(cid INTEGER, did INTEGER, rating INTEGER) 
+RETURNS void AS $$
+    INSERT INTO Customer_Rates_Delivery
+    VALUES (cid, did, rating);
 $$ LANGUAGE SQL;
 
 -----------------------------
