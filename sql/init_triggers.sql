@@ -106,3 +106,116 @@ BEFORE INSERT
 ON Promotions
 FOR EACH ROW
 EXECUTE FUNCTION check_promo_startend_time();
+
+CREATE OR REPLACE FUNCTION check_rider_shift() RETURNS TRIGGER AS $$
+begin
+    IF ((EXTRACT(EPOCH FROM 
+            NEW.start_time - date_trunc('hour', NEW.start_time))) != 0) THEN
+        RAISE EXCEPTION 'Shift should start on the hour (entered: %).', NEW.start_time;
+    END IF;
+
+    IF ((EXTRACT(EPOCH FROM 
+            NEW.end_time - date_trunc('hour', NEW.end_time))) != 0) THEN
+        RAISE EXCEPTION 'Shift should end on the hour (entered: %).', NEW.end_time;
+    END IF;
+
+    IF EXISTS(
+        SELECT 1 
+        FROM Shifts S
+        WHERE S.rid = NEW.rid
+        AND S.end_time >= NEW.start_time
+        AND S.start_time <= NEW.start_time)
+    OR EXISTS(
+        SELECT 1
+        FROM Shifts S
+        WHERE S.rid = NEW.rid
+        AND S.start_time <= NEW.end_time
+        AND S.end_time >= NEW.end_time
+    ) THEN
+        RAISE EXCEPTION 'Shift should not cut into another shift and there should be at least 1 hour break between each shifts.';
+    END IF;
+
+    RETURN NEW;
+end
+$$ LANGUAGE PLPGSQL;
+
+CREATE TRIGGER rider_shift_trigger
+BEFORE INSERT
+ON Shifts
+FOR EACH ROW
+EXECUTE FUNCTION check_rider_shift(); 
+
+CREATE OR REPLACE FUNCTION check_FT_rider_shift() RETURNS TRIGGER AS $$
+begin
+    IF EXISTS(
+        SELECT 1
+        FROM Riders R 
+        WHERE R.rid = NEW.rid
+        AND is_full_time = FALSE
+    ) THEN
+        RETURN NEW;
+    END IF;
+
+    IF (EXTRACT('hour' FROM NEW.start_time) = 10) THEN
+        IF (EXTRACT('hour' FROM NEW.end_time) <> 14) THEN
+            RAISE EXCEPTION 'Shift starts (%) and ends (%) not one of the fixed shifts.',
+            NEW.start_time,
+                NEW.end_time;
+        END IF;
+    ELSIF (EXTRACT('hour' FROM NEW.start_time) = 11) THEN
+        IF (EXTRACT('hour' FROM NEW.end_time) <> 15) THEN
+            RAISE EXCEPTION 'Shift starts (%) and ends (%) not one of the fixed shifts.',
+            NEW.start_time,
+                NEW.end_time;
+        END IF;
+    ELSIF (EXTRACT('hour' FROM NEW.start_time) = 12) THEN
+        IF (EXTRACT('hour' FROM NEW.end_time) <> 16) THEN
+            RAISE EXCEPTION 'Shift starts (%) and ends (%) not one of the fixed shifts.',
+            NEW.start_time,
+                NEW.end_time;
+        END IF;
+    ELSIF (EXTRACT('hour' FROM NEW.start_time) = 13) THEN
+        IF (EXTRACT('hour' FROM NEW.end_time) <> 17) THEN
+            RAISE EXCEPTION 'Shift starts (%) and ends (%) not one of the fixed shifts.',
+            NEW.start_time,
+                NEW.end_time;
+        END IF;
+    ELSIF (EXTRACT('hour' FROM NEW.start_time) = 15) THEN
+        IF (EXTRACT('hour' FROM NEW.end_time) <> 19) THEN
+            RAISE EXCEPTION 'Shift starts (%) and ends (%) not one of the fixed shifts.',
+            NEW.start_time,
+                NEW.end_time;
+        END IF;
+    ELSIF (EXTRACT('hour' FROM NEW.start_time) = 16) THEN
+        IF (EXTRACT('hour' FROM NEW.end_time) <> 20) THEN
+            RAISE EXCEPTION 'Shift starts (%) and ends (%) not one of the fixed shifts.',
+            NEW.start_time,
+                NEW.end_time;
+        END IF;
+    ELSIF (EXTRACT('hour' FROM NEW.start_time) = 17) THEN
+        IF (EXTRACT('hour' FROM NEW.end_time) <> 21) THEN
+            RAISE EXCEPTION 'Shift starts (%) and ends (%) not one of the fixed shifts.',
+            NEW.start_time,
+                NEW.end_time;
+        END IF;
+    ELSIF (EXTRACT('hour' FROM NEW.start_time) = 18) THEN
+        IF (EXTRACT('hour' FROM NEW.end_time) <> 22) THEN
+            RAISE EXCEPTION 'Shift starts (%) and ends (%) not one of the fixed shifts.',
+            NEW.start_time,
+                NEW.end_time;
+        END IF;
+    ELSE
+        RAISE EXCEPTION 'Shift starts (%) and ends (%) not one of the fixed shifts.',
+            NEW.start_time,
+                NEW.end_time;
+    END IF;
+
+    RETURN NEW;
+end
+$$ LANGUAGE PLPGSQL;
+
+CREATE TRIGGER FT_rider_shift_trigger
+BEFORE INSERT 
+ON Shifts
+FOR EACH ROW
+EXECUTE FUNCTION check_FT_rider_shift();
