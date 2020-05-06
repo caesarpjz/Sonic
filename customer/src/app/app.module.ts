@@ -24,6 +24,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { CreditcardComponent } from './creditcard/creditcard.component';
 import { DropdownModule } from 'primeng/dropdown';
+import { UpdateCcComponent } from './update-cc/update-cc.component';
 
 
 @NgModule({
@@ -43,7 +44,8 @@ import { DropdownModule } from 'primeng/dropdown';
     CheckoutComponent,
     ProfileComponent,
     AlertComponent,
-    CreditcardComponent
+    CreditcardComponent,
+    UpdateCcComponent
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,84 @@
+<app-header></app-header>
+
+<div class="container mt-5 mb-5 pt-5">
+  <div class="container text-center">
+    <h1>Update credit card</h1>
+
+    <p>Saved credit card:</p>
+    <div class="d-flex justify-content-center">
+      <app-creditcard></app-creditcard>
+    </div>
+  </div>
+
+  <div class="container col-md-6">
+    <form class="form-checkout mt-3 mb-3" [formGroup]="creditCardForm" (ngSubmit)="submit()">
+      <div class="form-group">
+        <div class="row pt-3">
+          <div class="col-md-12">
+            <label for="name text-left">Name</label>
+            <input type="text" class="form-control" id="name" aria-describedby="name" placeholder="Enter name"
+              formControlName="name">
+          </div>
+        </div>
+
+        <div class="row pt-3">
+          <div class="col-md-5">
+            <label for="creditCardNumber text-left">Credit card number</label>
+            <input type="text" class="form-control" id="creditCardNumber" placeholder="Credit card number"
+              formControlName="creditCardNumber" maxLength="16" pattern="[0-9]+">
+          </div>
+
+          <div class="col-sm-2">
+            <div class="form-element form-select">
+              <label for="expirymonth">Month</label>
+              <select class="form-control" name="expirymonth" formControlName="expiryMonth">
+                <option value="">Month</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+              </select>
+            </div>
+
+          </div>
+          <div class="col-sm-2">
+            <div class="form-element form-select">
+              <label for="expiryyear">Year</label>
+              <select class="form-control" formControlName="expiryYear">
+                <option value="">Year</option>
+                <option>2020</option>
+                <option>2021</option>
+                <option>2022</option>
+                <option>2023</option>
+                <option>2024</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="col-md-3">
+            <label for="cvv">CVV</label>
+            <input type="password" class="form-control" formControlName="cvv" placeholder="CVV" maxLength="3">
+          </div>
+        </div>
+      </div>
+
+      <div class="text-center justify-content-center mb-3 mt-5">
+        <button class="btn btn-lg btn-primary" type="submit">Submit order</button>
+        &nbsp;
+        <button type="button" class="btn btn-lg btn-secondary" (click)="back()">Back to profile</button>
+      </div>
+    </form>
+
+    <app-alert></app-alert>
+  </div>
+</div>
+
+<app-footer></app-footer>

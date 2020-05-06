@@ -1,3 +1,4 @@
+import { UpdateCcComponent } from './update-cc/update-cc.component';
 import { ProfileComponent } from './profile/profile.component';
 import { CheckoutComponent } from './checkout/checkout.component';
 import { SignupComponent } from './signup/signup.component';
@@ -20,7 +21,8 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'signup', component: SignupComponent },
   { path: 'checkout', component: CheckoutComponent },
-  { path: 'profile', component: ProfileComponent }
+  { path: 'profile', component: ProfileComponent },
+  { path: 'update-card', component: UpdateCcComponent }
 ];
 
 @NgModule({
