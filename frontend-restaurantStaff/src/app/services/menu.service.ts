@@ -23,8 +23,6 @@ export class MenuService {
   getMenus(restId: any): Observable<any> {
     return this.httpClient.get<any>(this.path + "/restaurant_staff/" + this.sessionService.getUsername() + '/restaurant/' + restId + '/menus').pipe
       (
-        retry(1),
-
         catchError(this.handleError)
       );
   }
@@ -36,8 +34,6 @@ export class MenuService {
     }
     return this.httpClient.post<any>(this.path + "/restaurant_staff/" + this.sessionService.getUsername() + "/restaurant/" + restId +"/add/menu", newMenuName).pipe 
     (
-      retry(1),
-
       catchError(this.handleError)
     );
   }
@@ -51,8 +47,6 @@ export class MenuService {
     }
     return this.httpClient.post<any>(this.path + "/restaurant_staff/" + this.sessionService.getUsername() + "/restaurant/ " + restId + "/" + menuId, updatedMenuName).pipe
       (
-        retry(1),
-
         catchError(this.handleError)
       );
   }
@@ -60,8 +54,6 @@ export class MenuService {
   deleteMenu(menuId: String, restId: any): Observable<any> {
     return this.httpClient.delete<any>(this.path + "/restaurant_staff/"+ this.sessionService.getUsername() +"/restaurant/"+ restId + "/deleteid/" + menuId).pipe
       (
-        retry(1),
-
         catchError(this.handleError)
       );
   }

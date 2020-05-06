@@ -1,1 +1,77 @@
-<p>view-all-promotions works!</p>
+<app-header></app-header>
+
+<p-button label="Add New Promotion" (onClick)="showDialog2()"></p-button>
+
+<p-table [value]="promotions">
+    <ng-template pTemplate="caption">
+        Promotion
+    </ng-template>
+    <ng-template pTemplate="header">
+        <tr>
+            <th>Promotion ID</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Type</th>
+            <th>Discount Percentage</th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-promotion>
+        <tr>
+            <td>{{promotion.pid}}</td>
+            <td>{{promotion.start_date}}</td>
+            <td>{{promotion.end_date}}</td>
+            <td>{{promotion.type}}</td>
+            <td>{{promotion.discount_percentage}}</td>
+            <td>
+                <p-button label="Update" (onClick)="showDialog1(promotion)"></p-button>
+                &nbsp;
+                <p-button label="Delete" (onClick)="deleteMenu(menu)"></p-button>
+            </td>
+            <!-- <td><a routerLink="/view-all-food-items/{{menu.menu_id}}">View Food Items</a></td> -->
+        </tr>
+    </ng-template>
+</p-table>
+
+<p-dialog class="dialog" *ngIf="displayUpdate" header="Update Promotion" modal="true" [(visible)]="displayUpdate"
+    [style]="{width: '50vw'}">
+    <form (ngSubmit)="update(updatePromotionForm)">
+        <div class="ui-g">
+            <div class="ui-g-6" style="background-color: #f4f4f4;">Promotion Id</div>
+            <div class="ui-g-6">{{promotionToUpdate.pid}}</div>
+        </div>
+        <div class="ui-g">
+            <div class="ui-g-6" style="background-color: #f4f4f4;">Start Date</div>
+            <div class="ui-g-6">
+                <input id="name" name="start_date" #name="ngModel" type="text" [(ngModel)]="menuToView.start_date"
+                    required="true" />
+            </div>
+        </div>
+        <div class="ui-g">
+            <div class="ui-g-6" style="background-color: #f4f4f4;">End Date</div>
+            <div class="ui-g-6">
+                <input id="name" name="end_date" #name="ngModel" type="text" [(ngModel)]="menuToView.end_date"
+                    required="true" />
+            </div>
+        </div>
+        <div class="ui-g">
+            <div class="ui-g-6" style="background-color: #f4f4f4;">Type</div>
+            <div class="ui-g-6">
+                <input id="name" name="type" #name="ngModel" type="text" [(ngModel)]="menuToView.type"
+                    required="true" />
+            </div>
+        </div>
+        <div class="ui-g">
+            <div class="ui-g-6" style="background-color: #f4f4f4;">Discount Percentage</div>
+            <div class="ui-g-6">
+                <input id="name" name="discount_percentage" #name="ngModel" type="text" [(ngModel)]="menuToView.discount_percentage"
+                    required="true" />
+            </div>
+        </div>
+        <br />
+        <div class="ui-g" style="float:right">
+            <button (click)="clear()">Clear</button>
+            &nbsp;
+            <input type="submit" value="Submit" />
+        </div>
+    </form>
+</p-dialog>

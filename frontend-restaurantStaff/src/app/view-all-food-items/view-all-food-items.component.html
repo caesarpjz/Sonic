@@ -15,7 +15,6 @@
 			<th>Price</th>
 			<th>Quantity</th>
 			<th>Daily Limit</th>
-			<th>Availability</th>
 		</tr>
 	</ng-template>
 	<ng-template pTemplate="body" let-food>
@@ -26,7 +25,6 @@
 			<td>{{food.price}}</td>
 			<td>{{food.quantity}}</td>
 			<td>{{food.daily_limit}}</td>
-			<td>{{food.availability}}</td>
 			<td>
 				<p-button label="Update" (onClick)="showDialog1(food)"></p-button>
 				&nbsp;

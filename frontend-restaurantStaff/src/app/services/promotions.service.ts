@@ -12,26 +12,25 @@ const httpOptions = {
 @Injectable({
   providedIn: 'root'
 })
-export class RestaurantService {
+export class PromotionsService {
 
   path = "http://localhost:3002"
 
   constructor(private httpClient: HttpClient,
     private sessionService: SessionService) { }
 
-  getRestaurant(): Observable<any> {
-    console.log(this.sessionService.getUsername());
-    return this.httpClient.get<any>(this.path + "/restaurant_staff/" + this.sessionService.getUsername() + "/restaurant").pipe
-    (
-      catchError(this.handleError)
-    );
+  getPromotions(restId: any): Observable<any> {
+    return this.httpClient.get<any>(this.path + "/restaurant_staff/" + this.sessionService.getUsername() + "/restaurant/" + restId + "/promotionslist").pipe
+      (
+        catchError(this.handleError)
+      );
   }
 
-  updateInfo(restId: any, restaurantToUpdate: any): Observable<any> {
-    return this.httpClient.post<any>(this.path + "/restaurant_staff/" + this.sessionService.getUsername() + "/restaurant/" + restId, restaurantToUpdate).pipe
-    (
-      catchError(this.handleError)
-    );
+  updatePromotions(restId: any, pid: any, promotionToUpdate: any): Observable<any> {
+    return this.httpClient.post<any>(this.path + '/restaurant_staff/' + this.sessionService.getUsername() + '/restaurant/' + restId + '/promotions/' + pid, promotionToUpdate).pipe
+      (
+        catchError(this.handleError)
+      );
   }
 
   private handleError(error: HttpErrorResponse) {

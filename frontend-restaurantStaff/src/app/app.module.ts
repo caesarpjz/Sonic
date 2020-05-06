@@ -11,7 +11,7 @@ import { MainPageComponent } from './main-page/main-page.component';
 import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
 import { ViewAllFoodItemsComponent } from './view-all-food-items/view-all-food-items.component';
-
+import {DropdownModule} from 'primeng/dropdown';
 import { TableModule } from 'primeng/table';
 import {DialogModule} from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
@@ -46,7 +46,8 @@ import { AlertComponent } from './alert/alert.component';
     PanelModule,
     FormsModule,
     HttpClientModule,
-    CheckboxModule
+    CheckboxModule,
+    DropdownModule
   ],
   providers: [
     AlertService,

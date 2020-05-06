@@ -149,7 +149,7 @@ const updateMenuNameByMenuId = (request, response) => {
       response.status(400).send(`Unable to update menu name`)
       throw error
     }
-    response.status(200).send(`Menu name changed successfully`)
+    response.status(200).send("Menu name changed successfully")
   })
 }
 
@@ -277,7 +277,7 @@ const updateFoodItemByMenuIdAndFid = (request, response) => {
         // response.status(201).send(`Food ${fid} successfully updated`)
       })
     }
-  
+    console.log("Test")
     response.status(200).send(`Food Item has been updated`)
   })
   

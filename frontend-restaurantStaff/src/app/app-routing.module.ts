@@ -5,6 +5,7 @@ import { IndexComponent } from './index/index.component';
 import { MainPageComponent } from './main-page/main-page.component';
 import { ViewAllFoodItemsComponent } from './view-all-food-items/view-all-food-items.component';
 import { ViewAllMenusComponent } from './view-all-menus/view-all-menus.component';
+import { ViewAllPromotionsComponent } from './view-all-promotions/view-all-promotions.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/index', pathMatch: 'full' },
@@ -13,6 +14,7 @@ const routes: Routes = [
   { path: 'view-all-food-items', component: ViewAllFoodItemsComponent},
   { path: "view-all-food-items/:menuId", component: ViewAllFoodItemsComponent},
   { path: "view-all-menus", component: ViewAllMenusComponent},
+  { path: "view-all-promotions",  component: ViewAllPromotionsComponent},
 ];
 
 @NgModule({

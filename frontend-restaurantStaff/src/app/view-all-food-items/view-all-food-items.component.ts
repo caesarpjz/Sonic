@@ -72,7 +72,6 @@ export class ViewAllFoodItemsComponent implements OnInit {
       "daily_limit" : this.foodToView.daily_limit,
       "name" : this.foodToView.name,
       "price" : this.foodToView.price,
-      "availability" : true
     }
 
     console.log(foodToUpdate);
@@ -80,6 +79,7 @@ export class ViewAllFoodItemsComponent implements OnInit {
 
     this.foodItemsService.updateFood(this.restId, this.menuId, fid, foodToUpdate).subscribe(
       response => {
+        console.log(response);
         this.displayUpdate = false;
       },
       error => {
