@@ -485,8 +485,12 @@ begin
     WHERE Customers.cid = cust_id;
 
     UPDATE Food_Items
-    SET daily_limit = daily_limit - 1
+    SET daily_limit = daily_limit - $3
     WHERE Food_Items.fid = $2;
+
+    UPDATE Food_Items FI
+    SET quantity = FI.quantity - $3
+    WHERE FI.fid = $2;
 end
 $$ LANGUAGE PLPGSQL;
 
