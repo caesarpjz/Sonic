@@ -85,7 +85,7 @@ export class ViewAllMenusComponent implements OnInit {
 
   update(updateMenuForm: NgForm) {
     console.log(this.menuToView);
-    let menuId:string = this.menuToView["menu_id"];
+    let menuId: string = this.menuToView["menu_id"];
     let menuName: string = this.menuToView["name"];
     this.menuService.updateMenu(menuId, menuName, this.restId).subscribe(
       response => {
@@ -114,10 +114,10 @@ export class ViewAllMenusComponent implements OnInit {
   addMenu(addFoodForm: NgForm) {
     let menuName: string = this.newMenu["name"];
     console.log(menuName);
-      this.menuService.createMenu(this.restId, menuName).subscribe(
-        response => {
-          this.displayAdd = false;
-        }
-      );
+    this.menuService.createMenu(this.restId, menuName).subscribe(
+      response => {
+        this.displayAdd = false;
+      }
+    );
   }
 }

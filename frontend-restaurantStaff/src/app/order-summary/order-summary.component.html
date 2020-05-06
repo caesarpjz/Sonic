@@ -1,31 +1,67 @@
 <app-header></app-header>
 
-<p-dropdown [options]="months" [(ngModel)]="selectedMonth" placeholder="Select a Month" optionLabel="month" [showClear]="true"></p-dropdown>
+<p-dropdown [options]="months" [(ngModel)]="selectedMonth" placeholder="Select a Month" optionLabel="name"
+    [showClear]="true" (onClick)="chooseMonth()"></p-dropdown> &nbsp; &nbsp; &nbsp;
 
-<p-table [value]="orders">
-    <ng-template pTemplate="caption">
-        Orders
-    </ng-template>
-    <ng-template pTemplate="header">
-        <tr>
-            <th>Restaurant ID</th>
-            <th>Month</th>
-            <th>Total Orders</th>
-            <th>Total Cost</th>
-        </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-order>
-        <tr>
-            <td>{{order.restaurant_id}}</td>
-            <td>{{order.month}}</td>
-            <td>{{order.total_orders}}</td>
-            <td>{{order.total_cost}}</td>
-            <!-- <td>
+<p-button label="Get Top Five Orders For Current Month" (onClick)="goToTopFive()"></p-button>
+
+<div>
+    <div *ngIf="selectedMonth == null ">
+        <p-table [value]="orders">
+            <ng-template pTemplate="caption">
+                Orders
+            </ng-template>
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>Restaurant ID</th>
+                    <th>Month</th>
+                    <th>Total Orders</th>
+                    <th>Total Cost</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-order>
+                <tr>
+                    <td>{{order.restaurant_id}}</td>
+                    <td>{{order.month}}</td>
+                    <td>{{order.total_orders}}</td>
+                    <td>{{order.total_cost}}</td>
+                    <!-- <td>
                 <p-button label="Update" (onClick)="showDialog1(promotion)"></p-button>
                 &nbsp;
                 <p-button label="Delete" (onClick)="deletePromotion(promotion)"></p-button>
             </td> -->
-            <!-- <td><a routerLink="/view-all-food-items/{{menu.menu_id}}">View Food Items</a></td> -->
-        </tr>
-    </ng-template>
-</p-table>
+                    <!-- <td><a routerLink="/view-all-food-items/{{menu.menu_id}}">View Food Items</a></td> -->
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+    <div *ngIf="selectedMonth !== null ">
+        <p-table [value]="ordersForSelectedMonth">
+            <ng-template pTemplate="caption">
+                Orders
+            </ng-template>
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>Restaurant ID</th>
+                    <th>Month</th>
+                    <th>Total Orders</th>
+                    <th>Total Cost</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-order>
+                <tr>
+                    <td>{{order.restaurant_id}}</td>
+                    <td>{{order.month}}</td>
+                    <td>{{order.total_orders}}</td>
+                    <td>{{order.total_cost}}</td>
+                    <!-- <td>
+                <p-button label="Update" (onClick)="showDialog1(promotion)"></p-button>
+                &nbsp;
+                <p-button label="Delete" (onClick)="deletePromotion(promotion)"></p-button>
+            </td> -->
+                    <!-- <td><a routerLink="/view-all-food-items/{{menu.menu_id}}">View Food Items</a></td> -->
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+</div>

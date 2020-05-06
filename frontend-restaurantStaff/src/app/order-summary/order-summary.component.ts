@@ -21,12 +21,14 @@ export class OrderSummaryComponent implements OnInit {
   orders: any;
   months: Month[];
   selectedMonth: string;
+  ordersForSelectedMonth: any = [];
 
   constructor(private router: Router,
     private activatedRoute: ActivatedRoute,
     private sessionService: SessionService,
     private restaurantService: RestaurantService,
     private ordersService: OrdersService) {
+      this.selectedMonth = null;
      }
 
   ngOnInit() {
@@ -45,6 +47,7 @@ export class OrderSummaryComponent implements OnInit {
       {name: 'November'},
       {name: 'December'},
     ]
+    console.log(this.selectedMonth);
 
     this.ordersService.getSummaryOrders().subscribe(
       response => {
@@ -82,6 +85,20 @@ export class OrderSummaryComponent implements OnInit {
         console.log(this.orders.month)
       },
     )
+  }
+
+  chooseMonth() {
+    var i = 0;
+    console.log(this.orders.length)
+    for (i=0; i < this.orders.length; i++) {
+      if (this.orders[i].month == this.selectedMonth["name"]) {
+        this.ordersForSelectedMonth.push(this.orders[i]);
+      }
+    }
+  }
+
+  goToTopFive() {
+    this.router.navigate(['/view-topFive']);
   }
 
 }

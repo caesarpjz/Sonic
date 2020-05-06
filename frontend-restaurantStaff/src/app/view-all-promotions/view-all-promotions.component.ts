@@ -15,15 +15,21 @@ export class ViewAllPromotionsComponent implements OnInit {
 
   promotions: any;
   restId : any;
+  displayAdd: boolean = false;
   displayUpdate: boolean = false;
   displayDelete: boolean = false;
+  displaySummary: boolean = false;
   promotionToUpdate: any;
   promotionToDelete: any;
+  promotionSummary: any;
+  newPromotion: any;
 
   constructor(private router: Router,
     private activatedRoute: ActivatedRoute,
     private promotionsService: PromotionsService,
-    private restaurantService: RestaurantService) { }
+    private restaurantService: RestaurantService) { 
+      this.newPromotion = {};
+    }
 
   ngOnInit() {
 
@@ -47,6 +53,20 @@ export class ViewAllPromotionsComponent implements OnInit {
     this.promotionToUpdate = promotionToUpdate;
   }
 
+  showDialog3() {
+    this.displayAdd = true;
+  }
+
+  showDialog2(promotionSummary: any) {
+    this.displaySummary = true;
+    this.promotionSummary = promotionSummary;
+    this.promotionsService.viewPromotionSummary(promotionSummary.pid).subscribe(
+      response => {
+        this.promotionSummary = response[0];
+      }
+    )
+  }
+
   deletePromotion(promotionToDelete: any) {
     this.promotionsService.deletePromotion(this.restId, promotionToDelete.pid).subscribe(
       response => {
@@ -61,5 +81,16 @@ export class ViewAllPromotionsComponent implements OnInit {
       response => {
       }
     )
+  }
+
+  addPromotion(addPromotionForm: NgForm) {
+    // const { start_time, end_time, discount_desc, discount_percentage, name }
+    // let menuName: string = this.newMenu["name"];
+    console.log(this.newPromotion);
+    this.promotionsService.createPromotion(this.restId, this.newPromotion).subscribe(
+      response => {
+        this.displayAdd = false;
+      }
+    );
   }
 }

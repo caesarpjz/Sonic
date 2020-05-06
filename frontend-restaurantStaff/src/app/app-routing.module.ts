@@ -9,6 +9,7 @@ import { ViewAllPromotionsComponent } from './view-all-promotions/view-all-promo
 import { ViewAllReviewsComponent } from './view-all-reviews/view-all-reviews.component';
 import { ViewAllOrdersComponent } from './view-all-orders/view-all-orders.component';
 import { OrderSummaryComponent } from './order-summary/order-summary.component';
+import { TopFiveOrdersComponent } from './top-five-orders/top-five-orders.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/index', pathMatch: 'full' },
@@ -21,6 +22,7 @@ const routes: Routes = [
   { path: "view-all-reviews", component: ViewAllReviewsComponent},
   { path: 'view-all-orders', component: ViewAllOrdersComponent},
   { path: "view-order-summary", component: OrderSummaryComponent},
+  { path: "view-topFive", component: TopFiveOrdersComponent},
 ];
 
 @NgModule({

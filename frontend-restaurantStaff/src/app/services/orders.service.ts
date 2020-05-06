@@ -29,7 +29,14 @@ export class OrdersService {
 
   getSummaryOrders(): Observable<any> {
     console.log("test")
-    return this.httpClient.get<any>(this.path + '/restaurant_staff/'+ this.sessionService.getUsername() + '/allsummary').pipe
+    return this.httpClient.get<any>(this.path + '/restaurant_staff/' + this.sessionService.getUsername() + '/allsummary').pipe
+      (
+        catchError(this.handleError)
+      );
+  }
+
+  getTopFive(): Observable<any> {
+    return this.httpClient.get<any>(this.path + '/restaurant_staff/' + this.sessionService.getUsername() + '/currentmonthtopfive').pipe
       (
         catchError(this.handleError)
       );
