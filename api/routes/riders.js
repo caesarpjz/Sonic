@@ -191,11 +191,31 @@ const viewPastSchedule = (request, response) => {
 }
 
 // /riders/:username/schedule/submit
-// const submitSchedule = (request, response) => {
-//   const { username } = request.params
-//   const {  }
-//   pool
-// }
+const submitSchedule = (request, response) => {
+  const { username } = request.params
+  const { shiftArray } = request.body
+
+  const array_length = shiftArray.length
+  pool.query('SELECT rid FROM Riders WHERE username = $1', [username], (error, results) => {
+    if (error) {
+      response.status(400).send('Unable to sbumit schedule')
+      throw error
+    }
+    const rid = results.rows[0].rid
+    var i = 0;
+    for (i = 0; i < array_length; i++) {
+      pool.query('SELECT addShift($1, $2, $3)', [rid, shiftArray[i].start_time, shiftArray[i].end_time], (error, results) => {
+        if (error) {
+          response.status(400).send('Unable to get schedule')
+          throw error
+        }
+      })
+    }
+    
+    response.status(200).send('Shifts added')
+  })
+  
+}
 
 // /riders/:username/summary
 // const getSummaryInfo = (request, response) => {
