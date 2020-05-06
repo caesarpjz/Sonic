@@ -6,18 +6,18 @@
     </ng-template>
     <ng-template pTemplate="header">
         <tr>
-            <th>Review ID</th>
-            <th>Description</th>
+            <th>Name</th>
+            <th>Username</th>
+            <th>Review Description</th>
+            <th>Food ID for review</th>
         </tr>
     </ng-template>
     <ng-template pTemplate="body" let-review>
         <tr>
-            <td>{{promotion.pid}}</td>
-            <td>{{promotion.name}}</td>
-            <td>{{promotion.start_date}}</td>
-            <td>{{promotion.end_date}}</td>
-            <td>{{promotion.type}}</td>
-            <td>{{promotion.discount_percentage}}</td>
+            <td>{{review.name}}</td>
+            <td>{{review.username}}</td>
+            <td>{{review.review_desc}}</td>
+            <td>{{review.fid}}</td>
             <!-- <td>
                 <p-button label="Update" (onClick)="showDialog1(promotion)"></p-button>
                 &nbsp;
