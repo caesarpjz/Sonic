@@ -9,6 +9,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ProfileComponent implements OnInit {
   customer: any;
+  orders: any;
 
   constructor(private router: Router, private customerService: CustomerService) { }
 
@@ -17,12 +18,19 @@ export class ProfileComponent implements OnInit {
       this.router.navigate(['/login']);
     } else {
       this.getCustomerProfile();
+      this.getCustomerOrders();
     }
   }
 
   getCustomerProfile() {
     this.customerService.getProfile().subscribe((res) => {
       this.customer = res[0];
+    });
+  }
+
+  getCustomerOrders() {
+    this.customerService.getOrders().subscribe((res) => {
+      this.orders = res;
     });
   }
 

@@ -17,12 +17,59 @@
       <app-creditcard></app-creditcard>
     </div>
 
-    <button type="button" class="mt-3 btn btn-lg btn-secondary" [routerLink]="['/update-card']">Update
+    <button type="button" class="mt-3 mb-3 btn btn-lg btn-secondary" [routerLink]="['/update-card']">Update
       card</button>
 
-    <p>
-      Past orders:
-    </p>
+    <h5 class="lead text-muted mt-3">Past orders</h5>
+    <div class="orders-container d-flex justify-content-center" *ngFor="let order of orders">
+      <div class="order">
+        <div class="order-row">
+          <div class="order-header">
+            Cost
+          </div>
+          <div class="order-description">
+            ${{order.cost}}0
+          </div>
+        </div>
+
+        <div class="order-row">
+          <div class="order-header">
+            Payment method
+          </div>
+          <div class="order-description">
+            {{order.payment_method}}
+          </div>
+        </div>
+
+        <div class="order-row">
+          <div class="order-header">
+            Order status
+          </div>
+          <div class="order-description">
+            {{order.status}}
+          </div>
+        </div>
+
+        <div class="order-row">
+          <div class="order-header">
+            Restaurant location
+          </div>
+          <div class="order-description">
+            {{order.restaurant_location}}
+          </div>
+        </div>
+
+        <div class="order-row">
+          <div class="order-header">
+            Order location
+          </div>
+          <div class="order-description">
+            {{order.location}}
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
 
