@@ -21,7 +21,18 @@
         </div>
 
         <div class="form-group">
-          <div class="row">
+          <label for="paymentOption text-left">Payment Option</label>
+            <div class="ui-g-12">
+              <p-radioButton name="paymentOption" label="Cash" value="CASH" formControlName="paymentOption"></p-radioButton>
+            </div>
+            <div class="ui-g-12">
+              <p-radioButton name="paymentOption" label="Credit Card" value="CREDIT CARD" formControlName="paymentOption">
+              </p-radioButton>
+            </div>
+        </div>
+
+        <div class="form-group" *ngIf="paymentOption === 'CREDIT CARD'">
+          <div class="row pt-3">
             <div class="col-md-6">
               <label for="creditCardNumber text-left">Credit card number</label>
               <input type="text" class="form-control" id="creditCardNumber" placeholder="Credit card number"

@@ -8,7 +8,8 @@ import { Observable, throwError } from 'rxjs';
 import { catchError, retry } from 'rxjs/operators';
 
 const httpOptions = {
-  headers: new HttpHeaders({ "Content-Type": "application/json" })
+  headers: new HttpHeaders({ "Content-Type": "application/json" }),
+  responseType: 'text' as 'json'
 };
 
 @Injectable()
@@ -38,7 +39,7 @@ export class AuthService {
     };
 
     return this.httpClient.post<any>('/api/customers', customer,
-           { responseType: 'text' as 'json' });
+           httpOptions);
   }
 
   login(form): Observable<any> {
@@ -48,19 +49,9 @@ export class AuthService {
     };
 
     return this.httpClient.post<any>('/api/customer/login', user,
-      { responseType: 'text' as 'json' }).pipe(
+      httpOptions).pipe(
         retry(1),
         catchError(this.handleError)
       );
   }
-
-  // login(form): Observable<any> {
-  //   let user = {
-  //     'username': form.value.username,
-  //     'password': form.value.password
-  //   };
-
-  //   return this.httpClient.post<any>('/api/customer/login', user,
-  //     { responseType: 'text' as 'json' });
-  // }
 }

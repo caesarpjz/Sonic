@@ -61,6 +61,7 @@ export class RestaurantComponent implements OnInit {
 
   addToCart = (item) => {
     this.cartService.addToCart(item);
+    sessionStorage.setItem('restaurantLastOrdered', JSON.stringify(this.restaurant));
   }
 
   addQuantity(item) {

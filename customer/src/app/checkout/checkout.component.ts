@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { CartService } from '../services/cart.service';
+import { RadioButtonModule } from 'primeng/radiobutton';
+import { RestaurantsService } from '../services/restaurants.service';
 
 declare var stripe;
 declare var elements;
@@ -20,7 +22,8 @@ export class CheckoutComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    private cartService: CartService
+    private cartService: CartService,
+    private restaurantService: RestaurantsService
   ) {
     this.initCheckoutForm();
     this.cartService.initCart();
@@ -32,22 +35,35 @@ export class CheckoutComponent implements OnInit {
     this.cartService.cartChanged.subscribe(cart => {
       this.cartItems = cart;
     });
+
+    console.log(this.cartItems);
   }
 
   initCheckoutForm() {
     this.checkoutForm = this.formBuilder.group({
       name: ['', Validators.required],
       address: ['', Validators.required],
-      creditCardNumber: ['', Validators.required],
-      date: ['', Validators.required],
-      cvv: ['', Validators.required]
+      paymentOption: ['CASH', Validators.required],
+      creditCardNumber: [''],
+      date: [''],
+      cvv: ['']
     });
+  }
+
+  get paymentOption() {
+    return this.checkoutForm.get('paymentOption').value;
   }
 
   submit() {
     // user {}, cart {}
     console.log(this.checkoutForm);
-    console.log(this.cartItems);
+
+
+    this.restaurantService.checkout(this.checkoutForm, this.cartItems).subscribe((res) => {
+      console.log(res);
+    });
+
+    // if option credit, also need to set credit card num?
   }
 
 }

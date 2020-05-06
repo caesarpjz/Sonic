@@ -8,9 +8,9 @@ import { Observable, throwError } from 'rxjs';
 import { catchError, retry } from 'rxjs/operators';
 
 const httpOptions = {
-  headers: new HttpHeaders({ "Content-Type": "application/json" })
+  headers: new HttpHeaders({ "Content-Type": "application/json"}),
+  responseType: 'text' as 'json'
 };
-let activeRestaurantId = 0;
 
 @Injectable({
   providedIn: 'root'
@@ -38,7 +38,6 @@ export class RestaurantsService {
 
   // get restaurant by Id
   getRestaurant(id): Observable<any> {
-    activeRestaurantId = id;
     return this.httpClient.get<any>('/api/restaurant/' + id);
   }
 
@@ -53,9 +52,34 @@ export class RestaurantsService {
   }
 
   // checkout order
-  checkout(order): Observable<any> {
+  checkout(checkoutForm, order): Observable<any> {
     const username = sessionStorage.getItem('username');
-    return this.httpClient.post<any>(`/api/customer/${username}/restaurant/${activeRestaurantId}/order`, order).pipe(
+    // use dummy restaurant_location first
+
+    let orderList = [];
+
+    for (var i = 0; i < order.length; i++) {
+      let food = {
+        'foodName': order[i].name,
+        'fid': order[i].fid,
+        'price': order[i].price,
+        'quantity': order[i].quantity
+      }
+
+      orderList.push(food);
+    }
+
+    const restaurant = JSON.parse(sessionStorage.getItem('restaurantLastOrdered'));
+
+    let completeOrder = {
+      'orderList': orderList,
+      'payment_method': checkoutForm.value.paymentOption,
+      'restaurant_location': restaurant.restaurant_location,
+      'location': checkoutForm.value.address
+    }
+
+    return this.httpClient.post<any>(`/api/customer/${username}/restaurant/${restaurant.rest_id}/order`, completeOrder,
+    httpOptions).pipe(
       retry(1),
       catchError(this.handleError)
     );
