@@ -628,10 +628,23 @@ $$ LANGUAGE SQL;
 
 CREATE OR REPLACE FUNCTION timestamp_departForRest(did INTEGER)
 RETURNS void AS $$
-    UPDATE Deliveries
+declare
+    order_id INTEGER;
+begin
+    UPDATE Deliveries D
     SET time_depart_for_rest = NOW()
-    WHERE did = $1;
-$$ LANGUAGE SQL;
+    WHERE D.did = $1;
+
+    SELECT O.oid
+    FROM Deliveries D join Orders O on D.did = O.did
+    WHERE D.did = $1
+    INTO order_id;
+
+    UPDATE Orders
+    SET status = 'ORDER ACCEPTED'
+    WHERE oid = order_id;
+end
+$$ LANGUAGE PLPGSQL;
 
 CREATE OR REPLACE FUNCTION timestamp_arriveAtRest(did INTEGER)
 RETURNS void AS $$
@@ -651,6 +664,7 @@ CREATE OR REPLACE FUNCTION timestamp_orderDelivered(did INTEGER)
 RETURNS void AS $$
 declare 
     rider_id INTEGER;
+    order_id INTEGER;
 begin
     UPDATE Deliveries
     SET time_order_delivered = NOW()
@@ -660,6 +674,15 @@ begin
     UPDATE Riders
     SET status = 'AVAILABLE'
     WHERE rid = rider_id;
+
+    SELECT O.oid
+    FROM Deliveries D join Orders O on D.did = O.did
+    WHERE D.did = $1
+    INTO order_id;
+
+    UPDATE Orders
+    SET status = 'DELIVERED'
+    WHERE oid = order_id;
 end
 $$ LANGUAGE PLPGSQL;
 
