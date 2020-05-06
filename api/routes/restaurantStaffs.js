@@ -286,9 +286,9 @@ const updateFoodItemByMenuIdAndFid = (request, response) => {
 // /restaurant_staff/:username/restaurant/:rest_id/promotions
 const createPromotionsByRestId = (request, response) => {
   const { rest_id } = request.params
-  const { start_time, end_time, discount_desc, discount_percentage } = request.body
+  const { start_time, end_time, discount_desc, discount_percentage, name } = request.body
 
-  pool.query('SELECT addRestaurantPromotion($1, $2, $3, $4, $5)', [start_time, end_time, discount_desc, discount_percentage, rest_id], (error, results) => {
+  pool.query('SELECT addRestaurantPromotion($1, $2, $3, $4, $5)', [start_time, end_time, discount_desc, discount_percentage, name, rest_id], (error, results) => {
     if (error) {
       response.status(400).send(`Unable to create Promotion. Please try again.`)
       throw error
@@ -303,11 +303,12 @@ const createPromotionsByRestId = (request, response) => {
 const getPromotionsByRestId = (request, response) => {
   const { rest_id } = request.params
 
-  pool.query('SELECT p.pid, p.start_date, p.end_date, p.type, p.discount_percentage FROM Restaurants_Has_Promotions rp, Promotions p WHERE rest_id = $1 AND rp.pid = p.pid', [rest_id], (error, results) => {
+  pool.query('SELECT p.name, p.pid, p.start_date, p.end_date, p.type, p.discount_percentage FROM Restaurants_Has_Promotions rp, Promotions p WHERE rest_id = $1 AND rp.pid = p.pid', [rest_id], (error, results) => {
     if (error) {
       response.status(400).send('Unable to get Promotions')
       throw error
     }
+    const array_length = 
     response.status(200).json(results.rows)
   })
 }
@@ -333,28 +334,28 @@ const checkIfRestaurantPromotionIsValidByPid = (request, response) => {
 }
 
 // /restaurant_staff/promotions/name/:name/validity
-const checkIfRestaurantPromotionIsValidByName = (request, response) => {
-  const { name } = request.params
+// const checkIfRestaurantPromotionIsValidByName = (request, response) => {
+//   const { name } = request.params
 
-  pool.query('SELECT start_date, end_date FROM Promotions WHERE name = $1', [name], (error, results) => {
-    if (error) {
-      response.status(400).send(`Unable to get validity`)
-      throw error
-    }
-    const start_date = results.rows[0].start_date
-    const end_date = results.rows[0].end_date
-    if (start_date >= (new Date()) && end_date <= (new Date())) {
-      response.status(200).send(`Valid`)
-    } else {
-      response.status(400).send('Not Valid')
-    }
-  })
-}
+//   pool.query('SELECT start_date, end_date FROM Promotions WHERE name = $1', [name], (error, results) => {
+//     if (error) {
+//       response.status(400).send(`Unable to get validity`)
+//       throw error
+//     }
+//     const start_date = results.rows[0].start_date
+//     const end_date = results.rows[0].end_date
+//     if (start_date >= (new Date()) && end_date <= (new Date())) {
+//       response.status(200).send(`Valid`)
+//     } else {
+//       response.status(400).send('Not Valid')
+//     }
+//   })
+// }
 
 // /restaurant_staff/:username/restaurant/:rest_id/promotions/:pid
 const updatePromotionByPid = (request, response) => {
   const { pid } = request.params
-  const { start_date, end_date, discount_percentage } = request.body
+  const { start_date, end_date, discount_percentage, promo_code } = request.body
 
   if (start_date !== undefined) {
     pool.query('UPDATE Promotions SET start_date = $1 WHERE pid = $2', [start_date, pid], (error, results) => {
@@ -388,6 +389,14 @@ const updatePromotionByPid = (request, response) => {
     })
   }
 
+  if (promo_code !== undefined) {
+    pool.query('UPDATE Promotions SET name = $1 WHERE pid = $2', [promo_code, pid], (error, results) => {
+      if (error) {
+        response.status(400).send(`Unable to update promotion name`)
+        throw error
+      }
+    })
+  }
   response.status(200).send(`Promotion has been updated`)
 }
 
@@ -534,7 +543,7 @@ module.exports = {
     deletePromotionByPid,
     retrieveReviews,
     checkIfRestaurantPromotionIsValidByPid,
-    checkIfRestaurantPromotionIsValidByName,
+    // checkIfRestaurantPromotionIsValidByName,
     getRestaurantOrders,
     getOrderSummaryBasedOnCurrentMonthNumber,
     getAllOrderSummary,
