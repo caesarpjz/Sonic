@@ -128,7 +128,7 @@ const getMenuNameById = (request, response) => {
 const getFoodItemByMenuId = (request, response) => {
   const { menu_id } = request.params
 
-  pool.query('SELECT m.name, f.fid, f.quantity, f.daily_limit, f.name, f.price, f.category FROM Food_Items f, Menus m WHERE m.menu_id = $1 AND f.menu_id = m.menu_id', [menu_id], (error, results) => {
+  pool.query('SELECT m.name, f.fid, f.quantity, f.daily_limit, f.name, f.price, f.category, f.availability FROM Food_Items f, Menus m WHERE m.menu_id = $1 AND f.menu_id = m.menu_id', [menu_id], (error, results) => {
     if (error) {
       response.status(400).send(`Unable to get food items`)
       throw error
