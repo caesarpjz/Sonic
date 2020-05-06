@@ -1,0 +1,3 @@
+INSERT INTO Food_Item_Categories
+VALUES
+('WESTERN'), ('CHINESE'), ('ITALIAN'), ('MUSLIM'), ('INDIAN'), ('VEGETARIAN'), ('OTHERS');
