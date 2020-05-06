@@ -169,9 +169,9 @@ const addMenu = (request, response) => {
 // /restaurant_staff/:username/restaurant/:rest_id/menus/:menu_id
 const addFoodItemIntoMenu = (request, response) => {
   const { menu_id } = request.params
-  const { quantity, daily_limit, name, price } = request.body
+  const { quantity, daily_limit, name, price, category, availability } = request.body
 
-  pool.query('SELECT addFoodItem($1, $2, $3, $4, $5)', [quantity, daily_limit, name, price, menu_id], (error, results) => {
+  pool.query('SELECT addFoodItem($1, $2, $3, $4, $5, $6, $7)', [quantity, daily_limit, name, price, menu_id, category, availability], (error, results) => {
     if (error) {
       response.status(400).send(`Unable to add food item ${name} into menu`)
       throw error
