@@ -114,7 +114,7 @@ const updateRestaurantById = (request, response) => {
 const getMenuNameById = (request, response) => {
   const { rest_id } = request.params
 
-  pool.query('SELECT r.name, m.menu_id, m.name from Restaurants r, Menu m WHERE r.rest_id = $1 AND r.rest_id = m.rest_id',
+  pool.query('SELECT r.name, m.menu_id, m.name from Restaurants r, Menus m WHERE r.rest_id = $1 AND r.rest_id = m.rest_id',
     [rest_id], (error, results) => {
       if (error) {
         response.status(400).send(`Unable to get menu names`)
