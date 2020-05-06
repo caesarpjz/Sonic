@@ -49,7 +49,6 @@ CREATE TABLE Customers (
     id INTEGER NOT NULL,
     cc_name VARCHAR(50),
     cc_expiry VARCHAR(50),
-    cc_num VARCHAR(50),
     points INTEGER NOT NULL DEFAULT 0,
     username VARCHAR(50) NOT NULL,
     name VARCHAR(50),
