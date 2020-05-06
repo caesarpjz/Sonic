@@ -334,7 +334,6 @@ const insertCCInfo = (request, response) => {
   const { username } = request.params
   const cc_name = request.body.cc_name
   const expiryDate = request.body.expiryDate
-  const num = request.body.num
 
   pool.query('SELECT cid FROM Customers where username = $1', [username], (error, results) => {
     if (error) {
@@ -343,7 +342,7 @@ const insertCCInfo = (request, response) => {
     }
     const cid = results.rows[0].cid
 
-    pool.query('SELECT updateCC($1, $2, $3, $4)', [cid, cc_name, expiryDate, num], (error, results) => {
+    pool.query('SELECT updateCC($1, $2, $3)', [cid, cc_name, expiryDate], (error, results) => {
       if (error) {
         response.status(400).send(`Unable to add credit card info`)
         throw error

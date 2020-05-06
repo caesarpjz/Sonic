@@ -29,7 +29,7 @@ begin
     select addUser(username, password, name, 'Customer') into userId;
 
     INSERT INTO Customers
-    VALUES (DEFAULT, userId, null, null, null, DEFAULT, username, name);
+    VALUES (DEFAULT, userId, null, null, DEFAULT, username, name);
 end
 $$ LANGUAGE PLPGSQL;
 
@@ -486,7 +486,7 @@ begin
 
     UPDATE Food_Items
     SET daily_limit = daily_limit - 1
-    WHERE Food_Items.fid = $2
+    WHERE Food_Items.fid = $2;
 end
 $$ LANGUAGE PLPGSQL;
 
@@ -539,12 +539,11 @@ RETURNS record AS $$
     WHERE Customers.cid = $1;
 $$ LANGUAGE SQL;
 
-CREATE OR REPLACE FUNCTION updateCC(cid INTEGER, cc_name VARCHAR, cc_expiry VARCHAR, cc_num VARCHAR) 
+CREATE OR REPLACE FUNCTION updateCC(cid INTEGER, cc_name VARCHAR, cc_expiry VARCHAR) 
 RETURNS void as $$
     UPDATE Customers
     SET cc_name = $2,
-    cc_expiry = $3,
-    cc_num = $4
+    cc_expiry = $3
     WHERE cid = $1;
 $$ LANGUAGE SQL;
 
