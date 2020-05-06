@@ -147,7 +147,7 @@ const updateMenuNameByMenuId = (request, response) => {
       response.status(400).send(`Unable to update menu name to ${new_name}`)
       throw error
     }
-    response.status(200).json(results.rows)
+    response.status(200).send(`Menu name change to ${new_name} successfully`)
   })
 }
 
