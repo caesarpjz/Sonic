@@ -278,6 +278,7 @@ RETURNS table(oid INTEGER, fid INTEGER, name VARCHAR, quantity INTEGER, status O
     WHERE m.rest_id = $1 
     AND m.menu_id = f.menu_id
     AND f.fid = of.fid
+    AND o.oid = of.oid
     AND o.status <> 'DELIVERED'
 $$ LANGUAGE SQL;
 
