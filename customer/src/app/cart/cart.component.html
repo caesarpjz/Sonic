@@ -7,7 +7,7 @@
 
   <app-alert></app-alert>
 
-  <div class="cart__container">
+  <div class="cart__container" *ngIf="cartItems.length > 0">
     <div class="cart__items">
       <div *ngFor="let item of cartItems">
         <app-cart-item [item]=item [increaseQuantity]=increaseQuantity [decreaseQuantity]=decreaseQuantity
@@ -40,6 +40,10 @@
         </button>
       </div>
     </div>
+  </div>
+
+  <div class="cart__container text-center" *ngIf="cartItems.length === 0">
+    Your cart is empty!
   </div>
 
 </div>

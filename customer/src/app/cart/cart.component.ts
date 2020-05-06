@@ -51,6 +51,7 @@ export class CartComponent implements OnInit {
   submit() {
     // check for min spending whether cost (food cost + delivery) hits
     const rest = this.sharedService.getRestaurant();
+    console.log(rest);
     const minSpending = rest.min_spending;
     if ((this.subtotal + this.deliveryFee) >= minSpending) {
       this.router.navigate(['/checkout']);

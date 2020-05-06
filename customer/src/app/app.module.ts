@@ -22,6 +22,7 @@ import { AlertService } from './services/alert.service';
 import { AlertComponent } from './alert/alert.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RadioButtonModule } from 'primeng/radiobutton';
+import { CreditcardComponent } from './creditcard/creditcard.component';
 
 
 @NgModule({
@@ -40,7 +41,8 @@ import { RadioButtonModule } from 'primeng/radiobutton';
     SignupComponent,
     CheckoutComponent,
     ProfileComponent,
-    AlertComponent
+    AlertComponent,
+    CreditcardComponent
   ],
   imports: [
     BrowserModule,

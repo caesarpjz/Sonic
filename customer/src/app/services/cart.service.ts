@@ -91,7 +91,7 @@ export class CartService {
  */
   indexOf(item, arr) {
     for (var i = 0; i < arr.length; i++) {
-      if (arr[i].id === item.id) {
+      if (arr[i].fid === item.fid) {
         return i;
       }
     }

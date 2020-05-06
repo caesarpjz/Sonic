@@ -64,6 +64,7 @@ export class RestaurantComponent implements OnInit {
   addToCart = (item) => {
     this.cartService.addToCart(item);
     this.sharedService.setRestaurant(this.restaurant);
+    console.log(this.sharedService.getRestaurant())
   }
 
   addQuantity(item) {

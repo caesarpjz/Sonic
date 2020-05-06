@@ -1,3 +1,4 @@
+import { SharedService } from './shared.service';
 import { Injectable } from "@angular/core";
 import {
   HttpClient,
@@ -12,13 +13,12 @@ const httpOptions = {
   responseType: 'text' as 'json'
 };
 
-
 @Injectable({
   providedIn: 'root'
 })
 export class CustomerService {
 
-  constructor(private httpClient: HttpClient) { }
+  constructor(private httpClient: HttpClient, private sharedService: SharedService) { }
 
   private handleError(error: HttpErrorResponse) {
     if (error.error instanceof ErrorEvent) {
@@ -34,15 +34,24 @@ export class CustomerService {
   }
 
   // view customer profile: has cc info and points
+  // localhost:3002/customer/mrpresident/profile
+  getProfile(): Observable<any> {
+    const username = this.sharedService.getUsername();
+    return this.httpClient.get<any>('/api/customer/' + username + '/profile');
+  }
 
   // insert cc info
+  // localhost:3002/customer/mrpresident/profile/insertCC
   addCard(form): Observable<any> {
-    let user = {
-      'username': form.value.username,
-      'password': form.value.password
+    let card = {
+      'cc_name': form.value.name,
+      'expiryDate': form.value.date,
+      'num': form.value.creditCardNumber
     };
 
-    return this.httpClient.post<any>('/api/customer/login', user,
+    const username = this.sharedService.getUsername();
+
+    return this.httpClient.post<any>(`/api/customer/${username}/profile/insertCC`, card,
       httpOptions).pipe(
         retry(1),
         catchError(this.handleError)
