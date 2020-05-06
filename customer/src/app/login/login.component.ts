@@ -1,3 +1,4 @@
+import { Router } from '@angular/router';
 import { AlertService } from '../services/alert.service';
 import { AuthService } from './../services/auth.service';
 import { Component, OnInit } from '@angular/core';
@@ -15,7 +16,8 @@ export class LoginComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private authService: AuthService,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private router: Router
   ) {
     this.initLoginForm();
   }
@@ -37,11 +39,12 @@ export class LoginComponent implements OnInit {
   }
 
   login() {
-    // @todos: call auth service
-    console.log(this.loginForm);
     this.authService.login(this.loginForm).subscribe((res) => {
       this.alertService.success('Login successful!');
-      // route to login page?
+      sessionStorage.setItem('loggedIn', 'true');
+      sessionStorage.setItem('username', this.loginForm.value.username);
+
+      this.router.navigate(['/']);
     }, (err) => {
       this.alertService.error('Invalid login credentials, please try again')
     });

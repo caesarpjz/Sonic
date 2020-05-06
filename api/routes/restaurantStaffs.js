@@ -269,13 +269,38 @@ const updateFoodItemByMenuIdAndFid = (request, response) => {
     }
   
     if (category !== undefined) {
-      pool.query('UPDATE Food_Items SET category = $1 WHERE fid = $2 AND menu_id = $3', [category, fid, menu_id], (error, results) => {
+      pool.query('SELECT category FROM Food_Item_Categories WHERE category = $1', [category], (error, results) => {
         if (error) {
           response.status(400).send(`Unable to update category. Please try again.`)
           throw error
         }
-        // response.status(201).send(`Food ${fid} successfully updated`)
+        const exists = results.rows[0].category
+        if (exists == category) {
+          pool.query('UPDATE Food_Items SET category = $1 WHERE fid = $2 AND menu_id = $3', [category, fid, menu_id], (error, results) => {
+            if (error) {
+              response.status(400).send(`Unable to update category. Please try again.`)
+              throw error
+            }
+            // response.status(201).send(`Food ${fid} successfully updated`)
+          })
+        } else {
+          pool.query('INSERT INTO Food_Item_Categories (category) VALUES ($1)', [category], (error, results) => {
+            if (error) {
+              response.status(400).send(`Unable to update category. Please try again.`)
+              throw error
+            }
+            pool.query('UPDATE Food_Items SET category = $1 WHERE fid = $2 AND menu_id = $3', [category, fid, menu_id], (error, results) => {
+              if (error) {
+                response.status(400).send(`Unable to update category. Please try again.`)
+                throw error
+              }
+              // response.status(201).send(`Food ${fid} successfully updated`)
+            })
+          })
+        }
       })
+      
+      
     }
     console.log("Test")
     response.status(200).send(`Food Item has been updated`)
