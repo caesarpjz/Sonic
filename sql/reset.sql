@@ -112,3 +112,7 @@ DROP FUNCTION IF EXISTS check_rider_shift() CASCADE;
 DROP TRIGGER IF EXISTS rider_shift_trigger ON Shifts CASCADE;
 DROP FUNCTION IF EXISTS check_FT_rider_shift() CASCADE;
 DROP TRIGGER IF EXISTS FT_rider_shift_trigger ON SHIFTS CASCADE;
+
+-- TESTSET 
+DROP FUNCTION IF EXISTS create_dummy_ft_shifts() CASCADE;
+DROP FUNCTION IF EXISTS create_dummy_pt_shifts() CASCADE;
