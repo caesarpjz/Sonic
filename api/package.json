@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "pm2 start server.js",
+    "start": "nodemon start server.js",
     "stop": "pm2 kill"
   },
   "dependencies": {

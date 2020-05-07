@@ -124,12 +124,17 @@ const viewAssignedDeliveries = (request, response) => {
 const timeArriveAtResturant = (request, response) => {
   const { did } = request.params
 
+  // const { abc } = request.body
+  console.log('abc')
+  console.log(did)
   pool.query = ('SELECT timestamp_arriveAtRest($1)', [did], (error, results) => {
+    console.log('pppppp')
     if (error) {
       response.status(400).send(`Unable to update arrive at restaurant time`)
       throw error
     }
-    response.status(200).send(`Arrive time at restaurant successfully updated`)
+    console.log('hello')
+    response.status(200).json(`Arrive time at restaurant successfully updated`)
   })
 }
 

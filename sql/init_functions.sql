@@ -640,10 +640,11 @@ end
 $$ LANGUAGE PLPGSQL;
 
 CREATE OR REPLACE FUNCTION timestamp_arriveAtRest(did INTEGER)
-RETURNS void AS $$
+RETURNS INTEGER AS $$
     UPDATE Deliveries
     SET time_arrive_at_rest = NOW()
-    WHERE did = $1;
+    WHERE did = $1
+    RETURNING did;
 $$ LANGUAGE SQL;
 
 CREATE OR REPLACE FUNCTION timestamp_departFromRest(did INTEGER)
