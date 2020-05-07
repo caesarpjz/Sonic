@@ -31,6 +31,8 @@
     <form formArrayName="items" *ngFor="let item of scheduleData.controls; let i = index;">
       <h5>{{item.controls.day.value | titlecase }}</h5>
 
+      <button (click)="addTimeslot(i)">Add time</button>
+
       <form [formGroup]=item>
         <form formArrayName="times" *ngFor="let time of timeData(i).controls; let j = index;">
           <div [formGroupName]="j">
@@ -44,7 +46,7 @@
               </div>
             </div>
 
-            <button (click)="addTimeslot(i)">Add time</button>
+            <button (click)="removeTimeslot(i, j)">Remove</button>
           </div>
         </form>
       </form>
@@ -60,6 +62,8 @@
     <div class="alert alert-danger" *ngIf="totalHourError">
       Total hours for schedule must be at least 10 and at most 48 hours
     </div>
+
+    <!-- <app-alert></app-alert> -->
   </form>
 </div>
 

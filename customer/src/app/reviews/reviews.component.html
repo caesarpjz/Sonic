@@ -1,0 +1,29 @@
+<app-header></app-header>
+
+<div class="container mt-5 mb-5 pt-5" *ngIf="restaurant">
+  <div class="row">
+    <div class="jumbotron" style="margin: auto;">
+      <div class="container text-center">
+        <h1>{{restaurant.name}} reviews</h1>
+        <p class="lead text-muted">
+          {{restaurant.info}}
+        </p>
+        <p>
+          <a class="btn btn-primary my-2" (click)="back()">Back to restaurant</a>
+        </p>
+      </div>
+
+      <div class="reviews-container">
+        <div class="card mb-3" *ngFor="let review of reviews">
+          <div class="card-body">
+            <h5 class="card-title">{{review.name}}</h5>
+            <h6 class="card-subtitle mb-2 text-muted">C{{review.username}}</h6>
+            <p class="card-text">{{review.review_desc}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-footer></app-footer>

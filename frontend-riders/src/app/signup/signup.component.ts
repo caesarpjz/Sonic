@@ -1,3 +1,5 @@
+import { AlertService } from './../services/alert.service';
+import { AuthService } from './../services/auth.service';
 import { Component, OnInit } from '@angular/core';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 
@@ -10,7 +12,9 @@ export class SignupComponent implements OnInit {
   signupForm: FormGroup;
 
   constructor(
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private authService: AuthService,
+    private alertService: AlertService
   ) {
     this.initSignupForm();
   }
@@ -21,13 +25,13 @@ export class SignupComponent implements OnInit {
   initSignupForm() {
     this.signupForm = this.formBuilder.group({
       name: ['', Validators.required],
-      email: [
+      username: [
         '',
         Validators.compose([
           Validators.required,
-          Validators.pattern(/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/)
         ])
       ],
+      fullTimer: [false, Validators.required],
       password: ['', Validators.required],
       confirmPassword: ['', Validators.required]
     }, { validator: this.checkPasswords });
@@ -42,6 +46,13 @@ export class SignupComponent implements OnInit {
 
   signUp() {
     console.log(this.signupForm);
+    this.authService.createRider(this.signupForm).subscribe((res) => {
+      this.alertService.success('User has been created successfully');
+
+      // route to login page?
+    }, (err) => {
+      this.alertService.error('User with the same username has already been created')
+    });
   }
 
 }

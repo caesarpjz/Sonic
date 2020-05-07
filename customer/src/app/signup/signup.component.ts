@@ -47,11 +47,11 @@ export class SignupComponent implements OnInit {
   signUp() {
     console.log(this.signupForm);
     this.authService.createCustomer(this.signupForm).subscribe((res) => {
-      this.alertService.success('User has been created successfully');
+      this.alertService.success('You have signed up successfully as a rider!');
 
       // route to login page?
     }, (err) => {
-      this.alertService.error('User with the same username has already been created')
+      this.alertService.error('Username is already taken, please try again')
     });
   }
 

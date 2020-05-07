@@ -1,0 +1,50 @@
+<app-app-header></app-app-header>
+
+<div class="container mt-5 mb-5 pt-5">
+  <div class="row">
+    <div class="jumbotron" style="margin: auto;">
+      <div class="container text-center">
+        <h1>Deliveries</h1>
+      </div>
+    </div>
+  </div>
+
+  <!-- todos: add tabs for menus? -->
+  <div class="delivery-container" *ngIf="assignedDeliveries && assignedDeliveries.length > 0">
+    <h3>Assigned deliveries</h3>
+    <div class="deliveries" *ngFor="let delivery of assignedDeliveries">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Delivery {{delivery.did}}</h5>
+          <h6 class="card-subtitle mb-2 text-muted">{{delivery.payment_method}}</h6>
+          <p class="card-text">
+            Restaurant location: <b>{{delivery.restaurant_location}}</b>
+            <br>
+            Delivery location: <b>{{delivery.location}}</b>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {{pastDeliveries}}
+
+  <div class="delivery-container mt-5" *ngIf="pastDeliveries && pastDeliveries.length > 0">
+    <h3>Past deliveries</h3>
+    <div class="deliveries" *ngFor="let delivery of pastDeliveries">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Delivery {{delivery.did}}</h5>
+          <h6 class="card-subtitle mb-2 text-muted">{{delivery.payment_method}}</h6>
+          <p class="card-text">
+            Restaurant location: <b>{{delivery.restaurant_location}}</b>
+            <br>
+            Delivery location: <b>{{delivery.location}}</b>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-app-footer></app-app-footer>

@@ -19,10 +19,16 @@ export class CheckoutComponent implements OnInit {
   subtotal: number;
   deliveryFee: number = 5;
   total: 0;
+  card = null;
+  validCard = true;
 
   availableLocations = [];
 
   customAddress = 'customAddress';
+
+  pointsOffset = 0;
+  totalPoints = 0;
+  newDeliveryFees = this.deliveryFee;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -48,6 +54,7 @@ export class CheckoutComponent implements OnInit {
       this.cartItems = cart;
     });
     this.getRecentLocations();
+    this.retrieveCreditCardInfo();
   }
 
   initCheckoutForm() {
@@ -83,13 +90,35 @@ export class CheckoutComponent implements OnInit {
     return this.checkoutForm.get('paymentOption').value;
   }
 
+  retrieveCreditCardInfo() {
+    this.customerService.getProfile().subscribe((res) => {
+      this.card = {
+        'name': res[0].cc_name,
+        'expiry': res[0].cc_expiry,
+        'number': res[0].cc_num
+      };
+
+      this.totalPoints = res[0].points;
+    }, (err) => {
+      console.error(err);
+    })
+  }
+
+  checkPointsOffsetValidity() {
+    if (this.pointsOffset >= this.deliveryFee) {
+      this.newDeliveryFees = 0;
+    } else {
+      this.newDeliveryFees = this.deliveryFee - this.pointsOffset;
+    }
+  }
+
   submit() {
     if (this.checkoutForm.value.paymentOption === 'CREDIT CARD') {
       // check if card is selected
       let valid = true;
-      let card = this.sharedService.getCard();
+      // this.card =
 
-      if (card === null) {
+      if (this.card === null) {
         // check if values are valid
         const date = `${this.checkoutForm.value.expiryMonth}/${this.checkoutForm.value.expiryYear}`;
 
@@ -97,23 +126,24 @@ export class CheckoutComponent implements OnInit {
             isNaN(this.checkoutForm.value.creditCardNumber) ||
             (Number(this.checkoutForm.value.expiryYear) === 2020 && Number(this.checkoutForm.value.expiryMonth) < 6)) {
           valid = false;
+          this.validCard = false;
         }
 
-        card = {
+        this.card = {
           'cc_name': this.checkoutForm.value.name,
           'expiryDate': date,
           'num': this.checkoutForm.value.creditCardNumber
         };
       } else {
-        card = {
-          'cc_name': card.name,
-          'expiryDate': card.expiry,
-          'num': card.number
+        this.card = {
+          'cc_name': this.card.name,
+          'expiryDate': this.card.expiry,
+          'num': this.card.number
         }
       }
 
       if (valid) {
-        this.customerService.addCard(card).subscribe((res) => {
+        this.customerService.addCard(this.card).subscribe((res) => {
           console.log(res);
 
           this.restaurantService.checkout(this.checkoutForm, this.cartItems).subscribe((res) => {

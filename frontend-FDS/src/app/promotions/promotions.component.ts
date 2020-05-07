@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgForm } from '@angular/forms';
+import * as moment from 'moment';
 
 import { PromotionsService } from '../services/promotions.service';
 
@@ -32,7 +33,11 @@ export class PromotionsComponent implements OnInit {
         console.log(this.promotions)
         var i = 0;
         for (i = 0; i < this.promotions.length; i++) {
-          // var subStringDate =
+          var subStringStartDate = moment(this.promotions[i].start_date).format('DD-MM-YYYY');
+          console.log(subStringStartDate);
+          this.promotions[i].start_date = subStringStartDate;
+          var subStringEndDate = moment(this.promotions[i].end_date).format('DD-MM-YYYY');
+          this.promotions[i].end_date = subStringEndDate;
         }
       }
     )

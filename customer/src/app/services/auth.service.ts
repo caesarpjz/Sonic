@@ -14,7 +14,6 @@ const httpOptions = {
 
 @Injectable()
 export class AuthService {
-  path = '/api';
   constructor(private httpClient: HttpClient) { }
 
   private handleError(error: HttpErrorResponse) {

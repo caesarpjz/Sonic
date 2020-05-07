@@ -333,7 +333,7 @@ CREATE OR REPLACE FUNCTION addFoodItem(
     category VARCHAR)
 RETURNS void AS $$
 begin
-    IF EXISTS(SELECT 1 FROM Food_Item_Categories FIC WHERE FIC.category = $6) THEN 
+    IF NOT EXISTS(SELECT 1 FROM Food_Item_Categories FIC WHERE FIC.category = $6) THEN 
         INSERT INTO Food_Item_Categories
         VALUES (category);
     END IF;

@@ -50,7 +50,7 @@ export class PromotionsService {
 
   viewPromotionSummary(pid: any): Observable<any> {
     console.log(pid);
-    return this.httpClient.get<any>(this.path + '/restaurant_staff/' + pid + '/promosummary'), { responseType: 'text' as 'json' }.pipe
+    return this.httpClient.get<any>(this.path + '/restaurant_staff/' + pid + '/promosummary', { responseType: 'text' as 'json' }).pipe
       (
         catchError(this.handleError)
       );

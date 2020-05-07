@@ -25,6 +25,7 @@ import { RadioButtonModule } from 'primeng/radiobutton';
 import { CreditcardComponent } from './creditcard/creditcard.component';
 import { DropdownModule } from 'primeng/dropdown';
 import { UpdateCcComponent } from './update-cc/update-cc.component';
+import { ReviewsComponent } from './reviews/reviews.component';
 
 
 @NgModule({
@@ -45,7 +46,8 @@ import { UpdateCcComponent } from './update-cc/update-cc.component';
     ProfileComponent,
     AlertComponent,
     CreditcardComponent,
-    UpdateCcComponent
+    UpdateCcComponent,
+    ReviewsComponent
   ],
   imports: [
     BrowserModule,
