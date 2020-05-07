@@ -1,3 +1,4 @@
+import { AlertService } from './../services/alert.service';
 import { FormGroup, FormBuilder, FormArray, AbstractControl, ValidatorFn, ValidationErrors } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
 
@@ -38,25 +39,13 @@ export class SubmitScheduleComponent implements OnInit {
   items: FormArray;
   times: FormArray;
 
-  constructor(private formBuilder: FormBuilder) {
+  constructor(private formBuilder: FormBuilder, private alertService: AlertService) {
   }
-
-  // [{"day":0,"hours":[2,3,4,7,12,15]},{"day":1,"hours":[]},{"day":2,"hours":[]},{"day":3,"hours":[]},{"day":4,"hours":[]},{"day":5,"hours":[]},{"day":6,"hours":[]}]
 
   ngOnInit() {
     this.scheduleForm = this.formBuilder.group({
       items: this.formBuilder.array([ this.createItem('monday') ])
-    })
-
-    // this.scheduleForm = this.formBuilder.group({
-    //   monday: this.formBuilder.array([this.createItem()]),
-    //   tuesday: this.formBuilder.array([this.createItem()]),
-    //   wednesday: this.formBuilder.array([this.createItem()]),
-    //   thursday: this.formBuilder.array([this.createItem()]),
-    //   friday: this.formBuilder.array([this.createItem()]),
-    //   saturday: this.formBuilder.array([this.createItem()]),
-    //   sunday: this.formBuilder.array([this.createItem()])
-    // })
+    });
   }
 
   // creates days containing an array of time slots
@@ -96,6 +85,15 @@ export class SubmitScheduleComponent implements OnInit {
     let test = this.items.controls[index] as FormGroup;
     this.times = test.controls.times as FormArray;
     this.times.push(this.createTimes());
+  }
+
+  removeTimeslot(i, j): void {
+    console.log(i, j);
+    this.items = this.scheduleForm.get('items') as FormArray;
+    // should add to the correct day via retrieving an index number
+    let test = this.items.controls[i] as FormGroup;
+    this.times = test.controls.times as FormArray;
+    this.times.removeAt(j);
   }
 
   validateEndTime: ValidatorFn = (AC: AbstractControl): ValidationErrors | null => {
@@ -160,11 +158,13 @@ export class SubmitScheduleComponent implements OnInit {
     console.log(this.scheduleForm);
 
     if (!totalHoursValid) {
+      // this.alertService.error('Total hours for schedule must be at least 10 and at most 48 hours');
       this.totalHourError = true;
     }
 
     if (!intervalCheck) {
       this.intervalError = true;
+      // this.alertService.error('Intervals between time slots must be at least one hour');
     }
 
     // is valid or not valid
