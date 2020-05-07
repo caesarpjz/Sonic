@@ -33,8 +33,10 @@ export class ReviewsComponent implements OnInit {
   retrieveReviews() {
     this.restaurantService.getReviews(this.restaurantId).subscribe((res) => {
       this.reviews = res;
-      console.log(res);
     });
   }
 
+  back() {
+    this.router.navigate([`/restaurants/${this.restaurantId}`])
+  }
 }

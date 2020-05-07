@@ -30,6 +30,10 @@ export class RestaurantComponent implements OnInit {
     this.getRestaurant();
   }
 
+  goToReviews() {
+    this.router.navigate([`/restaurants/${this.restaurantId}/reviews`]);
+  }
+
   getRestaurant() {
     this.restaurantService.getRestaurant(this.restaurantId).subscribe((res) => {
       this.restaurant = res[0];

@@ -9,9 +9,18 @@
           {{restaurant.info}}
         </p>
         <p>
-          <a href="#" class="btn btn-primary my-2">Back to restaurant</a>
-          <!-- <a href="#" class="btn btn-secondary my-2">Secondary action</a> -->
+          <a class="btn btn-primary my-2" (click)="back()">Back to restaurant</a>
         </p>
+      </div>
+
+      <div class="reviews-container">
+        <div class="card mb-3" *ngFor="let review of reviews">
+          <div class="card-body">
+            <h5 class="card-title">{{review.name}}</h5>
+            <h6 class="card-subtitle mb-2 text-muted">C{{review.username}}</h6>
+            <p class="card-text">{{review.review_desc}}</p>
+          </div>
+        </div>
       </div>
     </div>
   </div>
