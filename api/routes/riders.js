@@ -237,12 +237,77 @@ const getMonthlySummaryInfo = (request, response) => {
   })
 }
 
+
+/**
+ * get earliest shift
+ * get latest shift
+ * 
+ * 
+ */
+
+
 // /riders/:username/weeklysummary
 const getWeeklySummaryInfo = (request, response) => {
   const { username } = request.params
 
-  pool.query('')
+  pool.query('SELECT rid FROM riders WHERE username = $1', [username], (error, results) => {
+    if (error) {
+      response.status(400).send('Cannot get weekly summary')
+      throw error
+    } 
+    var rid = results.rows[0]
+    if (rid != null) {
+      rid = rid.rid
+      pool.query('SELECT * FROM getEarliestShift($1)', [rid], (error, results) => {
+        if (error) {
+          response.status(400).send('Unable to get weekly summary')
+          throw error
+        }
+        // console.log(results.rows)
+        var earliest = results.rows[0]
+        console.log(results.rows[0].getearliestshift.getDay())
+        if (earliest != null) {
+          earliest = earliest.getearliestshift
+          var earliestDayNum = earliest.getDay()
+          var howManyDaysLeft = 7 - earliestDayNum
+          var nextDate = earliest.setDate(earliest.getDate() + howManyDaysLeft)
+          var weekArray = []
+          weekArray.push((earliest, nextDate))
+          var k = 0
+          pool.query('SELECT * FROM getLatestShift($1)', [rid], (error, results) => {
+            if (error) {
+              response.status(400).send('Unable to get weekly summary')
+              throw error
+            }
+            var latest = results.rows[0]
+            if (latest != null) {
+              latest = latest.getlatestshift
+              var latestDay = latest.getDay()
+              var howManyDaysBefore = latest - latestDay
+              var lastWeekDate = latest.setDate(latest.getDate() - howManyDaysBefore)
+              var k = 0
+              var early = new Date()
+              while  (nextDate != lastWeekDate ) {
+                early = nextDate.setDate(nextDate.getDate() + 1)
+                nextDate = nextDate.setDate(nextDate.getDate + 7)
+                weekArray.push((early, nextDate))
+              }
+              lastWeekDate.setDate(lastWeekDate.getDate() + 1)
+              weekArray.push((lastWeekDate, latest))
+              response.status(200).json(weekArray)
+            }
+          })
+        } else {
+          response.status(400).send('Unable to get weekly summary')
+        }
+      })
+    } else {
+      response.status(400).send('Unable to get weekly summary')
+    }
+  })
+  
 }
+
 module.exports = {
   login,
   viewDeliveriesHistory,
@@ -252,5 +317,8 @@ module.exports = {
   timeDepartFromResturant,
   timeOrderDelivered,
   checkIfFullTime,
-  viewPastSchedule
+  viewPastSchedule,
+  submitSchedule,
+  getMonthlySummaryInfo,
+  getWeeklySummaryInfo
 }

@@ -224,8 +224,20 @@ app.get('/', (req, res) => {
     .get(ridersDb.viewPastSchedule)
 
     // Submit Schedule
+    app
+    .route('/riders/:username/schedule/submit')
+    .post(ridersDb.submitSchedule)
 
-    // Check Salary for range period
+    // Get Monthly SUmmary Info
+    app
+    .route('/riders/:username/monthlysummary')
+    .get(ridersDb.getMonthlySummaryInfo)
+
+    // Below not working yet. hold up
+    // Get weekly summary info
+    app
+    .route('/riders/:username/weeklysummary')
+    .get(ridersDb.getWeeklySummaryInfo)
 
 /***** FDS Managers *****/
 
