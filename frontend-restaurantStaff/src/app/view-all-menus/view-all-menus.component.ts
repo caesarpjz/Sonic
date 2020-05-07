@@ -89,6 +89,7 @@ export class ViewAllMenusComponent implements OnInit {
     let menuName: string = this.menuToView["name"];
     this.menuService.updateMenu(menuId, menuName, this.restId).subscribe(
       response => {
+        this.displayUpdate = false;
         this.menuService.getMenus(this.restId).subscribe(
           response => {
             console.log(response.length)
@@ -117,6 +118,15 @@ export class ViewAllMenusComponent implements OnInit {
     this.menuService.createMenu(this.restId, menuName).subscribe(
       response => {
         this.displayAdd = false;
+        this.menuService.getMenus(this.restId).subscribe(
+          response => {
+            console.log(response.length)
+            this.menus = response;
+          },
+          error => {
+            console.log('********** GetAllMenusComponent.ts: ' + error);
+          }
+        )
       }
     );
   }

@@ -28,21 +28,21 @@ export class PromotionsService {
 
   createPromotion(restId: any, newPromotion: any): Observable<any> {
     console.log(newPromotion.start_time)
-    return this.httpClient.post<any>(this.path + '/restaurant_staff/' + this.sessionService.getUsername() + '/restaurant/' + restId + '/create/promotions', newPromotion).pipe
+    return this.httpClient.post<any>(this.path + '/restaurant_staff/' + this.sessionService.getUsername() + '/restaurant/' + restId + '/create/promotions', newPromotion, { responseType: 'text' as 'json' }).pipe
       (
         catchError(this.handleError)
       );
   }
 
   updatePromotion(restId: any, pid: any, promotionToUpdate: any): Observable<any> {
-    return this.httpClient.post<any>(this.path + '/restaurant_staff/' + this.sessionService.getUsername() + '/restaurant/' + restId + '/promotions/' + pid, promotionToUpdate).pipe
+    return this.httpClient.post<any>(this.path + '/restaurant_staff/' + this.sessionService.getUsername() + '/restaurant/' + restId + '/promotions/' + pid, promotionToUpdate, { responseType: 'text' as 'json' }).pipe
       (
         catchError(this.handleError)
       );
   }
 
   deletePromotion(restId: any, pid: any): Observable<any> {
-    return this.httpClient.delete<any>(this.path + '/restaurant_staff/' + this.sessionService.getUsername() + '/restaurant/' + restId + '/promotions/delete/' + pid).pipe
+    return this.httpClient.delete<any>(this.path + '/restaurant_staff/' + this.sessionService.getUsername() + '/restaurant/' + restId + '/promotions/delete/' + pid, { responseType: 'text' as 'json' }).pipe
       (
         catchError(this.handleError)
       );
@@ -50,7 +50,7 @@ export class PromotionsService {
 
   viewPromotionSummary(pid: any): Observable<any> {
     console.log(pid);
-    return this.httpClient.get<any>(this.path + '/restaurant_staff/' + pid + '/promosummary').pipe
+    return this.httpClient.get<any>(this.path + '/restaurant_staff/' + pid + '/promosummary'), { responseType: 'text' as 'json' }.pipe
       (
         catchError(this.handleError)
       );

@@ -44,6 +44,7 @@ export class ViewAllRestaurantStaffComponent implements OnInit {
     // console.log(promotionToDelete);
     this.restaurantStaffService.deleteRestaurantStaff(this.restId, restaurantStaffToDelete.rsid).subscribe(
       response => {
+        this.displayDelete = false;
         this.restaurantStaffService.getRestaurantStaff(this.restId).subscribe(
           response => {
             this.restaurantStaffs = response;

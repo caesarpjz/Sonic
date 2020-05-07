@@ -102,7 +102,7 @@ begin
     SELECT CAST((start_date + interval '1 month') as DATE) INTO end_date;
 
     SELECT count(*)
-    FROM Users U join Customers C on U.id = C.id
+    FROM Users U join Customers C on U.username = C.username
     WHERE U.created_at >= start_date
     AND U.created_at < end_date
     INTO total_new_customers;

@@ -21,14 +21,19 @@ export class PromotionsComponent implements OnInit {
 
   constructor(private router: Router,
     private activatedRoute: ActivatedRoute,
-    private promotionsService: PromotionsService, ) { 
-      this.newPromotion = {};
-    }
+    private promotionsService: PromotionsService, ) {
+    this.newPromotion = {};
+  }
 
   ngOnInit() {
     this.promotionsService.getPromotions().subscribe(
       response => {
         this.promotions = response;
+        console.log(this.promotions)
+        var i = 0;
+        for (i = 0; i < this.promotions.length; i++) {
+          // var subStringDate =
+        }
       }
     )
   }
@@ -46,6 +51,7 @@ export class PromotionsComponent implements OnInit {
     console.log(promotionToDelete);
     this.promotionsService.deletePromotion(promotionToDelete.pid).subscribe(
       response => {
+        this.displayDelete = false;
         this.promotionsService.getPromotions().subscribe(
           response => {
             this.promotions = response;
@@ -60,6 +66,11 @@ export class PromotionsComponent implements OnInit {
     this.promotionsService.updatePromotion(this.promotionToUpdate.pid, this.promotionToUpdate).subscribe(
       response => {
         this.displayUpdate = false;
+        this.promotionsService.getPromotions().subscribe(
+          response => {
+            this.promotions = response;
+          }
+        )
       }
     )
   }

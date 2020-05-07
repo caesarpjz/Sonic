@@ -29,16 +29,25 @@
     <div class="jumbotron" style="background-image: url('../../assets/background.jpg')">
         <div class="container">
             <h1 class="display-5">Welcome to FDS Manager Admin Site, {{username}}!!</h1>
-            <p>Our application, Sonic, models a Food Delivery Service (FDS), fundamentally allowing customers 
-                to order foods from restaurants and riders to get the information to deliver the food back to 
-                the customers, with further details like promotions, points and riders’ shifts.In this admin site, 
-                you would be able to view the reports generated from our deliveries, get the list of restaurants 
-                listed under us, the list of riders engaged under us as well creating promotions to cater to our 
+            <p>Our application, Sonic, models a Food Delivery Service (FDS), fundamentally allowing customers
+                to order foods from restaurants and riders to get the information to deliver the food back to
+                the customers, with further details like promotions, points and riders’ shifts.In this admin site,
+                you would be able to view the reports generated from our deliveries, get the list of restaurants
+                listed under us, the list of riders engaged under us as well creating promotions to cater to our
                 customer's needs.
             </p>
             <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more &raquo;</a></p>
         </div>
     </div>
+    <p-button label="View New Customers and Order for the month" (onClick)="showDialog1()"></p-button>
+    <div style="clear:both;">&nbsp;</div>
+    <p-button label="View Customer Report" (onClick)="showDialog2()"></p-button>
+    <div style="clear:both;">&nbsp;</div>
+    <p-button label="View Hourly Location Report" (onClick)="showDialog3()"></p-button>
+    <div style="clear:both;">&nbsp;</div>
+    <p-button label="View Location Report" (onClick)="showDialog4()"></p-button>
+    <div style="clear:both;">&nbsp;</div>
+    <p-button label="View Rider Report" (onClick)="showDialog5()"></p-button>
     <div class="container">
         <!-- Example row of columns -->
         <div class="row">
