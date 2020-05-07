@@ -423,14 +423,14 @@ const getEachCustomerReport = (request, response) => {
 
 // /managers/hourlylocationreport
 const getHourlyLocationReport = (request, response) => {
-  const current_hour = new Date()
+  var abcd = require('moment')().format('YYYY-MM-DD HH:mm:ss');
 
-  pool.query('SELECT * FROM getHourlyLocationReport($1)', [current_hour], (error, results) => {
+  pool.query('SELECT * from getHourlyLocationReport($1)', [abcd], (error, results) => {
     if (error) {
       response.status(400).send('Unable to get hourly location overview reports')
       throw error
     }
-    
+
     response.status(200).json(results.rows)
   })
 }
