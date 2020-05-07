@@ -416,12 +416,12 @@ const getEachCustomerReport = (request, response) => {
       response.status(400).send('Unable to get customer overview reports')
       throw error
     }
-    console.log(results.rows)
+//     console.log(results.rows)
     for (var i = 0; i < results.rows.length; i++) {
       var temp = results.rows[i].total_cost
       results.rows[i].total_cost = +(temp.toFixed(2))
     }
-    console.log(results.rows)
+//     console.log(results.rows)
     response.status(200).json(results.rows)
   })
 }
