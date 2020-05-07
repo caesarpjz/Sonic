@@ -200,8 +200,13 @@ app.get('/', (req, res) => {
 
     // Button function for time arrive at restaurant
     app
-    .route('/delivery/:did/arriveRest/abc')
-    .get(ridersDb.timeArriveAtResturant)
+    .route('/delivery/:did/arriveRest')
+    .post(ridersDb.timeArriveAtResturant)
+
+    // Button function for time depart FOR restaurant
+    app
+    .route('/delivery/:did/departfor/restaurant')
+    .post(ridersDb.timeDepartForRest)
 
     // Button function for time depart from restaurant
     app
