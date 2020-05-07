@@ -18,6 +18,22 @@
             <br>
             Delivery location: <b>{{delivery.location}}</b>
           </p>
+
+          <button class="btn btn-sm btn-primary mr-2" (click)="markGoingRestaurant()">
+            Mark as going to restaurant
+          </button>
+
+          <button class="btn btn-sm btn-primary mr-2" (click)="markArriveRestaurant()">
+            Mark as arrived at restaurant
+          </button>
+
+          <button class="btn btn-sm btn-primary mr-2" (click)="markLeavingRestaurant()">
+            Mark as leaving restaurant
+          </button>
+
+          <button class="btn btn-sm btn-primary mr-2" (click)="markDelivered()">
+            Mark as delivered
+          </button>
         </div>
       </div>
     </div>
