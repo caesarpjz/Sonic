@@ -98,7 +98,7 @@ CREATE TABLE Menus (
     rest_id INTEGER,
     name VARCHAR(50),
     PRIMARY KEY (menu_id),
-    FOREIGN KEY (rest_id) REFERENCES Restaurants (rest_id),
+    FOREIGN KEY (rest_id) REFERENCES Restaurants (rest_id) ON DELETE CASCADE ON UPDATE CASCADE,
     unique(rest_id, name)
 );
 
@@ -109,7 +109,7 @@ CREATE TABLE Restaurant_Staff (
     username VARCHAR(50) NOT NULL,
     name VARCHAR(50),
     PRIMARY KEY (rsid),
-    FOREIGN KEY (rest_id) REFERENCES Restaurants (rest_id),
+    FOREIGN KEY (rest_id) REFERENCES Restaurants (rest_id) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (id) REFERENCES Users (id) ON DELETE CASCADE,
     unique (username)
 );
@@ -151,7 +151,7 @@ CREATE TABLE Restaurants_Has_Promotions (
     rest_id INTEGER NOT NULL,
     pid INTEGER NOT NULL,
     PRIMARY KEY (rest_id, pid),
-    FOREIGN KEY (rest_id) REFERENCES Restaurants (rest_id),
+    FOREIGN KEY (rest_id) REFERENCES Restaurants (rest_id) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (pid) REFERENCES Promotions (pid) ON DELETE CASCADE ON UPDATE CASCADE
 );
 

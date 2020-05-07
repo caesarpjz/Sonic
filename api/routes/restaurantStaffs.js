@@ -453,7 +453,7 @@ const updatePromotionByPid = (request, response) => {
 const deletePromotionByPid = (request, response) => {
   const { pid } = request.params
 
-  pool.query('DELETE FROM Restaurants_Has_Promotions WHERE pid = $1', [pid], (error, results) => {
+  pool.query('DELETE FROM Promotions WHERE pid = $1', [pid], (error, results) => {
     if (error) {
       response.status(400).send('Unable to delete promotion')
       throw error

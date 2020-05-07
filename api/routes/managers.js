@@ -61,7 +61,7 @@ const getReportsByMid = (request, response) => {
 // /managers/:username/createpromotions
 const createPromotionsByMid = (request, response) => {
   const { username } = request.params
-  const { start_time, end_time, discount_desc, discount_percentage } = request.body
+  const { start_time, end_time, discount_desc, discount_percentage, name } = request.body
 
   pool.query('SELECT mid from FDS_Managers WHERE username = $1', [username], (error, results) => {
     if (error) {
@@ -69,7 +69,7 @@ const createPromotionsByMid = (request, response) => {
       throw error
     }
     const mid = results.rows[0].mid
-    pool.query('SELECT addPromotionForManagers($1, $2, $3, $4, $5)', [start_time, end_time, discount_desc, discount_percentage, mid], (error, results) => {
+    pool.query('SELECT addPromotionForManagers($1, $2, $3, $4, $5, $6)', [start_time, end_time, discount_desc, discount_percentage, name, mid], (error, results) => {
       if (error) {
         response.status(400).send(`Unable to create Promotion with start_time: ${start_time}, end_time: ${end_time}, discount_percentage: ${discount_percentage} for ${username}. Please try again.`)
         throw error
@@ -90,7 +90,7 @@ const getPromotionsByMid = (request, response) => {
       throw error
     }
     const mid = results.rows[0].mid
-    pool.query('SELECT p.pid, p.start_date, p.end_date, p.type, p.discount_percentage FROM Managers_Has_Promotions mp, Promotions p WHERE mp.mid = $1 AND mp.pid = p.pid', [mid], (error, results) => {
+    pool.query('SELECT p.pid, p.name, p.start_date, p.end_date, p.type, p.discount_percentage FROM Managers_Has_Promotions mp, Promotions p WHERE mp.mid = $1 AND mp.pid = p.pid', [mid], (error, results) => {
       if (error) {
         response.status(400).send(`Unable to get promotions for ${username}`)
         throw error
@@ -144,7 +144,7 @@ const checkIfPromotionIsValidByName = (request, response) => {
 // /manager/promotions/:pid/update
 const updatePromotionByPid = (request, response) => {
   const { pid } = request.params
-  const { start_time, end_time, discount_desc } = request.body
+  const { start_time, end_time, discount_percentage, name } = request.body
 
   if (start_time !== undefined) {
     pool.query('UPDATE Promotions SET start_time = $1 WHERE pid = $2', [start_time, pid], (error, results) => {
@@ -168,13 +168,22 @@ const updatePromotionByPid = (request, response) => {
     })
   }
 
-  if (discount_desc !== undefined) {
-    pool.query('UPDATE Promotions SET discount_description = $1 WHERE pid = $2', [discount_desc, pid], (error, results) => {
+  if (discount_percentage !== undefined) {
+    pool.query('UPDATE Promotions SET discount_percentage = $1 WHERE pid = $2', [discount_percentage, pid], (error, results) => {
       if (error) {
-        response.status(400).send('Unable to update promotion discount description')
+        response.status(400).send('Unable to update promotion discount percentage')
         throw error
       }
       // response.status(201).send(`Promotion discount description updated to ${discount_desc}`)
+    })
+  }
+
+  if (name !== undefined) {
+    pool.query('UPDATE Promotions SET name = $1 WHERE pid = $2', [name, pid], (error, results) => {
+      if (error) {
+        response.status(400).send('Unable to update promotion name')
+        throw error
+      }
     })
   }
 
@@ -185,13 +194,13 @@ const updatePromotionByPid = (request, response) => {
 const deletePromotionByPid = (request, response) => {
   const { pid } = request.params
 
-  pool.query('DELETE FROM Restaurants_Has_Promotions WHERE pid = $1', [pid], (error, results) => {
+  pool.query('DELETE FROM Promotions WHERE pid = $1', [pid], (error, results) => {
     if (error) {
       response.status(400).send(`Unable to delete promotion ${pid}`)
       throw error
 
     }
-    response.status(201).send(`Promotion deleted`)
+    response.status(200).send(`Promotion deleted`)
   })
 }
 
@@ -391,7 +400,7 @@ const getRiderShifts = (request, response) => {
 
 // /managers/monthCustomerReport
 const getOverviewOfNewCustomersAndOrdersForCurrMonth = (request, response) => {
-  pool.query('SELECT getOverviewReport()', (error, results) => {
+  pool.query('SELECT * FROM getOverviewReport()', (error, results) => {
     if (error) {
       response.status(400).send('Unable to get overview reports')
       throw error
@@ -402,7 +411,7 @@ const getOverviewOfNewCustomersAndOrdersForCurrMonth = (request, response) => {
 
 // /managers/eachCustomerReport
 const getEachCustomerReport = (request, response) => {
-  pool.query('SELECT getAllMonthCustomerReport()', (error, results) => {
+  pool.query('SELECT * FROM getAllMonthCustomerReport()', (error, results) => {
     if (error) {
       response.status(400).send('Unable to get customer overview reports')
       throw error
@@ -416,7 +425,7 @@ const getEachCustomerReport = (request, response) => {
 const getHourlyLocationReport = (request, response) => {
   const current_hour = new Date()
 
-  pool.query('SELECT getHourlyLocationReport($1)', [current_hour], (error, results) => {
+  pool.query('SELECT * FROM getHourlyLocationReport($1)', [current_hour], (error, results) => {
     if (error) {
       response.status(400).send('Unable to get hourly location overview reports')
       throw error
@@ -428,7 +437,7 @@ const getHourlyLocationReport = (request, response) => {
 
 // /managers/locationreportoverview
 const getLocationReportOverview = (request, response) => {
-  pool.query('SELECT getLocationReportOverview()', (error, results) => {
+  pool.query('SELECT * FROM getLocationReportOverview()', (error, results) => {
     if (error) {
       response.status(400).send('Unable to get location overview reports')
       throw error
@@ -440,7 +449,7 @@ const getLocationReportOverview = (request, response) => {
 
 // /managers/riderreportoverview
 const getRiderReportOverview = (request, response) => {
-  pool.query('SELECT getRiderReport()', (error, results) => {
+  pool.query('SELECT * FROM getRiderReport()', (error, results) => {
     if (error) {
       response.status(400).send('Unable to get location overview reports')
       throw error

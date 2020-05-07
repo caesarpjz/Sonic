@@ -1,0 +1,163 @@
+<app-header></app-header>
+<section class="cid-qwUtKjk2oY mbr-fullscreen mbr-parallax-background" id="header2-0" data-rv-view="921"
+    data-jarallax-original-styles="null"
+    style="z-index: 0; position: relative; background-image: none; background-attachment: scroll; background-size: auto;">
+
+
+
+    <div class="mbr-overlay" style="opacity: 0.7; background-color: rgb(7, 59, 76);"></div>
+
+    <div class="container align-center">
+        <div class="row justify-content-md-center">
+            <div class="mbr-white col-md-10">
+                <img src="../../assets/manager.jpg" alt="" width="1000" height="400">
+                <h3 class="mbr-section-title mbr-bold pb-3 mbr-fonts-style display-1">{{username}}</h3>
+
+                <p-button label="View New Customers and Order for the month" (onClick)="showDialog1()"></p-button>
+                <div style="clear:both;">&nbsp;</div>
+                <p-button label="View Customer Report" (onClick)="showDialog2()"></p-button>
+                <div style="clear:both;">&nbsp;</div>
+                <p-button label="View Hourly Location Report" (onClick)="showDialog3()"></p-button>
+                <div style="clear:both;">&nbsp;</div>
+                <p-button label="View Location Report" (onClick)="showDialog4()"></p-button>
+                <div style="clear:both;">&nbsp;</div>
+                <p-button label="View Rider Report" (onClick)="showDialog5()"></p-button>
+
+                <!-- <p class="mbr-text pb-3 mbr-fonts-style display-5">
+                    Information: {{restaurant.info}}</p>
+                <p class="mbr-text pb-3 mbr-fonts-style display-5">
+                    Category: {{restaurant.category}}</p>
+                    <p class="mbr-text pb-3 mbr-fonts-style display-5">
+                        Min Spending: {{restaurant.min_spending}}</p>
+                <p-button label="Update Restaurant Information" (onClick)="showDialog()"></p-button> -->
+                <!-- <div class="mbr-section-btn"><a class="btn btn-md btn-secondary display-4" href="#">Create a
+                        promotion</a>
+                    &nbsp;
+                    <a class="btn btn-md btn-secondary display-4"
+                        href="https://mobirise.com/bootstrap-template/">Generate a summary</a></div> -->
+            </div>
+        </div>
+    </div>
+</section>
+
+<p-dialog *ngIf="display1" modal="true" [(visible)]="display1" [style]="{width: '50vw'}" [baseZIndex]="10000">
+    <form>
+        <p-table [value]="monthCustomerReports">
+            <ng-template pTemplate="caption">
+                Monthly Customer Report
+            </ng-template>
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>Total New Customers</th>
+                    <th>Total Orders</th>
+                    <th>Total Cost</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-monthCustomerReport>
+                <tr>
+                    <td>{{monthCustomerReport.total_new_customers}}</td>
+                    <td>{{monthCustomerReport.total_orders}}</td>
+                    <td>{{monthCustomerReport.total_cost}}</td>
+                    <!-- <td>
+                        <p-button label="View Restaurant" (onClick)="goToRestaurantStaff(restaurant)"></p-button>
+                    </td> -->
+                    <!-- <td><a routerLink="/view-all-food-items/{{menu.menu_id}}">View Food Items</a></td> -->
+                </tr>
+            </ng-template>
+        </p-table>
+    </form>
+</p-dialog>
+
+<p-dialog *ngIf="display2" modal="true" [(visible)]="display2" [style]="{width: '50vw'}" [baseZIndex]="10000">
+    <form>
+        <p-table [value]="eachCustomerReports">
+            <ng-template pTemplate="caption">
+                Each Customer Report
+            </ng-template>
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>Start of the month</th>
+                    <th>Customer ID</th>
+                    <th>Total Orders</th>
+                    <th>Total Cost</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-eachCustomerReport>
+                <tr>
+                    <td>{{eachCustomerReport.start_of_month}}</td>
+                    <td>{{eachCustomerReport.cid}}</td>
+                    <td>{{eachCustomerReport.total_orders}}</td>
+                    <td>{{eachCustomerReport.total_cost}}</td>
+                    <!-- <td>
+                        <p-button label="View Restaurant" (onClick)="goToRestaurantStaff(restaurant)"></p-button>
+                    </td> -->
+                    <!-- <td><a routerLink="/view-all-food-items/{{menu.menu_id}}">View Food Items</a></td> -->
+                </tr>
+            </ng-template>
+        </p-table>
+    </form>
+</p-dialog>
+
+<p-dialog *ngIf="display4" modal="true" [(visible)]="display4" [style]="{width: '50vw'}" [baseZIndex]="10000">
+    <form>
+        <p-table [value]="locationReportOverviews">
+            <ng-template pTemplate="caption">
+                Location Report Overviews
+            </ng-template>
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>Start of hour</th>
+                    <th>Location</th>
+                    <th>Total Number</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-locationReportOverview>
+                <tr>
+                    <td>{{locationReportOverview.start_of_hour}}</td>
+                    <td>{{locationReportOverview.location}}</td>
+                    <td>{{locationReportOverview.total_number}}</td>
+                    <!-- <td>
+                        <p-button label="View Restaurant" (onClick)="goToRestaurantStaff(restaurant)"></p-button>
+                    </td> -->
+                    <!-- <td><a routerLink="/view-all-food-items/{{menu.menu_id}}">View Food Items</a></td> -->
+                </tr>
+            </ng-template>
+        </p-table>
+    </form>
+</p-dialog>
+
+<p-dialog *ngIf="display5" modal="true" [(visible)]="display5" [style]="{width: '50vw'}" [baseZIndex]="10000">
+    <form>
+        <p-table [value]="riderReportOverviews">
+            <ng-template pTemplate="caption">
+                Rider Report Overviews
+            </ng-template>
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>Rider ID</th>
+                    <th>Start of month</th>
+                    <th>Total Orders</th>
+                    <th>Total Salary</th>
+                    <th>Average Delivery Time(min)</th>
+                    <th>Ratings received</th>
+                    <th>Average ratings</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-riderReportOverview>
+                <tr>
+                    <td>{{riderReportOverview.rider_id}}</td>
+                    <td>{{riderReportOverview.start_of_month}}</td>
+                    <td>{{riderReportOverview.total_orders}}</td>
+                    <td>{{riderReportOverview.total_salary}}</td>
+                    <td>{{riderReportOverview.avg_delivery_time_in_min}}</td>
+                    <td>{{riderReportOverview.ratings_received}}</td>
+                    <td>{{riderReportOverview.avg_ratings}}</td>
+                    <!-- <td>
+                        <p-button label="View Restaurant" (onClick)="goToRestaurantStaff(restaurant)"></p-button>
+                    </td> -->
+                    <!-- <td><a routerLink="/view-all-food-items/{{menu.menu_id}}">View Food Items</a></td> -->
+                </tr>
+            </ng-template>
+        </p-table>
+    </form>
+</p-dialog>
