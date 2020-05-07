@@ -32,6 +32,12 @@ export class DeliveriesService {
     return throwError(error);
   }
 
+  // assign the deliveries
+  assignDeliveries(): Observable<any> {
+    const username = sessionStorage.getItem('username');
+    return this.httpClient.get<any>(`/api/riders/${username}/assign`);
+  }
+
   // retrieve assigned deliveries
   getAssignedDeliveries(): Observable<any> {
     const username = sessionStorage.getItem('username');

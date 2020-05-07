@@ -1,3 +1,4 @@
+import { DeliveriesService } from './../services/deliveries.service';
 import { Router } from '@angular/router';
 import { AlertService } from './../services/alert.service';
 import { AuthService } from './../services/auth.service';
@@ -15,6 +16,7 @@ export class LoginComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private authService: AuthService,
+    private deliveriesService: DeliveriesService,
     private alertService: AlertService,
     private router: Router
   ) {
@@ -36,6 +38,10 @@ export class LoginComponent implements OnInit {
       this.alertService.success('Login successful!');
       sessionStorage.setItem('loggedIn', 'true');
       sessionStorage.setItem('username', this.loginForm.value.username);
+
+      this.deliveriesService.assignDeliveries().subscribe((res) => {
+        console.log('x');
+      });
 
       this.router.navigate(['/']);
     }, ((err) => {
