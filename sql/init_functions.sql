@@ -11,37 +11,31 @@ $$ LANGUAGE SQL;
 
 CREATE OR REPLACE FUNCTION addFdsManager(username VARCHAR, password VARCHAR, name VARCHAR)
 RETURNS void AS $$
-declare 
-    userId integer;
 begin
-    select addUser(username, password, name, 'FDS_Manager') into userId;
+    PERFORM addUser(username, password, name, 'FDS_Manager');
 
     INSERT INTO FDS_Managers
-    VALUES (DEFAULT, userId, username, name);
+    VALUES (DEFAULT, username);
 end
 $$ LANGUAGE PLPGSQL;
 
 CREATE OR REPLACE FUNCTION addCustomer(username VARCHAR, password VARCHAR, name VARCHAR)
 RETURNS void AS $$
-declare 
-    userId integer;
 begin
-    select addUser(username, password, name, 'Customer') into userId;
+    PERFORM addUser(username, password, name, 'Customer');
 
     INSERT INTO Customers
-    VALUES (DEFAULT, userId, null, null, DEFAULT, username, name);
+    VALUES (DEFAULT, null, null, DEFAULT, username);
 end
 $$ LANGUAGE PLPGSQL;
 
 CREATE OR REPLACE FUNCTION addRider(username VARCHAR, password VARCHAR, name VARCHAR, is_full_time BOOLEAN, status RIDER_STATUSES DEFAULT 'NOT WORKING')
 RETURNS void AS $$
-declare 
-    userId integer;
 begin
-    select addUser(username, password, name, 'Rider') into userId;
+    PERFORM addUser(username, password, name, 'Rider');
 
     INSERT INTO Riders
-    VALUES (DEFAULT, userId, is_full_time, status, username, name);
+    VALUES (DEFAULT, is_full_time, status, username);
 end
 $$ LANGUAGE PLPGSQL;
 
@@ -69,13 +63,11 @@ $$ LANGUAGE SQL;
 
 CREATE OR REPLACE FUNCTION addRestaurantStaff(username VARCHAR, password VARCHAR, name VARCHAR, rest_id INTEGER)
 RETURNS void AS $$
-declare 
-    userId integer;
 begin
-    select addUser(username, password, name, 'Restaurant_Staff') into userId;
+    PERFORM addUser(username, password, name, 'Restaurant_Staff');
 
     INSERT INTO Restaurant_Staff
-    VALUES (DEFAULT, rest_id, userId, username, name);
+    VALUES (DEFAULT, rest_id, username);
 end
 $$ LANGUAGE PLPGSQL;
 
@@ -629,10 +621,23 @@ $$ LANGUAGE SQL;
 
 CREATE OR REPLACE FUNCTION timestamp_departForRest(did INTEGER)
 RETURNS void AS $$
-    UPDATE Deliveries
+declare
+    order_id INTEGER;
+begin
+    UPDATE Deliveries D
     SET time_depart_for_rest = NOW()
-    WHERE did = $1;
-$$ LANGUAGE SQL;
+    WHERE D.did = $1;
+
+    SELECT O.oid
+    FROM Deliveries D join Orders O on D.did = O.did
+    WHERE D.did = $1
+    INTO order_id;
+
+    UPDATE Orders
+    SET status = 'ORDER ACCEPTED'
+    WHERE oid = order_id;
+end
+$$ LANGUAGE PLPGSQL;
 
 CREATE OR REPLACE FUNCTION timestamp_arriveAtRest(did INTEGER)
 RETURNS void AS $$
@@ -652,6 +657,7 @@ CREATE OR REPLACE FUNCTION timestamp_orderDelivered(did INTEGER)
 RETURNS void AS $$
 declare 
     rider_id INTEGER;
+    order_id INTEGER;
 begin
     UPDATE Deliveries
     SET time_order_delivered = NOW()
@@ -661,6 +667,15 @@ begin
     UPDATE Riders
     SET status = 'AVAILABLE'
     WHERE rid = rider_id;
+
+    SELECT O.oid
+    FROM Deliveries D join Orders O on D.did = O.did
+    WHERE D.did = $1
+    INTO order_id;
+
+    UPDATE Orders
+    SET status = 'DELIVERED'
+    WHERE oid = order_id;
 end
 $$ LANGUAGE PLPGSQL;
 
@@ -702,16 +717,28 @@ CREATE OR REPLACE FUNCTION getTotalSalary(rid INTEGER, start_date DATE, end_date
 RETURNS FLOAT AS $$
 declare
     total_hours FLOAT;
+    base_salary_multiplier INTEGER;
     total_delivery_fee FLOAT;
 begin
     SELECT getTotalHours($1, $2, $3) INTO total_hours;
+
+    IF EXISTS(
+        SELECT 1
+        FROM Riders R
+        WHERE R.rid = $1
+        AND R.is_full_time = true
+    ) THEN 
+        base_salary_multiplier := 8;
+    ELSE
+        base_salary_multiplier := 12;
+    END IF;
 
     SELECT sum(D.fee)
     FROM Deliveries D
     WHERE d.rid = $1
     INTO total_delivery_fee;
 
-    RETURN total_hours * 8 + total_delivery_fee / 2;
+    RETURN total_hours * base_salary_multiplier + total_delivery_fee / 2;
 end    
 $$ LANGUAGE PLPGSQL;
 
