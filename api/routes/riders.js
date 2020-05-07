@@ -77,10 +77,12 @@ const assignOrders = (request, response) => {
           throw error
         }
         const ridArray = results.rows
-        
+        // console.log(didArray[0].did)
+        // console.log(ridArray)
         var m
-        for (m = 0; (m < ridArray.length || m < didArray.length); m++) {
-          pool.query('SELECT allocateRiders($1, $2)', [didArray[m].did, ridArray[m].rid], (error, results) => {
+        for (m = 0; (m < ridArray.length && m < didArray.length); m++) {
+          console.log('a')
+          pool.query('SELECT allocateRiders($1, $2)', [didArray[m].did, ridArray[m].getavailableriders], (error, results) => {
             if (error) {
               response.status(400).send(`Unable to assign orders`)
               throw error
