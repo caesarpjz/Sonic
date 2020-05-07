@@ -19,19 +19,19 @@
             Delivery location: <b>{{delivery.location}}</b>
           </p>
 
-          <button class="btn btn-sm btn-primary mr-2" (click)="markGoingRestaurant()">
+          <button class="btn btn-sm btn-primary mr-2" (click)="markGoingRestaurant(delivery.did)">
             Mark as going to restaurant
           </button>
 
-          <button class="btn btn-sm btn-primary mr-2" (click)="markArriveRestaurant()">
+          <button class="btn btn-sm btn-primary mr-2" (click)="markArriveRestaurant(delivery.did)">
             Mark as arrived at restaurant
           </button>
 
-          <button class="btn btn-sm btn-primary mr-2" (click)="markLeavingRestaurant()">
+          <button class="btn btn-sm btn-primary mr-2" (click)="markLeavingRestaurant(delivery.did)">
             Mark as leaving restaurant
           </button>
 
-          <button class="btn btn-sm btn-primary mr-2" (click)="markDelivered()">
+          <button class="btn btn-sm btn-primary mr-2" (click)="markDelivered(delivery.did)">
             Mark as delivered
           </button>
         </div>
