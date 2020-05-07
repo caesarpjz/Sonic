@@ -1,3 +1,4 @@
+import { AlertService } from './services/alert.service';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing/app-routing.module';
@@ -19,6 +20,7 @@ import { AppFooterComponent } from './shared/app-footer.component';
 import { SubmitScheduleComponent } from './submit-schedule/submit-schedule.component';
 import { SubmitScheduleMonthlyComponent } from './submit-schedule-monthly/submit-schedule-monthly.component';
 import { ViewScheduleComponent } from './view-schedule/view-schedule.component';
+import { AlertComponent } from './alert/alert.component';
 
 
 @NgModule({
@@ -32,7 +34,8 @@ import { ViewScheduleComponent } from './view-schedule/view-schedule.component';
     AppFooterComponent,
     SubmitScheduleComponent,
     SubmitScheduleMonthlyComponent,
-    ViewScheduleComponent
+    ViewScheduleComponent,
+    AlertComponent
   ],
   imports: [
     BrowserModule,
@@ -46,7 +49,7 @@ import { ViewScheduleComponent } from './view-schedule/view-schedule.component';
     FullCalendarModule,
     HttpClientModule
   ],
-  providers: [],
+  providers: [AlertService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

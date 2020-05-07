@@ -10,6 +10,7 @@ import { ViewScheduleComponent } from '../view-schedule/view-schedule.component'
 
 const routes: Routes = [
   { path: '', component: HomeComponent, pathMatch: 'full' },
+  { path: 'home', component: HomeComponent },
   { path: 'login', component: LoginComponent },
   { path: 'signup', component: SignupComponent },
   { path: 'submit-schedule', component: SubmitScheduleComponent },
