@@ -21,7 +21,7 @@ export class OrdersService {
 
   getOrders(restId: any): Observable<any> {
     console.log("test")
-    return this.httpClient.get<any>(this.path + '/restaurant_staff/' + this.sessionService.getUsername() + '/restaurant/' + restId + '/orders', { responseType: 'text' as 'json' }).pipe
+    return this.httpClient.get<any>(this.path + '/restaurant_staff/' + this.sessionService.getUsername() + '/restaurant/' + restId + '/orders').pipe
       (
         catchError(this.handleError)
       );
@@ -29,14 +29,14 @@ export class OrdersService {
 
   getSummaryOrders(): Observable<any> {
     console.log("test")
-    return this.httpClient.get<any>(this.path + '/restaurant_staff/' + this.sessionService.getUsername() + '/allsummary', { responseType: 'text' as 'json' }).pipe
+    return this.httpClient.get<any>(this.path + '/restaurant_staff/' + this.sessionService.getUsername() + '/allsummary').pipe
       (
         catchError(this.handleError)
       );
   }
 
   getTopFive(): Observable<any> {
-    return this.httpClient.get<any>(this.path + '/restaurant_staff/' + this.sessionService.getUsername() + '/currentmonthtopfive', { responseType: 'text' as 'json' }).pipe
+    return this.httpClient.get<any>(this.path + '/restaurant_staff/' + this.sessionService.getUsername() + '/currentmonthtopfive').pipe
       (
         catchError(this.handleError)
       );

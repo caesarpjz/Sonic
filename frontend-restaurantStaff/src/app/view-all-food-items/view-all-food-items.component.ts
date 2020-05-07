@@ -42,6 +42,7 @@ export class ViewAllFoodItemsComponent implements OnInit {
         this.restId = response.rest_id;
         this.foodItemsService.getFoodItems(this.restId, this.menuId).subscribe(
           response => {
+            console.log(response)
             this.foods = response;
           },
           error => {
