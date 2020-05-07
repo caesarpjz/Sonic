@@ -694,6 +694,24 @@ RETURNS VOID AS $$
     (DEFAULT, $1, $2, $3);
 $$ LANGUAGE SQL;
 
+CREATE OR REPLACE FUNCTION getAllWorkingRiders() 
+RETURNS TABLE(rid INTEGER) AS $$
+    SELECT rid
+    FROM Shifts
+    WHERE start_time < now()
+    AND end_time > now();
+$$ LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION getAllNonWorkingRiders() 
+RETURNS TABLE(rid INTEGER) AS $$
+    SELECT rid 
+    FROM Shifts
+    WHERE NOT EXISTS(
+        SELECT rid
+        FROM getAllWorkingRiders()
+    );
+$$ LANGUAGE SQL;
+
 -- FUNCTIONS FOR REPORTS
 CREATE OR REPLACE FUNCTION getTotalOrders(rid INTEGER, start_date DATE, end_date DATE)
 RETURNS INTEGER AS $$

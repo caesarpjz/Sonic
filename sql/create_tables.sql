@@ -107,7 +107,6 @@ CREATE TABLE Restaurant_Staff (
     name VARCHAR(50),
     PRIMARY KEY (rsid),
     FOREIGN KEY (rest_id) REFERENCES Restaurants (rest_id) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (id) REFERENCES Users (id) ON DELETE CASCADE,
     unique (username)
 );
 
