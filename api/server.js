@@ -171,6 +171,12 @@ app.get('/', (req, res) => {
     app
     .route('/reviews/:rest_id')
     .get(customersDb.getAllReviews)
+
+    // Use Pid to get who is valid for the promotions
+    app
+    .route('/customer/promotions/:name/use')
+    .get(customersDb.usePromotionsToGetValidCustomersByName)
+
 /***** Riders *****/
     // Riders Login
     app
