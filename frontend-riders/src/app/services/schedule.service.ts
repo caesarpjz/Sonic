@@ -36,4 +36,13 @@ export class ScheduleService {
     const username = sessionStorage.getItem('username');
     return this.httpClient.get<any>(`/api/riders/${username}/schedule`);
   }
+
+  submitSchedule(schedule): Observable<any> {
+    const username = sessionStorage.getItem('username');
+    return this.httpClient.post<any>(`/api/riders/${username}/schedule/submit`, schedule,
+      httpOptions).pipe(
+        retry(1),
+        catchError(this.handleError)
+    );
+  }
 }
