@@ -485,6 +485,7 @@ const getRestaurantOrders = (request, response) => {
       response.status(400).send('Unable to get orders')
       throw error
     }
+    
     response.status(200).json(results.rows)
   })
 }
