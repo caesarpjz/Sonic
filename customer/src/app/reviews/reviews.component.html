@@ -1,0 +1,20 @@
+<app-header></app-header>
+
+<div class="container mt-5 mb-5 pt-5" *ngIf="restaurant">
+  <div class="row">
+    <div class="jumbotron" style="margin: auto;">
+      <div class="container text-center">
+        <h1>{{restaurant.name}} reviews</h1>
+        <p class="lead text-muted">
+          {{restaurant.info}}
+        </p>
+        <p>
+          <a href="#" class="btn btn-primary my-2">Back to restaurant</a>
+          <!-- <a href="#" class="btn btn-secondary my-2">Secondary action</a> -->
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-footer></app-footer>

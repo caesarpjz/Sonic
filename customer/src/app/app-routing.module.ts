@@ -1,3 +1,4 @@
+import { ReviewsComponent } from './reviews/reviews.component';
 import { UpdateCcComponent } from './update-cc/update-cc.component';
 import { ProfileComponent } from './profile/profile.component';
 import { CheckoutComponent } from './checkout/checkout.component';
@@ -22,7 +23,8 @@ const routes: Routes = [
   { path: 'signup', component: SignupComponent },
   { path: 'checkout', component: CheckoutComponent },
   { path: 'profile', component: ProfileComponent },
-  { path: 'update-card', component: UpdateCcComponent }
+  { path: 'update-card', component: UpdateCcComponent },
+  { path: 'restaurants/:restaurantId/reviews', component: ReviewsComponent }
 ];
 
 @NgModule({

@@ -31,6 +31,11 @@ export class RestaurantsService {
     return throwError(error);
   }
 
+  // fetch reviews for a restaurant
+  getReviews(restId): Observable<any> {
+    return this.httpClient.get<any>(`/api/reviews/${restId}`);
+  }
+
   // get all restraurants
   getRestaurants(): Observable<any> {
     return this.httpClient.get<any>('/api/restaurant');
