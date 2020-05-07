@@ -306,6 +306,18 @@ const insertCCInfo = (request, response) => {
   const cc_name = request.body.cc_name
   const expiryDate = request.body.expiryDate
 
+  // var namechar = cc_name.split('')
+  // var count = 0
+  // for (var i = 0; i < namechar.length; i++) {
+  //   if (namechar[i] >= '0' && namechar[i] <= '9') {
+  //     count++
+  //   }
+  // }
+  // if (count != 16) {
+  //   response.status(400).send('Invalid cc name')
+  // }
+
+  
   pool.query('SELECT cid FROM Customers where username = $1', [username], (error, results) => {
     if (error) {
       response.status(400).send(`Unable to get cid`)
@@ -501,7 +513,27 @@ const offsetRewardPoints = (request, response) => {
   })
 }
 
+// /customer/promotions/:name/use
+const usePromotionsToGetValidCustomersByName = (request, response) => {
+  const { name } = request.params
 
+  pool.query('SELECT discount_description FROM Promotions WHERE name = $1', [name], (error, results) => {
+    if (error) {
+      response.status(400).send('Unable to use promotion')
+      throw error
+    }
+    const discount_description = results.rows[0]
+    if (discount_description != null) {
+      pool.query('$1', [discount_description], (error, results) => {
+        if (error) {
+          response.status(400).send('Unable to use promotions')
+          throw error
+        }
+        response.status(200).json(results.rows)
+      })
+    }
+  })
+}
 
 
 
@@ -530,5 +562,6 @@ module.exports = {
   filterRestaurantByCategory,
   filterRestaurantByLocation,
   offsetRewardPoints,
-  getAllReviews
+  getAllReviews,
+  usePromotionsToGetValidCustomersByName
 }
