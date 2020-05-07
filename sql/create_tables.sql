@@ -173,9 +173,11 @@ CREATE TABLE Orders (
     payment_method METHODS NOT NULL,
     restaurant_location VARCHAR(100) NOT NULL,
     location VARCHAR(100) NOT NULL,
+    pid INTEGER,
     PRIMARY KEY (oid),
     FOREIGN KEY (cid) REFERENCES Customers (cid),
-    FOREIGN KEY (did) REFERENCES Deliveries (did)
+    FOREIGN KEY (did) REFERENCES Deliveries (did),
+    FOREIGN KEY (pid) REFERENCES Promotions (pid)
 );
 
 CREATE TABLE Order_Contains_Food (

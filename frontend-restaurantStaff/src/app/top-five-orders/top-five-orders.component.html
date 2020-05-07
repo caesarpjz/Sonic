@@ -1,0 +1,25 @@
+<app-header></app-header>
+
+<p-table [value]="orders">
+    <ng-template pTemplate="caption">
+        Top Five Orders
+    </ng-template>
+    <ng-template pTemplate="header">
+        <tr>
+            <th>Food ID</th>
+            <th>Food Name</th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-order>
+        <tr>
+            <td>{{order.fid}}</td>
+            <td>{{order.name}}</td>
+            <!-- <td>
+        <p-button label="Update" (onClick)="showDialog1(promotion)"></p-button>
+        &nbsp;
+        <p-button label="Delete" (onClick)="deletePromotion(promotion)"></p-button>
+    </td> -->
+            <!-- <td><a routerLink="/view-all-food-items/{{menu.menu_id}}">View Food Items</a></td> -->
+        </tr>
+    </ng-template>
+</p-table>

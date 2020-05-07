@@ -272,13 +272,14 @@ $$ LANGUAGE PLPGSQL;
 -----------------------------
 
 CREATE OR REPLACE FUNCTION getRestOrders(rest_id INTEGER)
-RETURNS table(oid INTEGER, fid INTEGER, name VARCHAR, quantity INTEGER) AS $$
-    SELECT of.oid, f.fid, f.name, of.quantity, o.status
+RETURNS table(oid INTEGER, fid INTEGER, name VARCHAR, quantity INTEGER, status ORDER_STATUSES) AS $$
+    SELECT distinct of.oid, f.fid, f.name, of.quantity, o.status
     FROM Menus m, Food_Items f, Order_Contains_Food of, Orders o
     WHERE m.rest_id = $1 
     AND m.menu_id = f.menu_id
     AND f.fid = of.fid
-    AND o.status <> 'Delivered'
+    AND o.oid = of.oid
+    AND o.status <> 'DELIVERED'
 $$ LANGUAGE SQL;
 
 CREATE OR REPLACE FUNCTION updatePassword(username VARCHAR, newpassword VARCHAR)
@@ -340,7 +341,7 @@ CREATE OR REPLACE FUNCTION addFoodItem(
     category VARCHAR)
 RETURNS void AS $$
 begin
-    IF (category NOT IN Food_Item_Categories) THEN 
+    IF EXISTS(SELECT 1 FROM Food_Item_Categories FIC WHERE FIC.category = $6) THEN 
         INSERT INTO Food_Item_Categories
         VALUES (category);
     END IF;
@@ -493,8 +494,12 @@ begin
     WHERE Customers.cid = cust_id;
 
     UPDATE Food_Items
-    SET daily_limit = daily_limit - 1
+    SET daily_limit = daily_limit - $3
     WHERE Food_Items.fid = $2;
+
+    UPDATE Food_Items FI
+    SET quantity = FI.quantity - $3
+    WHERE FI.fid = $2;
 end
 $$ LANGUAGE PLPGSQL;
 
@@ -511,7 +516,7 @@ CREATE OR REPLACE FUNCTION addOrder(
     payment_method METHODS, 
     restaurant_location VARCHAR, 
     location VARCHAR, 
-    pid INTEGER)
+    pid INTEGER DEFAULT NULL)
 RETURNS INTEGER AS $$
 declare 
     did integer;
@@ -520,7 +525,7 @@ begin
     select addDelivery(fee) into did;
 
     INSERT INTO Orders
-    VALUES (DEFAULT, did, cid, 0, 'ORDERED', payment_method, restaurant_location, location)
+    VALUES (DEFAULT, did, cid, fee, 'ORDERED', payment_method, restaurant_location, location, pid)
     RETURNING oid into ret_oid;
 
     IF ($6 IS NOT NULL) THEN
@@ -566,10 +571,21 @@ $$ LANGUAGE SQL;
 
 CREATE OR REPLACE FUNCTION getTotalPayable(oid INTEGER) 
 RETURNS FLOAT AS $$
-    SELECT sum(OCF.quantity * FI.price)
-    FROM Orders O join Order_Contains_Food OCF on O.oid = OCF.oid
-    join Food_Items FI on OCF.fid = FI.fid
+    SELECT O.cost
+    FROM Orders O
     WHERE O.oid = $1;
+$$ LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION postReviewFor(cid INTEGER, fid INTEGER, review TEXT) 
+RETURNS void AS $$
+    INSERT INTO Reviews
+    VALUES (cid, fid, review);
+$$ LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION postRatingFor(cid INTEGER, did INTEGER, rating INTEGER) 
+RETURNS void AS $$
+    INSERT INTO Customer_Rates_Delivery
+    VALUES (cid, did, rating);
 $$ LANGUAGE SQL;
 
 -----------------------------

@@ -408,7 +408,7 @@ app.get('/', (req, res) => {
 
     // Create Promotions
     app
-    .route('/restaurant_staff/:username/restaurant/:rest_id/promotions')
+    .route('/restaurant_staff/:username/restaurant/:rest_id/create/promotions')
     .post(restaurantsDb.createPromotionsByRestId)
 
     // Get Promos
@@ -443,7 +443,7 @@ app.get('/', (req, res) => {
 
     // Get Order For a specified restaurant
     app
-    .route('restaurant_staff/:username/restaurant/:rest_id/orders')
+    .route('/restaurant_staff/:username/restaurant/:rest_id/orders')
     .get(restaurantsDb.getRestaurantOrders)
 
     // Get Order Summary for all months
