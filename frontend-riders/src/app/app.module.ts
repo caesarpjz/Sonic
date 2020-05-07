@@ -23,7 +23,7 @@ import { ViewScheduleComponent } from './view-schedule/view-schedule.component';
 import { AlertComponent } from './alert/alert.component';
 import { DeliveriesComponent } from './deliveries/deliveries.component';
 import { ProfileComponent } from './profile/profile.component';
-
+import { TabViewModule } from 'primeng/tabview';
 
 @NgModule({
   declarations: [
@@ -51,7 +51,8 @@ import { ProfileComponent } from './profile/profile.component';
     CommonModule,
     CheckboxModule,
     FullCalendarModule,
-    HttpClientModule
+    HttpClientModule,
+    TabViewModule
   ],
   providers: [AlertService],
   bootstrap: [AppComponent]

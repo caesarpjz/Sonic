@@ -1,3 +1,4 @@
+import { DeliveriesService } from './../services/deliveries.service';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
@@ -6,10 +7,26 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./deliveries.component.css']
 })
 export class DeliveriesComponent implements OnInit {
+  assignedDeliveries: any;
+  pastDeliveries: any;
 
-  constructor() { }
+  constructor(private deliveriesService: DeliveriesService) { }
 
   ngOnInit(): void {
+    this.retrieveAssignedDeliveries();
+    this.retrievePastDeliveries();
+  }
+
+  retrieveAssignedDeliveries() {
+    this.deliveriesService.getAssignedDeliveries().subscribe((res) => {
+      this.assignedDeliveries = res;
+    });
+  }
+
+  retrievePastDeliveries() {
+    this.deliveriesService.getAssignedDeliveries().subscribe((res) => {
+      this.pastDeliveries = res;
+    });
   }
 
 }
