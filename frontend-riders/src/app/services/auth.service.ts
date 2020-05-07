@@ -44,4 +44,19 @@ export class AuthService {
         catchError(this.handleError)
       );
   }
+
+  createRider(signupForm): Observable<any> {
+    let rider = {
+      'username': signupForm.value.username,
+      'password': signupForm.value.password,
+      'name': signupForm.value.name,
+      'fullTimer': signupForm.value.fullTimer
+    };
+
+    return this.httpClient.post<any>('/api/riders', rider,
+      httpOptions).pipe(
+        retry(1),
+        catchError(this.handleError)
+      );
+  }
 }
