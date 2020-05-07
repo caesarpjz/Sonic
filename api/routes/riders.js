@@ -97,13 +97,14 @@ const assignOrders = (request, response) => {
 // /riders/:username/deliveries/assigned
 const viewAssignedDeliveries = (request, response) => {
   const { username } = request.params
-
+  console.log(username)
 
   pool.query('SELECT rid FROM Riders WHERE username = $1', [username], (error, results) => {
     if (error) {
       response.status(400).send(`Unable to view orders`)
       throw error
     }
+    console.log(results.rows)
     const rid = results.rows[0].rid
     const status = 'ORDER ACCEPTED'
     pool.query('SELECT d.did, o.status, o.payment_method, o.restaurant_location, o.location FROM Deliveries d, Orders o WHERE o.status = $1 AND d.rid = $2 AND o.did = d.did', [status, rid], (error, results) => {
@@ -238,21 +239,13 @@ const getMonthlySummaryInfo = (request, response) => {
 }
 
 
-/**
- * get earliest shift
- * get latest shift
- * 
- * 
- */
-
-
 // /riders/:username/weeklysummary
 const getWeeklySummaryInfo = (request, response) => {
   const { username } = request.params
 
   pool.query('SELECT rid FROM riders WHERE username = $1', [username], (error, results) => {
     if (error) {
-      response.status(400).send('Cannot get weekly summary')
+      response.status(400).send('ACannot get weekly summary')
       throw error
     } 
     var rid = results.rows[0]
@@ -260,7 +253,7 @@ const getWeeklySummaryInfo = (request, response) => {
       rid = rid.rid
       pool.query('SELECT * FROM getEarliestShift($1)', [rid], (error, results) => {
         if (error) {
-          response.status(400).send('Unable to get weekly summary')
+          response.status(400).send('BUnable to get weekly summary')
           throw error
         }
         // console.log(results.rows)
@@ -270,13 +263,18 @@ const getWeeklySummaryInfo = (request, response) => {
           earliest = earliest.getearliestshift
           var earliestDayNum = earliest.getDay()
           var howManyDaysLeft = 7 - earliestDayNum
+          var earliestFirst = earliest
           var nextDate = earliest.setDate(earliest.getDate() + howManyDaysLeft)
+          // var date = new Date(this.valueOf());
+          // date.setDate(date.getDate() + days);
+          // return date;
+          // var nextDate = earliest.addD
           var weekArray = []
-          weekArray.push((earliest, nextDate))
+          weekArray.push([earliestFirst, nextDate])
           var k = 0
           pool.query('SELECT * FROM getLatestShift($1)', [rid], (error, results) => {
             if (error) {
-              response.status(400).send('Unable to get weekly summary')
+              response.status(400).send('CUnable to get weekly summary')
               throw error
             }
             var latest = results.rows[0]
@@ -284,25 +282,42 @@ const getWeeklySummaryInfo = (request, response) => {
               latest = latest.getlatestshift
               var latestDay = latest.getDay()
               var howManyDaysBefore = latest - latestDay
+              var latestHolder = latest
               var lastWeekDate = latest.setDate(latest.getDate() - howManyDaysBefore)
               var k = 0
               var early = new Date()
+              console.log(nextDate)
               while  (nextDate != lastWeekDate ) {
+                var nextHolder = nextDate
                 early = nextDate.setDate(nextDate.getDate() + 1)
-                nextDate = nextDate.setDate(nextDate.getDate + 7)
-                weekArray.push((early, nextDate))
+                console.log(nextDate)
+                nextDate = nextHolder.setDate(nextHolder.getDate() + 7)
+                console.log(nextDate)
+                weekArray.push([early, nextDate])
               }
               lastWeekDate.setDate(lastWeekDate.getDate() + 1)
-              weekArray.push((lastWeekDate, latest))
+              weekArray.push([lastWeekDate, latestHolder])
               response.status(200).json(weekArray)
+              var lengthArray = weekArray.length
+              var resultsArray = []
+              for (var j = 0; j < lengthArray; j++) {
+                pool.query('SELECT * FROM getridersummary($1, $2, $3)', [rid, weekArray[j][0], weekArray[j][1]], (error, results) => {
+                  if (error) {
+                    response.status(400).send('DUnable to get weekly summary')
+                    throw error
+                  }
+                  resultsArray.push(results.rows)
+                })
+              }
+              response.status(200).json(resultsArray)
             }
           })
         } else {
-          response.status(400).send('Unable to get weekly summary')
+          response.status(400).send('EUnable to get weekly summary')
         }
       })
     } else {
-      response.status(400).send('Unable to get weekly summary')
+      response.status(400).send('FUnable to get weekly summary')
     }
   })
   
