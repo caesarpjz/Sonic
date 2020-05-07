@@ -46,7 +46,7 @@ export class LoginComponent implements OnInit {
 
       this.router.navigate(['/']);
     }, (err) => {
-      this.alertService.error('Invalid login credentials, please try again')
+      this.alertService.error('Invalid login credentials, please try again');
     });
   }
 
