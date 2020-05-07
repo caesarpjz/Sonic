@@ -1,3 +1,4 @@
+import { ScheduleService } from './../services/schedule.service';
 import { AlertService } from './../services/alert.service';
 import { FormGroup, FormBuilder, FormArray, AbstractControl, ValidatorFn, ValidationErrors } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
@@ -39,7 +40,9 @@ export class SubmitScheduleComponent implements OnInit {
   items: FormArray;
   times: FormArray;
 
-  constructor(private formBuilder: FormBuilder, private alertService: AlertService) {
+  constructor(private formBuilder: FormBuilder,
+    private alertService: AlertService,
+    private scheduleService: ScheduleService) {
   }
 
   ngOnInit() {
@@ -168,6 +171,21 @@ export class SubmitScheduleComponent implements OnInit {
     }
 
     // is valid or not valid
-    return totalHoursValid  && intervalCheck ? true : false;
+    // return totalHoursValid  && intervalCheck ? true : false;
+
+    if (totalHoursValid && intervalCheck) {
+      //transform data
+
+      let schedule = {
+        'shiftArray': []
+      };
+
+      this.scheduleForm.value.items.map((day) => {
+        // transform day.day into
+      })
+      // this.scheduleService.submitSchedule(schedule).subscribe((res) => {
+
+      // });
+    }
   }
 }
