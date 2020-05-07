@@ -125,16 +125,22 @@
       </p>
 
       <p>
-        Subtotal: ${{subtotal}}
-        <span></span>
+        Subtotal: $<b>{{subtotal}}</b>
       </p>
 
       <p>
-        Delivery fees: ${{deliveryFee}}
+        Delivery fees: $<b>{{deliveryFee}}</b>
       </p>
 
       <p>
-        Total: ${{subtotal + deliveryFee}}
+        Points offset from delivery fee (max {{totalPoints}}):
+      </p>
+      <input type="number" id="points" placeholder="0" [(ngModel)]="pointsOffset" max=10
+        (ngModelChange)="checkPointsOffsetValidity()">
+      <span class="validity"></span>
+
+      <p class="mt-2" *ngIf="pointsOffset >= 0">
+        Total: $<b>{{subtotal + newDeliveryFees}}</b>
       </p>
     </div>
   </div>

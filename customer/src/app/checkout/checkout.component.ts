@@ -26,6 +26,10 @@ export class CheckoutComponent implements OnInit {
 
   customAddress = 'customAddress';
 
+  pointsOffset = 0;
+  totalPoints = 0;
+  newDeliveryFees = this.deliveryFee;
+
   constructor(
     private formBuilder: FormBuilder,
     private cartService: CartService,
@@ -93,9 +97,19 @@ export class CheckoutComponent implements OnInit {
         'expiry': res[0].cc_expiry,
         'number': res[0].cc_num
       };
+
+      this.totalPoints = res[0].points;
     }, (err) => {
       console.error(err);
     })
+  }
+
+  checkPointsOffsetValidity() {
+    if (this.pointsOffset >= this.deliveryFee) {
+      this.newDeliveryFees = 0;
+    } else {
+      this.newDeliveryFees = this.deliveryFee - this.pointsOffset;
+    }
   }
 
   submit() {
