@@ -24,6 +24,7 @@ import { AlertComponent } from './alert/alert.component';
 import { DeliveriesComponent } from './deliveries/deliveries.component';
 import { ProfileComponent } from './profile/profile.component';
 import { TabViewModule } from 'primeng/tabview';
+import { SummaryComponent } from './summary/summary.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import { TabViewModule } from 'primeng/tabview';
     ViewScheduleComponent,
     AlertComponent,
     DeliveriesComponent,
-    ProfileComponent
+    ProfileComponent,
+    SummaryComponent
   ],
   imports: [
     BrowserModule,
