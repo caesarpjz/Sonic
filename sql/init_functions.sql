@@ -702,16 +702,28 @@ CREATE OR REPLACE FUNCTION getTotalSalary(rid INTEGER, start_date DATE, end_date
 RETURNS FLOAT AS $$
 declare
     total_hours FLOAT;
+    base_salary_multiplier INTEGER;
     total_delivery_fee FLOAT;
 begin
     SELECT getTotalHours($1, $2, $3) INTO total_hours;
+
+    IF EXISTS(
+        SELECT 1
+        FROM Riders R
+        WHERE R.rid = $1
+        AND R.is_full_time = true
+    ) THEN 
+        base_salary_multiplier := 8;
+    ELSE
+        base_salary_multiplier := 12;
+    END IF;
 
     SELECT sum(D.fee)
     FROM Deliveries D
     WHERE d.rid = $1
     INTO total_delivery_fee;
 
-    RETURN total_hours * 8 + total_delivery_fee / 2;
+    RETURN total_hours * base_salary_multiplier + total_delivery_fee / 2;
 end    
 $$ LANGUAGE PLPGSQL;
 
