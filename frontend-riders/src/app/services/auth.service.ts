@@ -45,6 +45,11 @@ export class AuthService {
       );
   }
 
+  logout() {
+    sessionStorage.removeItem('loggedIn');
+    sessionStorage.removeItem('username');
+  }
+
   createRider(signupForm): Observable<any> {
     let rider = {
       'username': signupForm.value.username,
@@ -58,5 +63,10 @@ export class AuthService {
         retry(1),
         catchError(this.handleError)
       );
+  }
+
+  isFullTime(): Observable<any> {
+    const username = sessionStorage.getItem('username');
+    return this.httpClient.get<any>(`/api/riders/${username}/check`);
   }
 }

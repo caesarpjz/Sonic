@@ -21,6 +21,8 @@ import { SubmitScheduleComponent } from './submit-schedule/submit-schedule.compo
 import { SubmitScheduleMonthlyComponent } from './submit-schedule-monthly/submit-schedule-monthly.component';
 import { ViewScheduleComponent } from './view-schedule/view-schedule.component';
 import { AlertComponent } from './alert/alert.component';
+import { DeliveriesComponent } from './deliveries/deliveries.component';
+import { ProfileComponent } from './profile/profile.component';
 
 
 @NgModule({
@@ -35,7 +37,9 @@ import { AlertComponent } from './alert/alert.component';
     SubmitScheduleComponent,
     SubmitScheduleMonthlyComponent,
     ViewScheduleComponent,
-    AlertComponent
+    AlertComponent,
+    DeliveriesComponent,
+    ProfileComponent
   ],
   imports: [
     BrowserModule,
