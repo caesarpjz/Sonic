@@ -43,7 +43,12 @@ export class MainPageComponent implements OnInit {
     }
     this.restaurantService.updateInfo(this.restaurant.rest_id, restaurantToUpdate).subscribe(
       response => {
-
+        this.displayUpdate = false;
+        this.restaurantService.getRestaurant().subscribe(
+          response => {
+            this.restaurant = response;
+          }
+        )
       },
     );
   }

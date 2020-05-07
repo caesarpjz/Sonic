@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgForm } from '@angular/forms';
+import * as moment from 'moment';
 
 import { PromotionsService } from '../services/promotions.service';
 
@@ -21,14 +22,23 @@ export class PromotionsComponent implements OnInit {
 
   constructor(private router: Router,
     private activatedRoute: ActivatedRoute,
-    private promotionsService: PromotionsService, ) { 
-      this.newPromotion = {};
-    }
+    private promotionsService: PromotionsService, ) {
+    this.newPromotion = {};
+  }
 
   ngOnInit() {
     this.promotionsService.getPromotions().subscribe(
       response => {
         this.promotions = response;
+        console.log(this.promotions)
+        var i = 0;
+        for (i = 0; i < this.promotions.length; i++) {
+          var subStringStartDate = moment(this.promotions[i].start_date).format('DD-MM-YYYY');
+          console.log(subStringStartDate);
+          this.promotions[i].start_date = subStringStartDate;
+          var subStringEndDate = moment(this.promotions[i].end_date).format('DD-MM-YYYY');
+          this.promotions[i].end_date = subStringEndDate;
+        }
       }
     )
   }
@@ -46,6 +56,7 @@ export class PromotionsComponent implements OnInit {
     console.log(promotionToDelete);
     this.promotionsService.deletePromotion(promotionToDelete.pid).subscribe(
       response => {
+        this.displayDelete = false;
         this.promotionsService.getPromotions().subscribe(
           response => {
             this.promotions = response;
@@ -60,6 +71,11 @@ export class PromotionsComponent implements OnInit {
     this.promotionsService.updatePromotion(this.promotionToUpdate.pid, this.promotionToUpdate).subscribe(
       response => {
         this.displayUpdate = false;
+        this.promotionsService.getPromotions().subscribe(
+          response => {
+            this.promotions = response;
+          }
+        )
       }
     )
   }

@@ -42,6 +42,7 @@ export class ViewAllFoodItemsComponent implements OnInit {
         this.restId = response.rest_id;
         this.foodItemsService.getFoodItems(this.restId, this.menuId).subscribe(
           response => {
+            console.log(response)
             this.foods = response;
           },
           error => {
@@ -68,10 +69,10 @@ export class ViewAllFoodItemsComponent implements OnInit {
     console.log(this.foodToView);
 
     let foodToUpdate: any = {
-      "quantity" : this.foodToView.quantity,
-      "daily_limit" : this.foodToView.daily_limit,
-      "name" : this.foodToView.name,
-      "price" : this.foodToView.price,
+      "quantity": this.foodToView.quantity,
+      "daily_limit": this.foodToView.daily_limit,
+      "name": this.foodToView.name,
+      "price": this.foodToView.price,
     }
 
     console.log(foodToUpdate);
@@ -79,8 +80,15 @@ export class ViewAllFoodItemsComponent implements OnInit {
 
     this.foodItemsService.updateFood(this.restId, this.menuId, fid, foodToUpdate).subscribe(
       response => {
-        console.log(response);
         this.displayUpdate = false;
+        this.foodItemsService.getFoodItems(this.restId, this.menuId).subscribe(
+          response => {
+            this.foods = response;
+          },
+          error => {
+            console.log('********** GetRestaurantComponent.ts: ' + error);
+          }
+        )
       },
       error => {
         console.log('********** GetRestaurantComponent.ts: ' + error);
@@ -91,6 +99,14 @@ export class ViewAllFoodItemsComponent implements OnInit {
   deleteFood(foodToDelete: any) {
     this.foodItemsService.deleteFood(this.restId, this.menuId, foodToDelete.fid).subscribe(
       response => {
+        this.foodItemsService.getFoodItems(this.restId, this.menuId).subscribe(
+          response => {
+            this.foods = response;
+          },
+          error => {
+            console.log('********** GetRestaurantComponent.ts: ' + error);
+          }
+        )
       },
       error => {
         console.log('********** GetRestaurantComponent.ts: ' + error);
@@ -108,7 +124,7 @@ export class ViewAllFoodItemsComponent implements OnInit {
   }
 
   addFood(addFoodForm: NgForm) {
-    
+
     let foodToCreate: any = {
       "quantity": this.newFood.quantity,
       "daily_limit": this.newFood.daily_limit,
@@ -119,6 +135,14 @@ export class ViewAllFoodItemsComponent implements OnInit {
     this.foodItemsService.createFood(this.restId, this.menuId, foodToCreate).subscribe(
       response => {
         this.displayAdd = false;
+        this.foodItemsService.getFoodItems(this.restId, this.menuId).subscribe(
+          response => {
+            this.foods = response;
+          },
+          error => {
+            console.log('********** GetRestaurantComponent.ts: ' + error);
+          }
+        )
       }
     )
   }

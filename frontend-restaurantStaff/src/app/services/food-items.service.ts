@@ -28,7 +28,7 @@ export class FoodItemsService {
   }
 
   updateFood(restId: any, menuId: any, foodId: any, foodToUpdate: any): Observable<any> {
-    return this.httpClient.post<any>(this.path + '/restaurant_staff/' + this.sessionService.getUsername() + '/restaurant/' + restId + '/menus/' + menuId + '/' + foodId, foodToUpdate).pipe
+    return this.httpClient.post<any>(this.path + '/restaurant_staff/' + this.sessionService.getUsername() + '/restaurant/' + restId + '/menus/' + menuId + '/' + foodId, foodToUpdate, { responseType: 'text' as 'json' }).pipe
       (
 
         catchError(this.handleError)
@@ -36,14 +36,14 @@ export class FoodItemsService {
   }
 
   createFood(restId: any, menuId: any, foodToCreate: any): Observable<any> {
-    return this.httpClient.post<any>(this.path + '/restaurant_staff/' + this.sessionService.getUsername() + '/restaurant/ ' + restId + '/menus/' + menuId + '/addfood', foodToCreate).pipe
+    return this.httpClient.post<any>(this.path + '/restaurant_staff/' + this.sessionService.getUsername() + '/restaurant/ ' + restId + '/menus/' + menuId + '/addfood', foodToCreate, { responseType: 'text' as 'json' }).pipe
       (
         catchError(this.handleError)
       );
   }
 
   deleteFood(restId: any, menuId: any, foodId: any): Observable<any> {
-    return this.httpClient.delete<any>(this.path + '/restaurant_staff/restaurant/' + restId + '/' + menuId + '/food/' + foodId + '/deletefood').pipe
+    return this.httpClient.delete<any>(this.path + '/restaurant_staff/restaurant/' + restId + '/' + menuId + '/food/' + foodId + '/deletefood', { responseType: 'text' as 'json' }).pipe
       (
         catchError(this.handleError)
       );

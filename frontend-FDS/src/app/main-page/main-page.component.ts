@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 import { SessionService } from '../services/session.service';
 import { ReportService } from '../services/report.service';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-main-page',
@@ -51,6 +52,35 @@ export class MainPageComponent implements OnInit {
       response => {
         console.log(response);
         this.eachCustomerReports = response;
+        var i = 0;
+        for (i = 0; i < response.length; i++) {
+          var monthNum = this.eachCustomerReports[i].start_of_month.substring(5, 7);
+          if (monthNum == "01") {
+            this.eachCustomerReports[i].start_of_month = "January";
+          } else if (monthNum == "02") {
+            this.eachCustomerReports[i].start_of_month = "February";
+          } else if (monthNum == "03") {
+            this.eachCustomerReports[i].start_of_month = "March";
+          } else if (monthNum == "04") {
+            this.eachCustomerReports[i].start_of_month = "April";
+          } else if (monthNum == "05") {
+            this.eachCustomerReports[i].start_of_month = "May";
+          } else if (monthNum == "06") {
+            this.eachCustomerReports[i].start_of_month = "June";
+          } else if (monthNum == "07") {
+            this.eachCustomerReports[i].start_of_month = "July";
+          } else if (monthNum == "08") {
+            this.eachCustomerReports[i].start_of_month = "August";
+          } else if (monthNum == "09") {
+            this.eachCustomerReports[i].start_of_month = "September";
+          } else if (monthNum == "10") {
+            this.eachCustomerReports[i].start_of_month = "October";
+          } else if (monthNum == "11") {
+            this.eachCustomerReports[i].start_of_month = "November";
+          } else if (monthNum == "12") {
+            this.eachCustomerReports[i].start_of_month = "December";
+          }
+        }
       }
     )
   }
@@ -71,6 +101,11 @@ export class MainPageComponent implements OnInit {
     this.reportService.getLocationReportOverview().subscribe(
       response => {
         this.locationReportOverviews = response;
+        var i = 0;
+        for (i=0; i < response.length; i++) {
+          var time = moment(this.locationReportOverviews[i].start_of_hour).format('DD-MM-YYYY HH:mm');
+          this.locationReportOverviews[i].start_of_hour = time;
+        }
       }
     )
   }
@@ -81,6 +116,35 @@ export class MainPageComponent implements OnInit {
     this.reportService.getRiderReportOverview().subscribe(
       response => {
         this.riderReportOverviews = response;
+        var i = 0;
+        for (i = 0; i < response.length; i++) {
+          var monthNum = this.riderReportOverviews[i].start_of_month.substring(5, 7);
+          if (monthNum == "01") {
+            this.riderReportOverviews[i].start_of_month = "January";
+          } else if (monthNum == "02") {
+            this.riderReportOverviews[i].start_of_month = "February";
+          } else if (monthNum == "03") {
+            this.riderReportOverviews[i].start_of_month = "March";
+          } else if (monthNum == "04") {
+            this.riderReportOverviews[i].start_of_month = "April";
+          } else if (monthNum == "05") {
+            this.riderReportOverviews[i].start_of_month = "May";
+          } else if (monthNum == "06") {
+            this.riderReportOverviews[i].start_of_month = "June";
+          } else if (monthNum == "07") {
+            this.riderReportOverviews[i].start_of_month = "July";
+          } else if (monthNum == "08") {
+            this.riderReportOverviews[i].start_of_month = "August";
+          } else if (monthNum == "09") {
+            this.riderReportOverviews[i].start_of_month = "September";
+          } else if (monthNum == "10") {
+            this.riderReportOverviews[i].start_of_month = "October";
+          } else if (monthNum == "11") {
+            this.riderReportOverviews[i].start_of_month = "November";
+          } else if (monthNum == "12") {
+            this.riderReportOverviews[i].start_of_month = "December";
+          }
+        }
       }
     )
   }
