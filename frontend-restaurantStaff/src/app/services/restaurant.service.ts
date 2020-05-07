@@ -28,7 +28,7 @@ export class RestaurantService {
   }
 
   updateInfo(restId: any, restaurantToUpdate: any): Observable<any> {
-    return this.httpClient.post<any>(this.path + "/restaurant_staff/" + this.sessionService.getUsername() + "/restaurant/" + restId, restaurantToUpdate).pipe
+    return this.httpClient.post<any>(this.path + "/restaurant_staff/" + this.sessionService.getUsername() + "/restaurant/" + restId, restaurantToUpdate, { responseType: 'text' as 'json' }).pipe
     (
       catchError(this.handleError)
     );
