@@ -119,6 +119,11 @@ begin
         RAISE EXCEPTION 'Shift should end on the hour (entered: %).', NEW.end_time;
     END IF;
 
+    IF (EXTRACT('hour' 
+            FROM NEW.end_time - NEW.start_time) > 4) THEN
+        RAISE EXCEPTION 'Shift should not exceed 4 hours.';
+    END IF;
+
     IF EXISTS(
         SELECT 1 
         FROM Shifts S

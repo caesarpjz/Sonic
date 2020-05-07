@@ -1,0 +1,140 @@
+<app-header></app-header>
+
+<p-button label="Add New Restaurants" (onClick)="showDialog3()"></p-button>
+
+<p-table [value]="restaurants">
+    <ng-template pTemplate="caption">
+        Restaurants
+    </ng-template>
+    <ng-template pTemplate="header">
+        <tr>
+            <th>Restaurant ID</th>
+            <th>Name</th>
+            <th>Information</th>
+            <th>Minimum Spending</th>
+            <th>Category</th>
+            <th>Location</th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-restaurant>
+        <tr>
+            <td>{{restaurant.rest_id}}</td>
+            <td>{{restaurant.name}}</td>
+            <td>{{restaurant.info}}</td>
+            <td>{{restaurant.min_spending}}</td>
+            <td>{{restaurant.category}}</td>
+            <td>{{restaurant.restaurant_location}}</td>
+            <td>
+                <p-button label="Update" (onClick)="showDialog1(restaurant)"></p-button>
+                &nbsp;
+                <p-button label="Delete" (onClick)="deletePromotion(restaurant)"></p-button>
+            </td>
+            <td>
+                <p-button label="View Restaurant" (onClick)="goToRestaurantStaff(restaurant)"></p-button>
+            </td>
+            <!-- <td><a routerLink="/view-all-food-items/{{menu.menu_id}}">View Food Items</a></td> -->
+        </tr>
+    </ng-template>
+</p-table>
+
+<p-dialog *ngIf="displayAdd" header="Add New Restaurant" modal="true" [(visible)]="displayAdd" [style]="{width: '50vw'}"
+    [baseZIndex]="10000">
+    <form (ngSubmit)="addRestaurant(addRestaurantForm)">
+        <div class="ui-g">
+            <div class="ui-g-6" style="background-color: #f4f4f4;">Name</div>
+            <div class="ui-g-6" style="background-color: #f4f4f4;">
+                <input id="name" name="start_time" #name="ngModel" type="text" [(ngModel)]="newRestaurant.name"
+                    required="true" />
+            </div>
+        </div>
+        <div class="ui-g">
+            <div class="ui-g-6" style="background-color: #f4f4f4;">Information</div>
+            <div class="ui-g-6" style="background-color: #f4f4f4;">
+                <input id="name" name="end_time" #name="ngModel" type="text" [(ngModel)]="newRestaurant.info"
+                    required="true" />
+            </div>
+        </div>
+        <div class="ui-g">
+            <div class="ui-g-6" style="background-color: #f4f4f4;">Minimum Spending</div>
+            <div class="ui-g-6" style="background-color: #f4f4f4;">
+                <input id="name" name="discount_desc" #name="ngModel" type="text"
+                    [(ngModel)]="newRestaurant.min_spending" required="true" />
+            </div>
+        </div>
+        <div class="ui-g">
+            <div class="ui-g-6" style="background-color: #f4f4f4;">Category</div>
+            <div class="ui-g-6" style="background-color: #f4f4f4;">
+                <!-- <input id="name" name="discount_percentage" #name="ngModel" type="text"
+                    [(ngModel)]="newRestaurant.category" required="true" /> -->
+                <p-dropdown [options]="categories" name="category" [(ngModel)]="selectedCategory"
+                    placeholder="Select a Category" optionLabel="category" [showClear]="true"></p-dropdown>
+            </div>
+        </div>
+        <div class="ui-g">
+            <div class="ui-g-6" style="background-color: #f4f4f4;">Restaurant Location </div>
+            <div class="ui-g-6" style="background-color: #f4f4f4;">
+                <input id="name" name="name" #name="ngModel" type="text" [(ngModel)]="newRestaurant.restaurant_location"
+                    required="true" />
+            </div>
+        </div>
+        <br />
+        <div class="ui-g" style="float:right">
+            <button (click)="clear()">Clear</button>
+            &nbsp;
+            <input type="submit" value="Submit" />
+        </div>
+    </form>
+</p-dialog>
+
+<p-dialog class="dialog" *ngIf="displayUpdate" header="Update Restaurant" modal="true" [(visible)]="displayUpdate"
+    [style]="{width: '50vw'}">
+    <form (ngSubmit)="update(updateRestaurantForm)">
+        <div class="ui-g">
+            <div class="ui-g-6" style="background-color: #f4f4f4;">Restaurant Id</div>
+            <div class="ui-g-6">{{restaurantToUpdate.rest_id}}</div>
+        </div>
+        <div class="ui-g">
+            <div class="ui-g-6" style="background-color: #f4f4f4;">Name</div>
+            <div class="ui-g-6">
+                <input id="name" name="name" #name="ngModel" type="text" [(ngModel)]="restaurantToUpdate.name"
+                    required="true" />
+            </div>
+        </div>
+        <div class="ui-g">
+            <div class="ui-g-6" style="background-color: #f4f4f4;">Information</div>
+            <div class="ui-g-6">
+                <input id="name" name="start_date" #name="ngModel" type="text" [(ngModel)]="restaurantToUpdate.info"
+                    required="true" />
+            </div>
+        </div>
+        <div class="ui-g">
+            <div class="ui-g-6" style="background-color: #f4f4f4;">Minimum Spending</div>
+            <div class="ui-g-6">
+                <input id="name" name="minSpending" #name="ngModel" type="text"
+                    [(ngModel)]="restaurantToUpdate.min_spending" required="true" />
+            </div>
+        </div>
+        <div class="ui-g">
+            <div class="ui-g-6" style="background-color: #f4f4f4;">Category</div>
+            <div class="ui-g-6">
+                <!-- <input id="name" name="end_date" #name="ngModel" type="text" [(ngModel)]="restaurantToUpdate.category"
+                    required="true" /> -->
+                <p-dropdown [options]="categories" name="category" [(ngModel)]="selectedCategory"
+                    placeholder="Select a Category" optionLabel="category" [showClear]="true"></p-dropdown>
+            </div>
+        </div>
+        <div class="ui-g">
+            <div class="ui-g-6" style="background-color: #f4f4f4;">Location</div>
+            <div class="ui-g-6">
+                <input id="name" name="discount_percentage" #name="ngModel" type="text"
+                    [(ngModel)]="restaurantToUpdate.restaurant_location" required="true" />
+            </div>
+        </div>
+        <br />
+        <div class="ui-g" style="float:right">
+            <button (click)="clear()">Clear</button>
+            &nbsp;
+            <input type="submit" value="Submit" />
+        </div>
+    </form>
+</p-dialog>

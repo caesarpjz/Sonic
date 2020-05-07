@@ -1,0 +1,61 @@
+<app-header></app-header>
+
+<p-table [value]="riders">
+    <ng-template pTemplate="caption">
+        Riders
+    </ng-template>
+    <ng-template pTemplate="header">
+        <tr>
+            <th>Rider ID</th>
+            <th>Name</th>
+            <th>Full-Time</th>
+            <th>Status</th>
+            <th>Username</th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rider>
+        <tr>
+            <td>{{rider.rid}}</td>
+            <td>{{rider.name}}</td>
+            <td>{{rider.is_full_time}}</td>
+            <td>{{rider.status}}</td>
+            <td>{{rider.username}}</td>
+            <td>
+                <p-button label="Shifts" (onClick)="showDialog1(rider)"></p-button>
+            </td>
+            <!-- <td>
+                <p-button label="View Restaurant" (onClick)="goToRestaurantStaff(restaurant)"></p-button>
+            </td> -->
+            <!-- <td><a routerLink="/view-all-food-items/{{menu.menu_id}}">View Food Items</a></td> -->
+        </tr>
+    </ng-template>
+</p-table>
+
+<p-dialog *ngIf="display" header="Shifts" modal="true" [(visible)]="display" [style]="{width: '50vw'}"
+    [baseZIndex]="10000">
+    <form>
+        <p-table [value]="shifts">
+            <ng-template pTemplate="caption">
+                Shifts
+            </ng-template>
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>Shift ID</th>
+                    <th>Start Date</th>
+                    <th>Start End</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-shift>
+                <tr>
+                    <td>{{shift.shift_id}}</td>
+                    <td>{{shift.start_time}}</td>
+                    <td>{{shift.end_time}}</td>
+                    <!-- <td>
+                        <p-button label="View Restaurant" (onClick)="goToRestaurantStaff(restaurant)"></p-button>
+                    </td> -->
+                    <!-- <td><a routerLink="/view-all-food-items/{{menu.menu_id}}">View Food Items</a></td> -->
+                </tr>
+            </ng-template>
+        </p-table>
+    </form>
+</p-dialog>
