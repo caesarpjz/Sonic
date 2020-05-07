@@ -120,16 +120,30 @@ const viewAssignedDeliveries = (request, response) => {
 
 }
 
+// /delivery/:did/departfor/restaurant
+const timeDepartForRest = (request, response) => {
+  const { did } = request.params
+  pool.query('SELECT timestamp_departForRest($1)', [did], (error, results) => {
+
+    if (error) {
+      response.status(400).send(`Unable to update depart for restaurant time`)
+      throw error
+    }
+    response.status(200).json(`Depart time for restaurant successfully updated`)
+  })
+}
+
 // /delivery/:did/arriveRest
 const timeArriveAtResturant = (request, response) => {
   const { did } = request.params
 
-  pool.query = ('SELECT timestamp_arriveAtRest($1)', [did], (error, results) => {
+  pool.query('SELECT timestamp_arriveAtRest($1)', [did], (error, results) => {
+
     if (error) {
       response.status(400).send(`Unable to update arrive at restaurant time`)
       throw error
     }
-    response.status(200).send(`Arrive time at restaurant successfully updated`)
+    response.status(200).json(`Arrive time at restaurant successfully updated`)
   })
 }
 
@@ -137,7 +151,7 @@ const timeArriveAtResturant = (request, response) => {
 const timeDepartFromResturant = (request, response) => {
   const { did } = request.params
 
-  pool.query = ('SELECT timestamp_departFromRest($1)', [did], (error, results) => {
+  pool.query('SELECT timestamp_departFromRest($1)', [did], (error, results) => {
     if (error) {
       response.status(400).send(`Unable to update departure time from restaurant`)
       throw error
@@ -150,7 +164,7 @@ const timeDepartFromResturant = (request, response) => {
 const timeOrderDelivered = (request, response) => {
   const { did } = request.params
 
-  pool.query = ('SELECT timestamp_orderDelivered($1)', [did], (error, results) => {
+  pool.query('SELECT timestamp_orderDelivered($1)', [did], (error, results) => {
     if (error) {
       response.status(400).send(`Unable to order delivered time`)
       throw error
@@ -330,6 +344,7 @@ module.exports = {
   viewDeliveriesHistory,
   assignOrders,
   viewAssignedDeliveries,
+  timeDepartForRest,
   timeArriveAtResturant,
   timeDepartFromResturant,
   timeOrderDelivered,

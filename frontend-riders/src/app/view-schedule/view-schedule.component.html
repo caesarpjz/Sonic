@@ -1,7 +1,11 @@
 <app-app-header></app-app-header>
 
 <div class="container mt-5 mb-5 pt-5 justify-content-center w-50">
-  <p-fullCalendar [events]="events" [options]="options"></p-fullCalendar>
+  <div class="container text-center pb-3">
+    <h1>Schedule</h1>
+  </div>
+
+  <p-fullCalendar *ngIf="events && events.length > 0" [events]="events" [options]="options"></p-fullCalendar>
 </div>
 
 <app-app-footer></app-app-footer>
