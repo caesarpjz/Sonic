@@ -1,4 +1,4 @@
-SELECT addRestaurantPromotion('20/04/2020', '25/05/2020', 'SELECT * FROM RESTAURANTS R where R.rest_id = 1', 7, 'McDonalds Promo!', 1);
+SELECT addRestaurantPromotion('20/04/2020', '25/05/2021', 'SELECT * FROM RESTAURANTS R where R.rest_id = 1', 7, 'McDonalds Promo!', 1);
 UPDATE Promotions SET count = 67 WHERE pid = 2;
 SELECT addRestaurantPromotion('13/03/2020', '23/04/2020', 'SELECT * FROM Restaurants WHERE rest_id = 56', 20, 'Yello', 26);
 SELECT addRestaurantPromotion('05/05/2020', '02/10/2020', 'SELECT * FROM Restaurants WHERE rest_id = 73', 15, 'Kenny', 13);

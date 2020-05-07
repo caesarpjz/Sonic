@@ -125,7 +125,7 @@ const checkIfManagerPromotionIsValidByPid = (request, response) => {
 const checkIfPromotionIsValidByName = (request, response) => {
   const { name } = request.params
 
-  pool.query('SELECT p.start_date, p.end_date FROM Promotions p, Managers_Has_Promotions mp WHERE name = $1 AND mp.pid = p.pid', [name], (error, results) => {
+  pool.query('SELECT p.start_date, p.end_date FROM Promotions p, Managers_Has_Promotions mp WHERE p.name = $1 AND mp.pid = p.pid', [name], (error, results) => {
     if (error) {
       response.status(400).send(`Unable to get validity`)
       throw error
