@@ -12,8 +12,11 @@ const httpOptions = {
   responseType: 'text' as 'json'
 };
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class AuthService {
+
   constructor(private httpClient: HttpClient) { }
 
   private handleError(error: HttpErrorResponse) {
@@ -29,36 +32,16 @@ export class AuthService {
     return throwError(error);
   }
 
-  // create customer
-  createCustomer(signupForm): Observable<any> {
-    let customer = {
-      'username': signupForm.value.username,
-      'password': signupForm.value.password,
-      'name': signupForm.value.name
-    };
-
-    return this.httpClient.post<any>('/api/customers', customer,
-           httpOptions).pipe(
-             retry(1),
-             catchError(this.handleError)
-           );
-  }
-
   login(form): Observable<any> {
     let user = {
       'username': form.value.username,
       'password': form.value.password
     };
 
-    return this.httpClient.post<any>('/api/customer/login', user,
+    return this.httpClient.post<any>('/api/riders/login', user,
       httpOptions).pipe(
         retry(1),
         catchError(this.handleError)
       );
-  }
-
-  logout() {
-    sessionStorage.removeItem('loggedIn');
-    sessionStorage.removeItem('username');
   }
 }

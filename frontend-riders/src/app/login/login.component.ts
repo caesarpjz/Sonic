@@ -1,3 +1,4 @@
+import { AuthService } from './../services/auth.service';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
 
@@ -10,7 +11,8 @@ export class LoginComponent implements OnInit {
   loginForm: FormGroup;
 
   constructor(
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private authService: AuthService
   ) {
     this.initLoginForm();
   }
@@ -20,13 +22,7 @@ export class LoginComponent implements OnInit {
 
   initLoginForm() {
     this.loginForm = this.formBuilder.group({
-      email: [
-        '',
-        Validators.compose([
-          Validators.required,
-          Validators.pattern(/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/)
-        ])
-      ],
+      username: ['', Validators.required],
       password: ['', Validators.required]
     });
   }
@@ -34,6 +30,13 @@ export class LoginComponent implements OnInit {
   login() {
     // @todos: call auth service
     console.log(this.loginForm);
+
+    this.authService.login(this.loginForm).subscribe((res) => {
+      console.log(res);
+    }, ((err) => {
+      console.error(err);
+    }
+    ));
   }
 
 }
