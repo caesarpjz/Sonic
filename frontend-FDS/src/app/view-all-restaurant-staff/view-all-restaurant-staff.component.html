@@ -1,0 +1,65 @@
+<app-header></app-header>
+
+<p-button label="Add New Restaurant Staff" (onClick)="showDialog3()"></p-button>
+
+<p-table [value]="restaurantStaffs">
+    <ng-template pTemplate="caption">
+        Restaurant Staff
+    </ng-template>
+    <ng-template pTemplate="header">
+        <tr>
+            <th>Restaurant Staff ID</th>
+            <th>Username</th>
+            <th>Name</th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-restaurantStaff>
+        <tr>
+            <td>{{restaurantStaff.rsid}}</td>
+            <td>{{restaurantStaff.username}}</td>
+            <td>{{restaurantStaff.name}}</td>
+            <!-- <td> -->
+                <!-- <p-button label="Update" (onClick)="showDialog1(restaurantStaff)"></p-button>
+                &nbsp; -->
+                <!-- <p-button label="Delete" (onClick)="deleteRestaurantStaff(restaurantStaff)"></p-button> -->
+            <!-- </td> -->
+            <!-- <td>
+                <p-button label="View Restaurant Staff" (onClick)="goToRestaurantStaff(restaurant)"></p-button>
+            </td> -->
+            <!-- <td><a routerLink="/view-all-food-items/{{menu.menu_id}}">View Food Items</a></td> -->
+        </tr>
+    </ng-template>
+</p-table>
+
+<p-dialog *ngIf="displayAdd" header="Add New Restaurant Staff" modal="true" [(visible)]="displayAdd" [style]="{width: '50vw'}"
+    [baseZIndex]="10000">
+    <form (ngSubmit)="addRestaurantStaff(addRestaurantStaffForm)">
+        <div class="ui-g">
+            <div class="ui-g-6" style="background-color: #f4f4f4;">Name</div>
+            <div class="ui-g-6" style="background-color: #f4f4f4;">
+                <input id="name" name="start_time" #name="ngModel" type="text"
+                    [(ngModel)]="newRestaurantStaff.name" required="true" />
+            </div>
+        </div>
+        <div class="ui-g">
+            <div class="ui-g-6" style="background-color: #f4f4f4;">Username</div>
+            <div class="ui-g-6" style="background-color: #f4f4f4;">
+                <input id="name" name="end_time" #name="ngModel" type="text"
+                    [(ngModel)]="newRestaurantStaff.username" required="true" />
+            </div>
+        </div>
+        <div class="ui-g">
+            <div class="ui-g-6" style="background-color: #f4f4f4;">Password</div>
+            <div class="ui-g-6" style="background-color: #f4f4f4;">
+                <input id="name" name="discount_desc" #name="ngModel" type="password"
+                    [(ngModel)]="newRestaurantStaff.password" required="true" />
+            </div>
+        </div>
+        <br />
+        <div class="ui-g" style="float:right">
+            <button (click)="clear()">Clear</button>
+            &nbsp;
+            <input type="submit" value="Submit" />
+        </div>
+    </form>
+</p-dialog>
