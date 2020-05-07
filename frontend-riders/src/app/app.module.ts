@@ -1,3 +1,5 @@
+import { AlertService } from './services/alert.service';
+import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing/app-routing.module';
 import { BrowserModule } from '@angular/platform-browser';
@@ -18,7 +20,10 @@ import { AppFooterComponent } from './shared/app-footer.component';
 import { SubmitScheduleComponent } from './submit-schedule/submit-schedule.component';
 import { SubmitScheduleMonthlyComponent } from './submit-schedule-monthly/submit-schedule-monthly.component';
 import { ViewScheduleComponent } from './view-schedule/view-schedule.component';
-
+import { AlertComponent } from './alert/alert.component';
+import { DeliveriesComponent } from './deliveries/deliveries.component';
+import { ProfileComponent } from './profile/profile.component';
+import { TabViewModule } from 'primeng/tabview';
 
 @NgModule({
   declarations: [
@@ -31,7 +36,10 @@ import { ViewScheduleComponent } from './view-schedule/view-schedule.component';
     AppFooterComponent,
     SubmitScheduleComponent,
     SubmitScheduleMonthlyComponent,
-    ViewScheduleComponent
+    ViewScheduleComponent,
+    AlertComponent,
+    DeliveriesComponent,
+    ProfileComponent
   ],
   imports: [
     BrowserModule,
@@ -42,9 +50,11 @@ import { ViewScheduleComponent } from './view-schedule/view-schedule.component';
     BrowserAnimationsModule,
     CommonModule,
     CheckboxModule,
-    FullCalendarModule
+    FullCalendarModule,
+    HttpClientModule,
+    TabViewModule
   ],
-  providers: [],
+  providers: [AlertService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

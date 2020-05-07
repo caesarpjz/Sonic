@@ -102,7 +102,7 @@ begin
     SELECT CAST((start_date + interval '1 month') as DATE) INTO end_date;
 
     SELECT count(*)
-    FROM Users U join Customers C on U.id = C.id
+    FROM Users U join Customers C on U.username = C.username
     WHERE U.created_at >= start_date
     AND U.created_at < end_date
     INTO total_new_customers;
@@ -693,6 +693,24 @@ CREATE OR REPLACE FUNCTION addShift(rid INTEGER, start_time TIMESTAMP, end_time 
 RETURNS VOID AS $$
     INSERT INTO Shifts VALUES
     (DEFAULT, $1, $2, $3);
+$$ LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION getAllWorkingRiders() 
+RETURNS TABLE(rid INTEGER) AS $$
+    SELECT rid
+    FROM Shifts
+    WHERE start_time < now()
+    AND end_time > now();
+$$ LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION getAllNonWorkingRiders() 
+RETURNS TABLE(rid INTEGER) AS $$
+    SELECT rid 
+    FROM Shifts
+    WHERE NOT EXISTS(
+        SELECT rid
+        FROM getAllWorkingRiders()
+    );
 $$ LANGUAGE SQL;
 
 -- FUNCTIONS FOR REPORTS
