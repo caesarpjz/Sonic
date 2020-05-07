@@ -201,17 +201,22 @@ app.get('/', (req, res) => {
     // Button function for time arrive at restaurant
     app
     .route('/delivery/:did/arriveRest')
-    .get(ridersDb.timeArriveAtResturant)
+    .post(ridersDb.timeArriveAtResturant)
+
+    // Button function for time depart FOR restaurant
+    app
+    .route('/delivery/:did/departfor/restaurant')
+    .post(ridersDb.timeDepartForRest)
 
     // Button function for time depart from restaurant
     app
     .route('/delivery/:did/departRest')
-    .get(ridersDb.timeDepartFromResturant)
+    .post(ridersDb.timeDepartFromResturant)
 
     // Button function for time order has been delivered
     app
     .route('/delivery/:did/delivered')
-    .get(ridersDb.timeOrderDelivered)
+    .post(ridersDb.timeOrderDelivered)
 
     // Check if rider is Full time
     app
