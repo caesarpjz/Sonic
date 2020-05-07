@@ -1,3 +1,4 @@
+import { DeliveriesComponent } from './../deliveries/deliveries.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -10,11 +11,13 @@ import { ViewScheduleComponent } from '../view-schedule/view-schedule.component'
 
 const routes: Routes = [
   { path: '', component: HomeComponent, pathMatch: 'full' },
+  { path: 'home', component: HomeComponent },
   { path: 'login', component: LoginComponent },
   { path: 'signup', component: SignupComponent },
   { path: 'submit-schedule', component: SubmitScheduleComponent },
   { path: 'submit-schedule-monthly', component: SubmitScheduleMonthlyComponent },
-  { path: 'view-schedule', component: ViewScheduleComponent }
+  { path: 'view-schedule', component: ViewScheduleComponent },
+  { path: 'deliveries', component: DeliveriesComponent }
 ];
 
 @NgModule({

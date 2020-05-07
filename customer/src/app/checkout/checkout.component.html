@@ -100,15 +100,15 @@
             </div>
           </div>
 
-          <div class="row pt-3 pb-3 text-center">
+          <div class="row pt-3 pb-3 text-center" *ngIf="card !== null && validCard == true">
             <div class="col-md-12">
               <small class="text-muted text-center">
                 Or select saved credit card
               </small>
             </div>
-          </div>
 
-          <app-creditcard></app-creditcard>
+            <app-creditcard></app-creditcard>
+          </div>
         </div>
 
         <div class="text-center justify-content-center mb-3">
@@ -125,16 +125,22 @@
       </p>
 
       <p>
-        Subtotal: ${{subtotal}}
-        <span></span>
+        Subtotal: $<b>{{subtotal}}</b>
       </p>
 
       <p>
-        Delivery fees: ${{deliveryFee}}
+        Delivery fees: $<b>{{deliveryFee}}</b>
       </p>
 
       <p>
-        Total: ${{subtotal + deliveryFee}}
+        Points offset from delivery fee (max {{totalPoints}}):
+      </p>
+      <input type="number" id="points" placeholder="0" [(ngModel)]="pointsOffset" max=10
+        (ngModelChange)="checkPointsOffsetValidity()">
+      <span class="validity"></span>
+
+      <p class="mt-2" *ngIf="pointsOffset >= 0">
+        Total: $<b>{{subtotal + newDeliveryFees}}</b>
       </p>
     </div>
   </div>
