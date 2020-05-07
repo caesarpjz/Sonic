@@ -11,7 +11,7 @@
         <a class="nav-link dropdown-toggle" href="#" id="dropdown02" data-toggle="dropdown" aria-haspopup="true"
           aria-expanded="false">Schedule</a>
         <div class="dropdown-menu dropdown-menu-left" aria-labelledby="dropdown02">
-          <a class="dropdown-item" [routerLink]="['/profile']">View schedule</a>
+          <a class="dropdown-item" [routerLink]="['/view-schedule']">View schedule</a>
           <a class="dropdown-item" [routerLink]="['/submit-schedule']" *ngIf="!isFullTime">Submit weekly schedule</a>
           <a class="dropdown-item" [routerLink]="['/submit-schedule-monthly']" *ngIf="isFullTime">Submit monthly
             schedule</a>
