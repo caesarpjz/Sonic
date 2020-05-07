@@ -171,6 +171,12 @@ app.get('/', (req, res) => {
     app
     .route('/reviews/:rest_id')
     .get(customersDb.getAllReviews)
+
+    // Use Pid to get who is valid for the promotions
+    app
+    .route('/customer/promotions/:name/use')
+    .get(customersDb.usePromotionsToGetValidCustomersByName)
+
 /***** Riders *****/
     // Riders Login
     app
@@ -218,8 +224,20 @@ app.get('/', (req, res) => {
     .get(ridersDb.viewPastSchedule)
 
     // Submit Schedule
+    app
+    .route('/riders/:username/schedule/submit')
+    .post(ridersDb.submitSchedule)
 
-    // Check Salary for range period
+    // Get Monthly SUmmary Info
+    app
+    .route('/riders/:username/monthlysummary')
+    .get(ridersDb.getMonthlySummaryInfo)
+
+    // Below not working yet. hold up
+    // Get weekly summary info
+    app
+    .route('/riders/:username/weeklysummary')
+    .get(ridersDb.getWeeklySummaryInfo)
 
 /***** FDS Managers *****/
 

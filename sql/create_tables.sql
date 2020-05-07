@@ -41,7 +41,8 @@ CREATE TABLE Promotions (
     discount_percentage FLOAT NOT NULL,
     count INTEGER NOT NULL DEFAULT 0,
     name VARCHAR(50),
-    PRIMARY KEY (pid)
+    PRIMARY KEY (pid),
+    UNIQUE (name)
 );
 
 CREATE TABLE Customers (

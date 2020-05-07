@@ -98,7 +98,18 @@ DROP FUNCTION IF EXISTS getRiderSummary(INTEGER, DATE, DATE) CASCADE;
 DROP FUNCTION IF EXISTS getEarliestShift(INTEGER) CASCADE;
 DROP FUNCTION IF EXISTS getLatestShift(INTEGER) CASCADE;
 DROP FUNCTION IF EXISTS getMonthlyRiderSummary(INTEGER) CASCADE;
-
+DROP FUNCTION IF EXISTS create_dummy_ft_shifts();
+DROP FUNCTION IF EXISTS create_dummy_pt_shifts();
 -- TRIGGERS
 DROP FUNCTION IF EXISTS check_food_limit() CASCADE;
 DROP TRIGGER IF EXISTS food_limit_trigger ON Order_Contains_Food;
+DROP FUNCTION IF EXISTS check_promo_time() CASCADE;
+DROP TRIGGER IF EXISTS promo_time_trigger ON Orders CASCADE;
+DROP FUNCTION IF EXISTS check_order_restaurant() CASCADE;
+DROP TRIGGER IF EXISTS order_restaurant_trigger ON Order_Contains_Food CASCADE;
+DROP FUNCTION IF EXISTS check_promo_startend_time() CASCADE;
+DROP TRIGGER IF EXISTS promo_startend_time_trigger ON Promotions CASCADE;
+DROP FUNCTION IF EXISTS check_rider_shift() CASCADE;
+DROP TRIGGER IF EXISTS rider_shift_trigger ON Shifts CASCADE;
+DROP FUNCTION IF EXISTS check_FT_rider_shift() CASCADE;
+DROP TRIGGER IF EXISTS FT_rider_shift_trigger ON SHIFTS CASCADE;
