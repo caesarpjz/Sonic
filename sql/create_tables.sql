@@ -96,19 +96,19 @@ CREATE TABLE Menus (
     rest_id INTEGER, -- restaurant associated with this menu
     name VARCHAR(50), -- name of menu
     PRIMARY KEY (menu_id),
-    FOREIGN KEY (rest_id) REFERENCES Restaurants (rest_id),
-    UNIQUE (rest_id, name)
+    FOREIGN KEY (rest_id) REFERENCES Restaurants (rest_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    unique(rest_id, name)
 );
 
 CREATE TABLE Restaurant_Staff (
     rsid SERIAL,
     rest_id INTEGER,
     username VARCHAR(50) NOT NULL,
-    PRIMARY KEY (rsid, username),
-    FOREIGN KEY (rest_id) REFERENCES Restaurants (rest_id),
-    FOREIGN KEY (username) REFERENCES Users (username),
-    UNIQUE (rsid),
-    UNIQUE (username)
+    name VARCHAR(50),
+    PRIMARY KEY (rsid),
+    FOREIGN KEY (rest_id) REFERENCES Restaurants (rest_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (id) REFERENCES Users (id) ON DELETE CASCADE,
+    unique (username)
 );
 
 CREATE TABLE Food_Item_Categories (
@@ -141,7 +141,7 @@ CREATE TABLE Restaurants_Has_Promotions (
     rest_id INTEGER NOT NULL, -- restaurant generating the promotion
     pid INTEGER NOT NULL, -- promotion generated
     PRIMARY KEY (rest_id, pid),
-    FOREIGN KEY (rest_id) REFERENCES Restaurants (rest_id),
+    FOREIGN KEY (rest_id) REFERENCES Restaurants (rest_id) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (pid) REFERENCES Promotions (pid) ON DELETE CASCADE ON UPDATE CASCADE
 );
 

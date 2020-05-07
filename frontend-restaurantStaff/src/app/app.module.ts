@@ -53,7 +53,7 @@ import { TopFiveOrdersComponent } from './top-five-orders/top-five-orders.compon
     FormsModule,
     HttpClientModule,
     CheckboxModule,
-    DropdownModule
+    DropdownModule,
   ],
   providers: [
     AlertService,
