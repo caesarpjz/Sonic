@@ -1,2 +1,12 @@
-SELECT addRestaurantPromotion('20/04/2020', '25/05/2020', 'SELECT * FROM RESTAURANTS R where R.rest_id = 1', 7, 'McDonalds Promo!', 1);
+SELECT addRestaurantPromotion('20/04/2020', '25/05/2021', 'SELECT * FROM RESTAURANTS R where R.rest_id = 1', 7, 'McDonalds Promo!', 1);
 UPDATE Promotions SET count = 67 WHERE pid = 2;
+SELECT addRestaurantPromotion('13/03/2020', '23/04/2020', 'SELECT * FROM Restaurants WHERE rest_id = 56', 20, 'Yello', 26);
+SELECT addRestaurantPromotion('05/05/2020', '02/10/2020', 'SELECT * FROM Restaurants WHERE rest_id = 73', 15, 'Kenny', 13);
+SELECT addRestaurantPromotion('15/01/2021', '21/10/2021', 'SELECT * FROM Restaurants WHERE rest_id = 92', 5, 'Another', 22);
+SELECT addRestaurantPromotion('03/03/2019', '03/11/2021', 'SELECT * FROM Restaurants WHERE rest_id = 32', 10, 'Jorge', 32);
+SELECT addRestaurantPromotion('01/01/2020', '30/12/2020', 'SELECT * FROM Restaurants WHERE rest_id = 19', 8, 'hehe', 19);
+UPDATE Promotions SET count = 17 WHERE pid = 4;
+UPDATE Promotions SET count = 107 WHERE pid = 8;
+UPDATE Promotions SET count = 25 WHERE pid = 10;
+UPDATE Promotions SET count = 83 WHERE pid = 14;
+UPDATE Promotions SET count = 72 WHERE pid = 6;

@@ -1,1 +1,11 @@
 SELECT addPromotionForManagers('20/04/2020', '30/04/2020', 'SELECT * FROM CUSTOMERS', 2.5, 'Everyone gets a promo!', 1);
+SELECT addPromotionForManagers('11/5/2019', '6/7/2021', 'SELECT * FROM Customers WHERE points > 3000', 5, 'yippee', 88);
+SELECT addPromotionForManagers('9/11/2019', '5/5/2021', 'SELECT c.cid, c.id, c.username, c.name FROM Customers c, Menus m, Food_Items f, Order_Contains_Food of, Orders o WHERE m.menu_id = f.menu_id AND f.fid = of.fid AND o.oid = of.oid AND o.cid = c.cid;', 15, 'yippee', 20);
+SELECT addPromotionForManagers('19/11/2019', '14/2/2020', 'SELECT * FROM Users WHERE created_at > 04/03/2020 AND access_rights = Customer', 50, 'laughs', 39);
+SELECT addPromotionForManagers('1/6/2019', '17/9/2021', 'SELECT c.cid, c.id, c.username, c.name FROM Customers c, Menus m, Food_Items f, Order_Contains_Food of, Orders o WHERE m.menu_id = f.menu_id AND f.fid = of.fid AND o.oid = of.oid AND o.cid = c.cid;', 15, 'hooray', 78);
+SELECT addPromotionForManagers('12/7/2019', '16/11/2021', 'SELECT * FROM Customers;', 15, 'yay_discount', 2);
+SELECT addPromotionForManagers('6/7/2019', '6/11/2021', 'SELECT * FROM Customers WHERE points > 3000', 50, 'yay_discount', 39);
+SELECT addPromotionForManagers('11/6/2019', '18/6/2021', 'SELECT c.cid, c.id, c.username, c.name FROM Customers c, Menus m, Food_Items f, Order_Contains_Food of, Orders o WHERE m.menu_id = f.menu_id AND f.fid = of.fid AND o.oid = of.oid AND o.cid = c.cid;', 15, 'hooray', 23);
+SELECT addPromotionForManagers('8/8/2019', '7/3/2020', 'SELECT * FROM Customers WHERE points > 3000', 5, 'hooray', 58);
+SELECT addPromotionForManagers('14/9/2019', '5/11/2021', 'SELECT c.cid, c.id, c.username, c.name FROM Customers c, Menus m, Food_Items f, Order_Contains_Food of, Orders o WHERE m.menu_id = f.menu_id AND f.fid = of.fid AND o.oid = of.oid AND o.cid = c.cid;', 50, 'hooray', 44);
+SELECT addPromotionForManagers('18/7/2019', '22/5/2021', 'SELECT * FROM Customers WHERE points > 3000', 20, 'yippee', 83);

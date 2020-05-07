@@ -98,13 +98,37 @@ const updateRestaurantById = (request, response) => {
   }
 
   if (category !== undefined) {
-    pool.query('UPDATE Restaurants SET category = $1 WHERE rest_id = $2', [category, rest_id], (error, results) => {
+    pool.query('SELECT category FROM Restaurant_Categories WHERE category = $1', [category], (error, results) => {
       if (error) {
-        response.status(400).send(`Unable to update restaurant category`)
+        response.status(400).send(`Unable to update category. Please try again.`)
         throw error
       }
-      // response.status(201).json(`Restaurant ${rest_id}'s category has been updated to ${category}`)
+      const exists = results.rows[0]
+      if (exists != null) {
+        pool.query('UPDATE Restaurants SET category = $1 WHERE rest_id = $2', [category, rest_id], (error, results) => {
+          if (error) {
+            response.status(400).send(`Unable to update restaurant category`)
+            throw error
+          }
+          // response.status(201).json(`Restaurant ${rest_id}'s category has been updated to ${category}`)
+        })
+      } else {
+        pool.query('INSERT INTO Restaurant_Categories (category) VALUES ($1)', [category], (error, results) => {
+          if (error) {
+            response.status(400).send(`Unable to update category. Please try again.`)
+            throw error
+          }
+          pool.query('UPDATE Restaurants SET category = $1 WHERE rest_id = $2', [category, rest_id], (error, results) => {
+            if (error) {
+              response.status(400).send(`Unable to update restaurant category`)
+              throw error
+            }
+            // response.status(201).json(`Restaurant ${rest_id}'s category has been updated to ${category}`)
+          })
+        })
+      }
     })
+    
   }
 
   response.status(201).send(`Restaurant has been updated`)
@@ -114,7 +138,7 @@ const updateRestaurantById = (request, response) => {
 const getMenuNameById = (request, response) => {
   const { rest_id } = request.params
 
-  pool.query('SELECT r.name, m.menu_id, m.name from Restaurants r, Menu m WHERE r.rest_id = $1 AND r.rest_id = m.rest_id',
+  pool.query('SELECT r.name, m.menu_id, m.name from Restaurants r, Menus m WHERE r.rest_id = $1 AND r.rest_id = m.rest_id',
     [rest_id], (error, results) => {
       if (error) {
         response.status(400).send(`Unable to get menu names`)
@@ -142,13 +166,14 @@ const getFoodItemByMenuId = (request, response) => {
 const updateMenuNameByMenuId = (request, response) => {
   const { menu_id } = request.params
   const { new_name } = request.body
+  console.log(new_name)
 
   pool.query('UPDATE Menus SET name = $1 WHERE menu_id = $2', [new_name, menu_id], (error, results) => {
     if (error) {
       response.status(400).send(`Unable to update menu name`)
       throw error
     }
-    response.status(200).send(`Menu name changed successfully`)
+    response.status(200).send("Menu name changed successfully")
   })
 }
 
@@ -156,7 +181,6 @@ const updateMenuNameByMenuId = (request, response) => {
 const addMenu = (request, response) => {
   const { rest_id } = request.params
   const { menu_name } = request.body
-  
   pool.query('SELECT addMenu($1, $2)', [rest_id, menu_name], (error, results) => {
     if (error) {
       response.status(400).send(`Unable to add menu`)
@@ -274,8 +298,8 @@ const updateFoodItemByMenuIdAndFid = (request, response) => {
           response.status(400).send(`Unable to update category. Please try again.`)
           throw error
         }
-        const exists = results.rows[0].category
-        if (exists == category) {
+        const exists = results.rows[0]
+        if (exists != null) {
           pool.query('UPDATE Food_Items SET category = $1 WHERE fid = $2 AND menu_id = $3', [category, fid, menu_id], (error, results) => {
             if (error) {
               response.status(400).send(`Unable to update category. Please try again.`)
@@ -302,7 +326,7 @@ const updateFoodItemByMenuIdAndFid = (request, response) => {
       
       
     }
-  
+    console.log("Test")
     response.status(200).send(`Food Item has been updated`)
   })
   
@@ -313,7 +337,7 @@ const createPromotionsByRestId = (request, response) => {
   const { rest_id } = request.params
   const { start_time, end_time, discount_desc, discount_percentage, name } = request.body
 
-  pool.query('SELECT addRestaurantPromotion($1, $2, $3, $4, $5)', [start_time, end_time, discount_desc, discount_percentage, name, rest_id], (error, results) => {
+  pool.query('SELECT addRestaurantPromotion($1, $2, $3, $4, $5, $6)', [start_time, end_time, discount_desc, discount_percentage, name, rest_id], (error, results) => {
     if (error) {
       response.status(400).send(`Unable to create Promotion. Please try again.`)
       throw error
@@ -456,7 +480,7 @@ const retrieveReviews = (request, response) => {
 const getRestaurantOrders = (request, response) => {
   const { rest_id } = request.params
 
-  pool.query('SELECT getRestOrders($1)', [rest_id], (error, results) => {
+  pool.query('SELECT * from getRestOrders($1)', [rest_id], (error, results) => {
     if (error) {
       response.status(400).send('Unable to get orders')
       throw error
@@ -477,7 +501,7 @@ const getOrderSummaryBasedOnCurrentMonthNumber = (request, response) => {
     }
     const rest_id = results.rows[0].rest_id
 
-    pool.query('SELECT getCurrMonthOrderSummary($1)', [rest_id], (error, results) => {
+    pool.query('SELECT * FROM getCurrMonthOrderSummary($1)', [rest_id], (error, results) => {
       
       if (error) {
         response.status(400).send('Unable to get  current month order summary')
@@ -500,7 +524,7 @@ const getAllOrderSummary = (request, response) => {
     }
     const rest_id = results.rows[0].rest_id
 
-    pool.query('SELECT getAllMonthOrderSummary($1)', [rest_id], (error, results) => {
+    pool.query('SELECT * from getAllMonthOrderSummary($1)', [rest_id], (error, results) => {
       
       if (error) {
         response.status(400).send('Unable to get order summary for all months')
@@ -523,7 +547,7 @@ const getTopFiveFoodSummaryBasedOnCurrentMonthNumber = (request, response) => {
     }
     const rest_id = results.rows[0].rest_id
 
-    pool.query('SELECT getCurrMonthTopFive($1)', [rest_id], (error, results) => {
+    pool.query('SELECT * from getCurrMonthTopFive($1)', [rest_id], (error, results) => {
       
       if (error) {
         response.status(400).send('Unable to get top five favourite food summary')
@@ -538,7 +562,7 @@ const getTopFiveFoodSummaryBasedOnCurrentMonthNumber = (request, response) => {
 const getPromoSummaryBasedOnPid = (request, response) => {
   const { pid } = request.params
 
-  pool.query('SELECT getPromoSummary($1)', [pid], (error, results) => {
+  pool.query('SELECT * from getPromoSummary($1)', [pid], (error, results) => {
     if (error) {
       response.status(400).send('Unable to get top five favourite food summary')
       throw error

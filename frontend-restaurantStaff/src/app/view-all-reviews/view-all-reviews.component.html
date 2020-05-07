@@ -1,0 +1,27 @@
+<app-header></app-header>
+
+<p-table [value]="reviews">
+    <ng-template pTemplate="caption">
+        Review
+    </ng-template>
+    <ng-template pTemplate="header">
+        <tr>
+            <th>Name</th>
+            <th>Username</th>
+            <th>Review Description</th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-review>
+        <tr>
+            <td>{{review.name}}</td>
+            <td>{{review.username}}</td>
+            <td>{{review.review_desc}}</td>
+            <!-- <td>
+                <p-button label="Update" (onClick)="showDialog1(promotion)"></p-button>
+                &nbsp;
+                <p-button label="Delete" (onClick)="deletePromotion(promotion)"></p-button>
+            </td> -->
+            <!-- <td><a routerLink="/view-all-food-items/{{menu.menu_id}}">View Food Items</a></td> -->
+        </tr>
+    </ng-template>
+</p-table>

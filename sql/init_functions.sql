@@ -265,11 +265,12 @@ $$ LANGUAGE PLPGSQL;
 
 CREATE OR REPLACE FUNCTION getRestOrders(rest_id INTEGER)
 RETURNS table(oid INTEGER, fid INTEGER, name VARCHAR, quantity INTEGER, status ORDER_STATUSES) AS $$
-    SELECT of.oid, f.fid, f.name, of.quantity, o.status
+    SELECT distinct of.oid, f.fid, f.name, of.quantity, o.status
     FROM Menus m, Food_Items f, Order_Contains_Food of, Orders o
     WHERE m.rest_id = $1 
     AND m.menu_id = f.menu_id
     AND f.fid = of.fid
+    AND o.oid = of.oid
     AND o.status <> 'DELIVERED'
 $$ LANGUAGE SQL;
 
