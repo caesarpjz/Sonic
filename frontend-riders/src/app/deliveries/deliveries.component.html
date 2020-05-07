@@ -5,15 +5,12 @@
     <div class="jumbotron" style="margin: auto;">
       <div class="container text-center">
         <h1>Deliveries</h1>
-        <p class="lead text-muted">
-          xx
-        </p>
       </div>
     </div>
   </div>
 
   <!-- todos: add tabs for menus? -->
-  <div class="delivery-container" *ngIf="assignedDeliveries">
+  <div class="delivery-container" *ngIf="assignedDeliveries && assignedDeliveries.length > 0">
     <h3>Assigned deliveries</h3>
     <div class="deliveries" *ngFor="let delivery of assignedDeliveries">
       <div class="card">
@@ -30,7 +27,9 @@
     </div>
   </div>
 
-  <div class="delivery-container" *ngIf="pastDeliveries">
+  {{pastDeliveries}}
+
+  <div class="delivery-container mt-5" *ngIf="pastDeliveries && pastDeliveries.length > 0">
     <h3>Past deliveries</h3>
     <div class="deliveries" *ngFor="let delivery of pastDeliveries">
       <div class="card">

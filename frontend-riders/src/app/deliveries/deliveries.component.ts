@@ -7,8 +7,8 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./deliveries.component.css']
 })
 export class DeliveriesComponent implements OnInit {
-  assignedDeliveries: any;
-  pastDeliveries: any;
+  assignedDeliveries = null;
+  pastDeliveries = null;
 
   constructor(private deliveriesService: DeliveriesService) { }
 
@@ -24,7 +24,7 @@ export class DeliveriesComponent implements OnInit {
   }
 
   retrievePastDeliveries() {
-    this.deliveriesService.getAssignedDeliveries().subscribe((res) => {
+    this.deliveriesService.getDeliveryHistory().subscribe((res) => {
       this.pastDeliveries = res;
     });
   }
