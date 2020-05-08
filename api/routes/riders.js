@@ -235,7 +235,6 @@ const submitSchedule = (request, response) => {
       // }
     })
 
-    const rid = results.rows[0].rid
     var i = 0;
     for (i = 0; i < array_length; i++) {
       pool.query('SELECT addShift($1, $2, $3)', [rid, shiftArray[i].start_time, shiftArray[i].end_time], (error, results) => {
