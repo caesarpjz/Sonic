@@ -19,8 +19,6 @@ export class SummaryComponent implements OnInit {
 
   getMonthlySummary() {
     this.summaryService.getMonthlySummary().subscribe((res) => {
-      console.log(res);
-
       this.month = moment(res.month).format('MMMM');
       this.monthlySummary = res;
     });
