@@ -16,6 +16,8 @@
     <div class="orders-container d-flex justify-content-center" *ngFor="let food of foodItems">
       <app-review-food-item [food]=food [oid]=orderId></app-review-food-item>
     </div>
+
+    <button class="btn btn-secondary mt-3" [routerLink]="['/profile']"> Back to profile </button>
   </div>
 </div>
 
