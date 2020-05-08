@@ -1,0 +1,20 @@
+<div class="order">
+  <div class="order-row">
+    <div class="order-header">
+      Food name
+    </div>
+    <div class="order-description">
+      {{food.name}}
+    </div>
+  </div>
+
+  <div class="order-row">
+    <form style="width: 100%;" [formGroup]="reviewForm" (ngSubmit)="submitReview()">
+      <input type="text" class="form-control" placeholder="Write review here" formControlName="review">
+      <button class="btn btn-primary mt-3" type="submit" [disabled]=reviewForm.invalid>
+        Submit
+      </button>
+    </form>
+
+  </div>
+</div>

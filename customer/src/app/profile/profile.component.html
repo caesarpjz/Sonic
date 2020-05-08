@@ -28,7 +28,7 @@
             Cost
           </div>
           <div class="order-description">
-            ${{order.cost}}0
+            ${{order.cost}}
           </div>
         </div>
 
@@ -67,6 +67,10 @@
             {{order.location}}
           </div>
         </div>
+
+        <button class="btn btn-primary btn-small mt-3" (click)="goToReview(order.oid, order.did)" *ngIf="order.status == 'DELIVERED'">
+          Review order and delivery
+        </button>
       </div>
     </div>
 
