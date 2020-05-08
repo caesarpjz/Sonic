@@ -157,6 +157,7 @@ export class CheckoutComponent implements OnInit {
               if (result.value) {
                 this.router.navigate(['/profile']);
                 localStorage.removeItem('cart');
+                localStorage.removeItem('restaurantLastOrdered');
               }
             });
 
@@ -185,6 +186,7 @@ export class CheckoutComponent implements OnInit {
           if (result.value) {
             this.router.navigate(['/profile']);
             localStorage.removeItem('cart');
+            localStorage.removeItem('restaurantLastOrdered');
           }
         });
 
