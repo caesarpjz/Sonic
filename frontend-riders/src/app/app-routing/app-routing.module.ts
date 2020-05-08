@@ -1,3 +1,4 @@
+import { SummaryComponent } from './../summary/summary.component';
 import { DeliveriesComponent } from './../deliveries/deliveries.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
@@ -17,7 +18,8 @@ const routes: Routes = [
   { path: 'submit-schedule', component: SubmitScheduleComponent },
   { path: 'submit-schedule-monthly', component: SubmitScheduleMonthlyComponent },
   { path: 'view-schedule', component: ViewScheduleComponent },
-  { path: 'deliveries', component: DeliveriesComponent }
+  { path: 'deliveries', component: DeliveriesComponent },
+  { path: 'summary', component: SummaryComponent }
 ];
 
 @NgModule({

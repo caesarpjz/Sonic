@@ -62,4 +62,10 @@ export class CustomerService {
     const username = sessionStorage.getItem('username');
     return this.httpClient.get<any>('/api/customer/' + username + '/orders');
   }
+
+  // get all food items in order by order id
+  getFoodByOrder(oid): Observable<any> {
+    const username = sessionStorage.getItem('username');
+    return this.httpClient.get<any>('/api/customer/' + username + '/orders/food_items/' + oid);
+  }
 }

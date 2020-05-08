@@ -305,6 +305,7 @@ const insertCCInfo = (request, response) => {
   const { username } = request.params
   const cc_name = request.body.cc_name
   const expiryDate = request.body.expiryDate
+  const num = request.body.num
 
   // var namechar = cc_name.split('')
   // var count = 0
@@ -325,7 +326,7 @@ const insertCCInfo = (request, response) => {
     }
     const cid = results.rows[0].cid
 
-    pool.query('SELECT updateCC($1, $2, $3)', [cid, cc_name, expiryDate], (error, results) => {
+    pool.query('SELECT updateCC($1, $2, $3, $4)', [cid, cc_name, expiryDate, num], (error, results) => {
       if (error) {
         response.status(400).send(`Unable to add credit card info`)
         throw error
@@ -473,7 +474,14 @@ const filterRestaurantByLocation = (request, response) => {
 const getAllReviews = (request, response) => {
   const { rest_id } = request.params
 
-  pool.query('SELECT distinct rt.name, r.cid, c.username, f.name, f.fid, r.review_desc FROM Reviews r, Customers c, Food_Items f, Menus m, Restaurants rt WHERE r.fid = f.fid AND r.cid = c.cid AND rt.rest_id = $1', [rest_id], (error, results) => {
+  // pool.query('SELECT distinct rt.name, r.cid, c.username, f.name, f.fid, r.review_desc FROM Reviews r, Customers c, Food_Items f, Menus m, Restaurants rt WHERE r.fid = f.fid AND r.cid = c.cid AND rt.rest_id = $1', [rest_id], (error, results) => {
+  //   if (error) {
+  //     response.status(400).send('Unable to get reviews')
+  //   }
+  //   response.status(200).json(results.rows)
+  // })
+
+  pool.query('select c.cid, cust.username, f.name, c.review_desc from food_items f, menus m, restaurants r, reviews c, customers cust where cust.cid = c.cid and f.menu_id = m.menu_id and m.rest_id = r.rest_id and f.fid = c.fid and r.rest_id = $1', [rest_id], (error, results) => {
     if (error) {
       response.status(400).send('Unable to get reviews')
     }

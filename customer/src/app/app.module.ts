@@ -26,6 +26,9 @@ import { CreditcardComponent } from './creditcard/creditcard.component';
 import { DropdownModule } from 'primeng/dropdown';
 import { UpdateCcComponent } from './update-cc/update-cc.component';
 import { ReviewsComponent } from './reviews/reviews.component';
+import { ReviewComponent } from './review/review.component';
+import { RatingModule } from 'primeng/rating';
+import { ReviewFoodItemComponent } from './review-food-item/review-food-item.component';
 
 
 @NgModule({
@@ -47,7 +50,9 @@ import { ReviewsComponent } from './reviews/reviews.component';
     AlertComponent,
     CreditcardComponent,
     UpdateCcComponent,
-    ReviewsComponent
+    ReviewsComponent,
+    ReviewComponent,
+    ReviewFoodItemComponent
   ],
   imports: [
     BrowserModule,
@@ -57,7 +62,8 @@ import { ReviewsComponent } from './reviews/reviews.component';
     ReactiveFormsModule,
     BrowserAnimationsModule,
     RadioButtonModule,
-    DropdownModule
+    DropdownModule,
+    RatingModule
   ],
   providers: [
     AlertService

@@ -1,0 +1,24 @@
+<app-header></app-header>
+
+<div class="container mt-5 mb-5 pt-5">
+  <div class="container text-center">
+    <h1>Review delivery and food</h1>
+
+    <h5 class="lead text-muted mt-3">Rate delivery (from 1 to 5)</h5>
+    <form class="form" [formGroup]="deliveryRatingForm" (ngSubmit)="submitDeliveryRating()">
+      <p-rating formControlName="rating"></p-rating>
+      <button class="btn btn-primary mt-3" type="submit" [disabled]=deliveryRatingForm.invalid>
+        Submit
+      </button>
+    </form>
+
+    <h5 class="lead text-muted mt-3">Food ordered</h5>
+    <div class="orders-container d-flex justify-content-center" *ngFor="let food of foodItems">
+      <app-review-food-item [food]=food [oid]=orderId></app-review-food-item>
+    </div>
+
+    <button class="btn btn-secondary mt-3" [routerLink]="['/profile']"> Back to profile </button>
+  </div>
+</div>
+
+<app-footer></app-footer>

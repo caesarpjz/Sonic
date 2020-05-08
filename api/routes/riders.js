@@ -156,7 +156,7 @@ const timeDepartFromResturant = (request, response) => {
       response.status(400).send(`Unable to update departure time from restaurant`)
       throw error
     }
-    response.status(200).send(`Departure time from restaurant successfully updated`)
+    response.status(200).json(`Departure time from restaurant successfully updated`)
   })
 }
 
@@ -169,7 +169,7 @@ const timeOrderDelivered = (request, response) => {
       response.status(400).send(`Unable to order delivered time`)
       throw error
     }
-    response.status(200).send(`Order delivered time successfully updated`)
+    response.status(200).json(`Order delivered time successfully updated`)
   })
 }
 
@@ -244,12 +244,20 @@ const getMonthlySummaryInfo = (request, response) => {
       throw error
     }
     const rid = results.rows[0].rid
-    pool.query('SELECT getMonthlyRiderSummary($1)', [rid], (error, results) => {
+    pool.query('SELECT * from getMonthlyRiderSummary($1)', [rid], (error, results) => {
       if (error) {
         response.status(400).send('Unable to get monthly summary')
         throw error
       }
-      response.status(200).json(results.rows[0])
+
+      // response.status(200).json(results.rows[0])
+      response.status(200).send({
+        rid: results.rows[0].rider_id,
+        month: results.rows[0].month,
+        total_orders: results.rows[0].total_orders,
+        total_hours: results.rows[0].total_hours,
+        total_salary: results.rows[0].total_salary
+      })
     })
   })
 }

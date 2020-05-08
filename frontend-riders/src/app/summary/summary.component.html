@@ -1,0 +1,30 @@
+<app-app-header></app-app-header>
+
+<div class="container mt-5 mb-5 pt-5">
+  <div class="container text-center pb-3">
+    <h1>Summary</h1>
+  </div>
+
+  <div class="summary-container" *ngIf="monthlySummary">
+    <h3>Monthly summary for {{month}}</h3>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">Total orders</th>
+          <th scope="col">Total hours</th>
+          <th scope="col">Total salary ($)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>{{monthlySummary.total_orders}}</td>
+          <td>{{monthlySummary.total_hours}}</td>
+          <td>{{monthlySummary.total_salary}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<app-app-footer></app-app-footer>

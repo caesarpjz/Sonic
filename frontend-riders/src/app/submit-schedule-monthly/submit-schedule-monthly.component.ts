@@ -1,5 +1,8 @@
+import { AlertService } from './../services/alert.service';
+import { ScheduleService } from './../services/schedule.service';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, FormArray, FormControl, Validators } from '@angular/forms';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-submit-schedule-monthly',
@@ -124,7 +127,9 @@ export class SubmitScheduleMonthlyComponent implements OnInit {
 
   scheduleForm: FormGroup;
 
-  constructor(private formBuilder: FormBuilder) {
+  constructor(private formBuilder: FormBuilder,
+    private scheduleService: ScheduleService,
+    private alertService: AlertService) {
   }
 
   ngOnInit(): void {
@@ -156,6 +161,94 @@ export class SubmitScheduleMonthlyComponent implements OnInit {
 
   submit() {
     console.log(this.scheduleForm);
+
+    let schedule = {
+      'shiftArray': []
+    };
+
+
+    for (var idx = 4; idx > 0; idx--) {
+      this.scheduleForm.value.items.map((day) => {
+        let dayNum = 0;
+
+        switch (day.day) {
+          case 'sunday':
+            dayNum = 0;
+            break;
+          case 'monday':
+            dayNum = 1;
+            break;
+          case 'tuesday':
+            dayNum = 2;
+            break;
+          case 'wednesday':
+            dayNum = 3;
+            break;
+          case 'thursday':
+            dayNum = 4;
+            break;
+          case 'friday':
+            dayNum = 5;
+            break;
+          case 'saturday':
+            dayNum = 6;
+            break;
+        }
+
+
+        // if week 1, add +7
+        // if week 2, add +14
+
+        switch(idx) {
+          case 4:
+            if (day.week === 1) {
+              dayNum += 7;
+            } else {
+              dayNum += 14;
+            }
+            break;
+          case 3:
+            if (day.week === 1) {
+              dayNum += 14;
+            } else {
+              dayNum += 21;
+            }
+            break;
+          case 2:
+            if (day.week === 1) {
+              dayNum += 21;
+            } else {
+              dayNum += 28;
+            }
+            break;
+          case 1:
+            if (day.week === 1) {
+              dayNum += 28;
+            } else {
+              dayNum += 35;
+            }
+            break;
+        }
+
+        // console.log('shift array', this.shiftTimeInfo[day.shift]);
+
+        for (var i = 0; i < this.shiftTimeInfo[day.shift].length; i++) {
+
+          let shift = {
+            'start_time': moment().day(dayNum).hour(this.shiftTimeInfo[day.shift][i].startTime).minute(0).second(0).format(),
+            'end_time': moment().day(dayNum).hour(this.shiftTimeInfo[day.shift][i].endTime).minute(0).second(0).format(),
+          }
+
+          schedule.shiftArray.push(shift);
+        }
+
+        // console.log(schedule);
+      });
+    }
+
+    this.scheduleService.submitSchedule(schedule).subscribe((res) => {
+      this.alertService.success('Shifts successfully added!');
+    });
   }
 
 }
