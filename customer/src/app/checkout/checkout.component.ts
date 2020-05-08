@@ -189,10 +189,6 @@ export class CheckoutComponent implements OnInit {
             localStorage.removeItem('restaurantLastOrdered');
           }
         });
-
-        console.log(res);
-
-        // route to order summary page when complete, show delivery status blah
       }, ((err) => {
         Swal.fire({
           title: 'Your order has not been placed',
