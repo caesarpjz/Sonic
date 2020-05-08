@@ -220,20 +220,20 @@ const submitSchedule = (request, response) => {
     }
     const rid = results.rows[0].rid
 
-    pool.query('SELECT start_time, end_time FROM Shifts WHERE rid = $1', [rid], (error, results) => {
-      if (error) {
-        response.status(400).send('Unable to sbumit schedule')
-        throw error
-      }
-      var arrayShift = results.rows
-      // for (var m = 0; m < array_length; m++) {
-      //   for (var k = 0; k < arrayShift.length; k++) {
-      //     if (shiftArray[m].start_time > arrayShift[k].start_time && arrayShift[k].start_time.getDate() == shiftArray[m].start_time.getDate()) {
+    // pool.query('SELECT start_time, end_time FROM Shifts WHERE rid = $1', [rid], (error, results) => {
+    //   if (error) {
+    //     response.status(400).send('Unable to sbumit schedule')
+    //     throw error
+    //   }
+    //   var arrayShift = results.rows
+    //   // for (var m = 0; m < array_length; m++) {
+    //   //   for (var k = 0; k < arrayShift.length; k++) {
+    //   //     if (shiftArray[m].start_time > arrayShift[k].start_time && arrayShift[k].start_time.getDate() == shiftArray[m].start_time.getDate()) {
 
-      //     }
-      //   }
-      // }
-    })
+    //   //     }
+    //   //   }
+    //   // }
+    // })
 
     var i = 0;
     for (i = 0; i < array_length; i++) {
