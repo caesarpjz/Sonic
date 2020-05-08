@@ -238,11 +238,6 @@ app.get('/', (req, res) => {
     .route('/riders/:username/monthlysummary')
     .get(ridersDb.getMonthlySummaryInfo)
 
-    // Below not working yet. hold up
-    // Get weekly summary info
-    app
-    .route('/riders/:username/weeklysummary')
-    .get(ridersDb.getWeeklySummaryInfo)
 
 /***** FDS Managers *****/
 

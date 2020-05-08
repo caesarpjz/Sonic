@@ -37,7 +37,7 @@ export class ScheduleService {
     return this.httpClient.get<any>(`/api/riders/${username}/schedule`);
   }
 
-  submitSchedule(schedule): Observable<any> {
+   submitSchedule(schedule): Observable<any> {
     const username = sessionStorage.getItem('username');
     return this.httpClient.post<any>(`/api/riders/${username}/schedule/submit`, schedule,
       httpOptions).pipe(

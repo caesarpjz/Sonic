@@ -404,7 +404,7 @@ const checkIfRestaurantPromotionIsValidByPid = (request, response) => {
 // /restaurant_staff/:username/restaurant/:rest_id/promotions/:pid
 const updatePromotionByPid = (request, response) => {
   const { pid } = request.params
-  const { start_date, end_date, discount_percentage, promo_code } = request.body
+  const { start_date, end_date, discount_percentage, name } = request.body
 
   if (start_date !== undefined) {
     pool.query('UPDATE Promotions SET start_date = $1 WHERE pid = $2', [start_date, pid], (error, results) => {
@@ -438,8 +438,8 @@ const updatePromotionByPid = (request, response) => {
     })
   }
 
-  if (promo_code !== undefined) {
-    pool.query('UPDATE Promotions SET name = $1 WHERE pid = $2', [promo_code, pid], (error, results) => {
+  if (name !== undefined) {
+    pool.query('UPDATE Promotions SET name = $1 WHERE pid = $2', [name, pid], (error, results) => {
       if (error) {
         response.status(400).send(`Unable to update promotion name`)
         throw error
@@ -485,6 +485,7 @@ const getRestaurantOrders = (request, response) => {
       response.status(400).send('Unable to get orders')
       throw error
     }
+    
     response.status(200).json(results.rows)
   })
 }

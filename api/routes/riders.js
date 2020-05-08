@@ -63,7 +63,7 @@ const assignOrders = (request, response) => {
       response.status(400).send(`Unable to assign orders`)
       throw error
     }
-    const rid = results.rows[0].rid
+    // const rid = results.rows[0].rid
 
     pool.query('SELECT did FROM Deliveries WHERE rid is null', (error, results) => {
       if (error) {
@@ -81,7 +81,7 @@ const assignOrders = (request, response) => {
         // console.log(ridArray)
         var m
         for (m = 0; (m < ridArray.length && m < didArray.length); m++) {
-          console.log('a')
+          // console.log('a')
           pool.query('SELECT allocateRiders($1, $2)', [didArray[m].did, ridArray[m].getavailableriders], (error, results) => {
             if (error) {
               response.status(400).send(`Unable to assign orders`)
@@ -262,90 +262,120 @@ const getMonthlySummaryInfo = (request, response) => {
   })
 }
 
-
-// /riders/:username/weeklysummary
-const getWeeklySummaryInfo = (request, response) => {
-  const { username } = request.params
-
-  pool.query('SELECT rid FROM riders WHERE username = $1', [username], (error, results) => {
-    if (error) {
-      response.status(400).send('ACannot get weekly summary')
-      throw error
-    } 
-    var rid = results.rows[0]
-    if (rid != null) {
-      rid = rid.rid
-      pool.query('SELECT * FROM getEarliestShift($1)', [rid], (error, results) => {
-        if (error) {
-          response.status(400).send('BUnable to get weekly summary')
-          throw error
-        }
-        // console.log(results.rows)
-        var earliest = results.rows[0]
-        console.log(results.rows[0].getearliestshift.getDay())
-        if (earliest != null) {
-          earliest = earliest.getearliestshift
-          var earliestDayNum = earliest.getDay()
-          var howManyDaysLeft = 7 - earliestDayNum
-          var earliestFirst = earliest
-          var nextDate = earliest.setDate(earliest.getDate() + howManyDaysLeft)
-          // var date = new Date(this.valueOf());
-          // date.setDate(date.getDate() + days);
-          // return date;
-          // var nextDate = earliest.addD
-          var weekArray = []
-          weekArray.push([earliestFirst, nextDate])
-          var k = 0
-          pool.query('SELECT * FROM getLatestShift($1)', [rid], (error, results) => {
-            if (error) {
-              response.status(400).send('CUnable to get weekly summary')
-              throw error
-            }
-            var latest = results.rows[0]
-            if (latest != null) {
-              latest = latest.getlatestshift
-              var latestDay = latest.getDay()
-              var howManyDaysBefore = latest - latestDay
-              var latestHolder = latest
-              var lastWeekDate = latest.setDate(latest.getDate() - howManyDaysBefore)
-              var k = 0
-              var early = new Date()
-              console.log(nextDate)
-              while  (nextDate != lastWeekDate ) {
-                var nextHolder = nextDate
-                early = nextDate.setDate(nextDate.getDate() + 1)
-                console.log(nextDate)
-                nextDate = nextHolder.setDate(nextHolder.getDate() + 7)
-                console.log(nextDate)
-                weekArray.push([early, nextDate])
-              }
-              lastWeekDate.setDate(lastWeekDate.getDate() + 1)
-              weekArray.push([lastWeekDate, latestHolder])
-              response.status(200).json(weekArray)
-              var lengthArray = weekArray.length
-              var resultsArray = []
-              for (var j = 0; j < lengthArray; j++) {
-                pool.query('SELECT * FROM getridersummary($1, $2, $3)', [rid, weekArray[j][0], weekArray[j][1]], (error, results) => {
-                  if (error) {
-                    response.status(400).send('DUnable to get weekly summary')
-                    throw error
-                  }
-                  resultsArray.push(results.rows)
-                })
-              }
-              response.status(200).json(resultsArray)
-            }
-          })
-        } else {
-          response.status(400).send('EUnable to get weekly summary')
-        }
-      })
-    } else {
-      response.status(400).send('FUnable to get weekly summary')
-    }
-  })
-  
+function timeConverter(UNIX_timestamp){
+  var a = new Date(UNIX_timestamp * 1000);
+  var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var year = a.getFullYear();
+  var month = months[a.getMonth()];
+  var date = a.getDate();
+  var hour = a.getHours();
+  var min = (a.getMinutes() < 10) ? ('0' + a.getMinutes()) : (a.getMinutes());
+  var sec = (a.getSeconds() < 10) ? ('0' + a.getSeconds()) :( a.getSeconds());
+  var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec ;
+  return time;
 }
+
+// // /riders/:username/weeklysummary
+// const getWeeklySummaryInfo = (request, response) => {
+//   const { username } = request.params
+
+//   pool.query('SELECT rid FROM riders WHERE username = $1', [username], (error, results) => {
+//     if (error) {
+//       response.status(400).send('ACannot get weekly summary')
+//       throw error
+//     } 
+//     var rid = results.rows[0]
+//     if (rid != null) {
+//       rid = rid.rid
+//       pool.query('SELECT * FROM getEarliestShift($1)', [rid], (error, results) => {
+//         if (error) {
+//           response.status(400).send('BUnable to get weekly summary')
+//           throw error
+//         }
+//         // console.log(results.rows)
+//         var earliest = results.rows[0]
+//         console.log(results.rows[0].getearliestshift.getDay())
+//         if (earliest != null) {
+//           var tempArray = []
+//           earliest = earliest.getearliestshift
+//           tempArray.push(earliest)
+//           console.log('earliest', earliest.getearliestshift)
+//           var earliestDayNum = earliest.getDay()
+//           console.log("earliestDayNum", earliestDayNum)
+//           var howManyDaysLeft = 7 - earliestDayNum
+//           console.log('howManydaysleft', howManyDaysLeft)
+//           const earliestFirst = earliest
+//           console.log('earliestFirst', earliestFirst)
+//           var nextDate = earliest.setDate(earliest.getDate() + howManyDaysLeft)
+//           console.log(typeof(nextDate))
+//           nextDate = timeConverter((nextDate).toString().substring(0,10))
+//           console.log('nextDate', nextDate)
+//           tempArray.push(nextDate)
+//           console.log('earliest first 2', earliestFirst)
+
+//           var weekArray = []
+//           weekArray.push(tempArray)
+//           console.log('weeklyarray', weekArray)
+//           var k = 0
+//           pool.query('SELECT * FROM getLatestShift($1)', [rid], (error, results) => {
+//             if (error) {
+//               response.status(400).send('CUnable to get weekly summary')
+//               throw error
+//             }
+//             var latest = results.rows[0]
+//             console.log('latest', latest)
+//             if (latest != null) {
+//               latest = latest.getlatestshift
+//               console.log('latest', latest)
+//               var latestDay = latest.getDay()
+//               console.log('latestDay', latestDay)
+//               var howManyDaysBefore = latest - latestDay
+//               console.log('howmanydaysbefore', howManyDaysBefore)
+//               var latestHolder = latest
+//               console.log('latestholder',latestHolder)
+//               var lastWeekDate = latest.setDate(latest.getDate() - howManyDaysBefore)
+//               console.log('lastweekdate', lastWeekDate)
+//               var k = 0
+//               var early;
+//               while  (nextDate != lastWeekDate ) {
+//                 var nextHolder = nextDate
+//                 console.log('inside while loop: nexthodler', nextHolder)
+//                 early = nextDate.setDate(nextDate.getDate() + 1)
+//                 console.log('early', early)
+//                 // console.log(nextDate)
+//                 nextDate = nextHolder.setDate(nextHolder.getDate() + 7)
+//                 console.log('iside while loop next one next date: ', nextdate)
+//                 // console.log(nextDate)
+//                 weekArray.push([early, nextDate])
+//                 console.log('inside while loop ', weekArray)
+//               }
+//               lastWeekDate.setDate(lastWeekDate.getDate() + 1)
+//               weekArray.push([lastWeekDate, latestHolder])
+//               response.status(200).json(weekArray)
+//               var lengthArray = weekArray.length
+//               var resultsArray = []
+//               for (var j = 0; j < lengthArray; j++) {
+//                 pool.query('SELECT * FROM getridersummary($1, $2, $3)', [rid, weekArray[j][0], weekArray[j][1]], (error, results) => {
+//                   if (error) {
+//                     response.status(400).send('DUnable to get weekly summary')
+//                     throw error
+//                   }
+//                   resultsArray.push(results.rows)
+//                 })
+//               }
+//               response.status(200).json(resultsArray)
+//             }
+//           })
+//         } else {
+//           response.status(400).send('EUnable to get weekly summary')
+//         }
+//       })
+//     } else {
+//       response.status(400).send('FUnable to get weekly summary')
+//     }
+//   })
+  
+// }
 
 module.exports = {
   login,
@@ -359,6 +389,6 @@ module.exports = {
   checkIfFullTime,
   viewPastSchedule,
   submitSchedule,
-  getMonthlySummaryInfo,
-  getWeeklySummaryInfo
+  getMonthlySummaryInfo
+  // getWeeklySummaryInfo
 }
