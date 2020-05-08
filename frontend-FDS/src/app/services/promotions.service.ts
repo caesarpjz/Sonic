@@ -30,6 +30,8 @@ export class PromotionsService {
     console.log(newPromotion.start_time)
     return this.httpClient.post<any>(this.path + '/managers/'+ this.sessionService.getUsername() + '/createpromotions', newPromotion, { responseType: 'text' as 'json' }).pipe
       (
+        retry(1),
+
         catchError(this.handleError)
       );
   }

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgForm } from '@angular/forms';
+import * as moment from 'moment';
 
 import { RidersService } from '../services/riders.service';  
 
@@ -32,6 +33,13 @@ export class ViewAllRidersComponent implements OnInit {
     this.ridersService.getRiderShift(rider.rid).subscribe(
       response => {
         this.shifts = response;
+        var i = 0;
+        for (i = 0; i < this.shifts.length; i++) {
+          var subStringStartDate = moment(this.shifts[i].start_time).format('DD-MM-YYYY HH:mm');
+          this.shifts[i].start_time = subStringStartDate;
+          var subStringEndDate = moment(this.shifts[i].end_time).format('DD-MM-YYYY HH:mm');
+          this.shifts[i].end_time = subStringEndDate;
+        }
       }
     )
   }

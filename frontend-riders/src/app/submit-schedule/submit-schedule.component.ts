@@ -1,6 +1,9 @@
+import { ScheduleService } from './../services/schedule.service';
 import { AlertService } from './../services/alert.service';
 import { FormGroup, FormBuilder, FormArray, AbstractControl, ValidatorFn, ValidationErrors } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
+
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-submit-schedule',
@@ -39,7 +42,9 @@ export class SubmitScheduleComponent implements OnInit {
   items: FormArray;
   times: FormArray;
 
-  constructor(private formBuilder: FormBuilder, private alertService: AlertService) {
+  constructor(private formBuilder: FormBuilder,
+    private alertService: AlertService,
+    private scheduleService: ScheduleService) {
   }
 
   ngOnInit() {
@@ -88,7 +93,7 @@ export class SubmitScheduleComponent implements OnInit {
   }
 
   removeTimeslot(i, j): void {
-    console.log(i, j);
+    // console.log(i, j);
     this.items = this.scheduleForm.get('items') as FormArray;
     // should add to the correct day via retrieving an index number
     let test = this.items.controls[i] as FormGroup;
@@ -97,10 +102,10 @@ export class SubmitScheduleComponent implements OnInit {
   }
 
   validateEndTime: ValidatorFn = (AC: AbstractControl): ValidationErrors | null => {
-    console.log(AC);
+    // console.log(AC);
     const start = AC.get('startTime').value;
     const end = AC.get('endTime').value;
-    console.log(start, end);
+    // console.log(start, end);
 
     // each interval must not be more than 4 hours
     let validDuration = Math.abs(end - start) <= 4 ? true : false;
@@ -135,7 +140,7 @@ export class SubmitScheduleComponent implements OnInit {
         if (times.get(item.times[i].startTime) == null) {
           times.set(item.times[i].startTime, item.times[i].startTime);
           totalHours += item.times[i].endTime - item.times[i].startTime;
-          console.log('totalHours', totalHours);
+          // console.log('totalHours', totalHours);
         }
 
         // depends on length of item.times,
@@ -150,12 +155,12 @@ export class SubmitScheduleComponent implements OnInit {
 
     totalHoursValid = totalHours >= 10 && totalHours <= 48;
 
-    console.log(totalHours);
-    console.log(intervalCheck);
+    // console.log(totalHours);
+    // console.log(intervalCheck);
     // console.log('overlap', noOverlapCheck);
 
     // need to check for at least one hr between intervals
-    console.log(this.scheduleForm);
+    // console.log(this.scheduleForm);
 
     if (!totalHoursValid) {
       // this.alertService.error('Total hours for schedule must be at least 10 and at most 48 hours');
@@ -168,6 +173,55 @@ export class SubmitScheduleComponent implements OnInit {
     }
 
     // is valid or not valid
-    return totalHoursValid  && intervalCheck ? true : false;
+    // return totalHoursValid  && intervalCheck ? true : false;
+
+    if (totalHoursValid && intervalCheck) {
+      //transform data
+
+      let schedule = {
+        'shiftArray': []
+      };
+
+      this.scheduleForm.value.items.map((day) => {
+        let dayNum = 0;
+
+        switch(day.day) {
+          case 'sunday':
+            dayNum = 0;
+            break;
+          case 'monday':
+            dayNum = 1;
+            break;
+          case 'tuesday':
+            dayNum = 2;
+            break;
+          case 'wednesday':
+            dayNum = 3;
+            break;
+          case 'thursday':
+            dayNum = 4;
+            break;
+          case 'friday':
+            dayNum = 5;
+            break;
+          case 'saturday':
+            dayNum = 6;
+            break;
+        }
+
+        for (var i = 0; i < day.times.length; i++) {
+          let shift = {
+            'start_time': moment().day(dayNum + 7).hour(day.times[i].startTime).minute(0).second(0).format(),
+            'end_time': moment().day(dayNum + 7).hour(day.times[i].endTime).minute(0).second(0).format(),
+          }
+
+          schedule.shiftArray.push(shift);
+        }
+      });
+
+      this.scheduleService.submitSchedule(schedule).subscribe((res) => {
+        this.alertService.success('Shifts successfully added!');
+      });
+    }
   }
 }

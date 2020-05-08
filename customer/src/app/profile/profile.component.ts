@@ -34,4 +34,8 @@ export class ProfileComponent implements OnInit {
     });
   }
 
+  goToReview(oid, did) {
+    this.router.navigate([`/review/${oid}/${did}`]);
+  }
+
 }

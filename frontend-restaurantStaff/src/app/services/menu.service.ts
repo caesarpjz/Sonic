@@ -32,7 +32,7 @@ export class MenuService {
     let newMenuName = {
       "menu_name": menuName
     }
-    return this.httpClient.post<any>(this.path + "/restaurant_staff/" + this.sessionService.getUsername() + "/restaurant/" + restId +"/add/menu", newMenuName).pipe 
+    return this.httpClient.post<any>(this.path + "/restaurant_staff/" + this.sessionService.getUsername() + "/restaurant/" + restId +"/add/menu", newMenuName, { responseType: 'text' as 'json' }).pipe 
     (
       catchError(this.handleError)
     );
@@ -45,14 +45,14 @@ export class MenuService {
     let updatedMenuName = {
       "new_name": menuName
     }
-    return this.httpClient.post<any>(this.path + "/restaurant_staff/" + this.sessionService.getUsername() + "/restaurant/ " + restId + "/" + menuId, updatedMenuName).pipe
+    return this.httpClient.post<any>(this.path + "/restaurant_staff/" + this.sessionService.getUsername() + "/restaurant/ " + restId + "/" + menuId, updatedMenuName, { responseType: 'text' as 'json' }).pipe
       (
         catchError(this.handleError)
       );
   }
 
   deleteMenu(menuId: String, restId: any): Observable<any> {
-    return this.httpClient.delete<any>(this.path + "/restaurant_staff/"+ this.sessionService.getUsername() +"/restaurant/"+ restId + "/deleteid/" + menuId).pipe
+    return this.httpClient.delete<any>(this.path + "/restaurant_staff/"+ this.sessionService.getUsername() +"/restaurant/"+ restId + "/deleteid/" + menuId, { responseType: 'text' as 'json' }).pipe
       (
         catchError(this.handleError)
       );

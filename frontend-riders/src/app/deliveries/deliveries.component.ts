@@ -1,5 +1,6 @@
 import { DeliveriesService } from './../services/deliveries.service';
 import { Component, OnInit } from '@angular/core';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-deliveries',
@@ -26,6 +27,50 @@ export class DeliveriesComponent implements OnInit {
   retrievePastDeliveries() {
     this.deliveriesService.getDeliveryHistory().subscribe((res) => {
       this.pastDeliveries = res;
+    });
+  }
+
+  markGoingRestaurant(did) {
+    this.deliveriesService.markGoingRestaurant(did).subscribe((res) => {
+      Swal.fire({
+        title: 'Marked as going to restaurant!',
+        icon: 'success',
+        confirmButtonText: 'Ok',
+        showCancelButton: true,
+      });
+    });
+  }
+
+  markArriveRestaurant(did) {
+    this.deliveriesService.markArriveRestaurant(did).subscribe((res) => {
+      Swal.fire({
+        title: 'Marked as arrived at restaurant!',
+        icon: 'success',
+        confirmButtonText: 'Ok',
+        showCancelButton: true,
+      });
+    });
+  }
+
+  markLeavingRestaurant(did) {
+    this.deliveriesService.markLeavingRestaurant(did).subscribe((res) => {
+      Swal.fire({
+        title: 'Marked as leaving restaurant!',
+        icon: 'success',
+        confirmButtonText: 'Ok',
+        showCancelButton: true,
+      });
+    });
+  }
+
+  markDelivered(did) {
+    this.deliveriesService.markDelivered(did).subscribe((res) => {
+      Swal.fire({
+        title: 'Marked as delivered!',
+        icon: 'success',
+        confirmButtonText: 'Ok',
+        showCancelButton: true,
+      });
     });
   }
 

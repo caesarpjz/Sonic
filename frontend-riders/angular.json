@@ -30,12 +30,14 @@
               "node_modules/@fullcalendar/core/main.min.css",
               "node_modules/@fullcalendar/daygrid/main.min.css",
               "node_modules/@fullcalendar/timegrid/main.min.css",
+              "node_modules/sweetalert2/dist/sweetalert2.min.css",
               "src/styles.css"
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.min.js",
               "node_modules/popper.js/dist/umd/popper.min.js",
-              "node_modules/bootstrap/dist/js/bootstrap.min.js"
+              "node_modules/bootstrap/dist/js/bootstrap.min.js",
+              "node_modules/sweetalert2/dist/sweetalert2.min.js"
             ]
           },
           "configurations": {

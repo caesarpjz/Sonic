@@ -2,43 +2,41 @@
 
 <div class="container mt-5 mb-5 pt-5 justify-content-center w-50">
 
-  <h1>Weekly work schedule from xx to xx</h1>
+  <h1>Weekly work schedule</h1>
 
   <!-- if have time will refactor this-->
   <!-- only let them create a new schedule on sunday -->
 
-  <p-checkbox name="groupname" (onChange)="handleChange('monday')" label="Monday" value="monday" [(ngModel)]="selectedDays"></p-checkbox>
+  <p-checkbox class="mr-2" name="groupname" (onChange)="handleChange('monday')" label="Monday" value="monday" [(ngModel)]="selectedDays"></p-checkbox>
 
-  <p-checkbox name="groupname" label="Tuesday" (onChange)="handleChange('tuesday')" value="tuesday"
+  <p-checkbox class="mr-2" name="groupname" label="Tuesday" (onChange)="handleChange('tuesday')" value="tuesday"
     [(ngModel)]="selectedDays"></p-checkbox>
 
-  <p-checkbox name="groupname" (onChange)="handleChange('wednesday')" label="Wednesday" value="wednesday"
+  <p-checkbox class="mr-2" name="groupname" (onChange)="handleChange('wednesday')" label="Wednesday" value="wednesday"
     [(ngModel)]="selectedDays"></p-checkbox>
 
-  <p-checkbox name="groupname" (onChange)="handleChange('thursday')" label="Thursday" value="thursday"
+  <p-checkbox class="mr-2" name="groupname" (onChange)="handleChange('thursday')" label="Thursday" value="thursday"
     [(ngModel)]="selectedDays"></p-checkbox>
 
-  <p-checkbox name="groupname" (onChange)="handleChange('friday')" label="Friday" value="friday"
+  <p-checkbox class="mr-2" name="groupname" (onChange)="handleChange('friday')" label="Friday" value="friday"
     [(ngModel)]="selectedDays"></p-checkbox>
 
-  <p-checkbox name="groupname" (onChange)="handleChange('saturday')" label="Saturday" value="saturday"
+  <p-checkbox class="mr-2" name="groupname" (onChange)="handleChange('saturday')" label="Saturday" value="saturday"
     [(ngModel)]="selectedDays"></p-checkbox>
 
   <p-checkbox name="groupname" (onChange)="handleChange('sunday')" label="Sunday" value="sunday"
     [(ngModel)]="selectedDays"></p-checkbox>
 
-  <form [formGroup]="scheduleForm" (ngSubmit)="submit()">
+  <form class="mt-3" [formGroup]="scheduleForm" (ngSubmit)="submit()">
     <form formArrayName="items" *ngFor="let item of scheduleData.controls; let i = index;">
-      <h5>{{item.controls.day.value | titlecase }}</h5>
-
-      <button (click)="addTimeslot(i)">Add time</button>
+      <h5>{{item.controls.day.value | titlecase }} <button (click)="addTimeslot(i)">Add time</button></h5>
 
       <form [formGroup]=item>
         <form formArrayName="times" *ngFor="let time of timeData(i).controls; let j = index;">
           <div [formGroupName]="j">
-            <p-dropdown [options]="availableHours" formControlName="startTime"></p-dropdown>
+            <p-dropdown [options]="availableHours" formControlName="startTime" placeholder="Start time"></p-dropdown>
 
-            <p-dropdown [options]="availableHours" formControlName="endTime"></p-dropdown>
+            <p-dropdown [options]="availableHours" formControlName="endTime" placeholder="End time"></p-dropdown>
 
             <div *ngIf="timeData(i).controls[j].errors && timeData(i).controls[j].touched">
               <div class="alert alert-danger" *ngIf="timeData(i).controls[j].errors.rangeError">
@@ -63,7 +61,7 @@
       Total hours for schedule must be at least 10 and at most 48 hours
     </div>
 
-    <!-- <app-alert></app-alert> -->
+    <app-alert></app-alert>
   </form>
 </div>
 

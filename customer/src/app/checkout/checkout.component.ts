@@ -7,6 +7,8 @@ import { CartService } from '../services/cart.service';
 import { RestaurantsService } from '../services/restaurants.service';
 import { AlertService } from '../services/alert.service';
 
+import Swal from 'sweetalert2';
+
 @Component({
   selector: 'app-checkout',
   templateUrl: './checkout.component.html',
@@ -147,10 +149,28 @@ export class CheckoutComponent implements OnInit {
           console.log(res);
 
           this.restaurantService.checkout(this.checkoutForm, this.cartItems).subscribe((res) => {
+            Swal.fire({
+              title: 'Your order has been placed',
+              icon: 'success',
+              confirmButtonText: 'OK',
+            }).then((result) => {
+              if (result.value) {
+                this.router.navigate(['/profile']);
+                localStorage.removeItem('cart');
+                localStorage.removeItem('restaurantLastOrdered');
+              }
+            });
+
             console.log(res);
 
             // route to order summary page when complete, show delivery status blah
-          });
+          }, ((err) => {
+              Swal.fire({
+                title: 'Your order has not been placed',
+                icon: 'error',
+                confirmButtonText: 'OK',
+              });
+          }));
         });
       } else {
         this.alertService.error('Invalid credit card information, please try again.');
@@ -158,10 +178,24 @@ export class CheckoutComponent implements OnInit {
 
     } else {
       this.restaurantService.checkout(this.checkoutForm, this.cartItems).subscribe((res) => {
-        console.log(res);
-
-        // route to order summary page when complete, show delivery status blah
-      });
+        Swal.fire({
+          title: 'Your order has been placed',
+          icon: 'success',
+          confirmButtonText: 'OK',
+        }).then((result) => {
+          if (result.value) {
+            this.router.navigate(['/profile']);
+            localStorage.removeItem('cart');
+            localStorage.removeItem('restaurantLastOrdered');
+          }
+        });
+      }, ((err) => {
+        Swal.fire({
+          title: 'Your order has not been placed',
+          icon: 'error',
+          confirmButtonText: 'OK',
+        });
+      }));
     }
   }
 }

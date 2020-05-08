@@ -30,11 +30,13 @@
     "bootstrap": "^4.4.1",
     "core-js": "^3.6.4",
     "jquery": "^3.4.1",
+    "moment": "^2.25.3",
     "popper.js": "^1.16.1",
     "primeicons": "^2.0.0",
     "primeng": "^9.0.3",
     "rxjs": "^6.5.4",
     "rxjs-compat": "^6.0.0-rc.0",
+    "sweetalert2": "^9.10.12",
     "tslib": "^1.10.0",
     "zone.js": "~0.10.2"
   },

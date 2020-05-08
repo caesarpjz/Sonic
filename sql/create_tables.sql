@@ -48,6 +48,7 @@ CREATE TABLE Customers (
     cid SERIAL,
     cc_name VARCHAR(50), -- credit card name for credit card usage
     cc_expiry VARCHAR(50), -- credit card expiry for credit card usage
+    cc_num VARCHAR(50),
     points INTEGER NOT NULL DEFAULT 0, -- points for delivery fee offset
     username VARCHAR(50) NOT NULL,
     PRIMARY KEY (cid, username),

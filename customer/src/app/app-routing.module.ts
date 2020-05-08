@@ -8,6 +8,7 @@ import { CartComponent } from './cart/cart.component';
 import { RestaurantComponent } from './restaurant/restaurant.component';
 import { RestaurantsComponent } from './restaurants/restaurants.component';
 import { HomeComponent } from './home/home.component';
+import { ReviewComponent } from './review/review.component';
 
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
@@ -26,7 +27,8 @@ const routes: Routes = [
   { path: 'checkout', component: CheckoutComponent },
   { path: 'profile', component: ProfileComponent },
   { path: 'update-card', component: UpdateCcComponent },
-  { path: 'restaurants/:restaurantId/reviews', component: ReviewsComponent }
+  { path: 'restaurants/:restaurantId/reviews', component: ReviewsComponent },
+  { path: 'review/:oid/:did', component: ReviewComponent }
 ];
 
 @NgModule({
