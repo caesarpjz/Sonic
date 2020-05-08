@@ -25,7 +25,8 @@ begin
     PERFORM addUser(username, password, name, 'Customer');
 
     INSERT INTO Customers
-    VALUES (DEFAULT, null, null, DEFAULT, username);
+    VALUES (DEFAULT, null, null, null, DEFAULT, username);
+    -- VALUES (DEFAULT, null, null, DEFAULT, username);
 end
 $$ LANGUAGE PLPGSQL;
 
@@ -544,11 +545,12 @@ RETURNS record AS $$
     WHERE Customers.cid = $1;
 $$ LANGUAGE SQL;
 
-CREATE OR REPLACE FUNCTION updateCC(cid INTEGER, cc_name VARCHAR, cc_expiry VARCHAR) 
+CREATE OR REPLACE FUNCTION updateCC(cid INTEGER, cc_name VARCHAR, cc_expiry VARCHAR, cc_num VARCHAR) 
 RETURNS void as $$
     UPDATE Customers
     SET cc_name = $2,
-    cc_expiry = $3
+    cc_expiry = $3,
+    cc_num = $4
     WHERE cid = $1;
 $$ LANGUAGE SQL;
 
